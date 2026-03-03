@@ -31,12 +31,22 @@ def student_login():
 
     return render_template("student_login.html")
 
+
+
 @app.route("/stddashboard")
 def stddashboard():
     if "student_id" not in session:
         return redirect("/student_login")
 
-    return render_template("stddashboard.html")
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM students_rgd WHERE std_id=%s", (session["student_id"],))
+    student = cursor.fetchone()
+    conn.close()
+
+    return render_template("stddashboard.html", student=student)
+
+
 
 @app.route("/logout")
 def logout():
