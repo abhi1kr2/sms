@@ -54,5 +54,70 @@ def logout():
     return redirect("/student_login")
 
 
+#Admin Part:
+
+@app.route("/admin_login", methods=["GET", "POST"])
+def admin_login():
+    if request.method == "POST":
+        username = request.form["admusername"]
+        password = request.form["admpassword"]
+
+        conn = get_db()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM admins WHERE adm_email=%s", (username,))
+        admin = cursor.fetchone()
+        conn.close()
+
+        if admin and admin[5] == password:
+            session["admin_id"] = admin[0]
+            session["admin_name"] = admin[1]
+            return redirect("/admin_dashboard")
+        else:
+            return "Invalid Admin Credentials"
+
+    return render_template("admin_login.html")
+
+
+@app.route("/admin_dashboard")
+def admin_dashboard():
+    if "admin_id" not in session:
+        return redirect("/admin_login")
+
+    return render_template("admin_dashboard.html")
+
+#From Admin Register Students
+@app.route("/admin_register_students", methods=["GET", "POST"])
+def admin_register_students():
+    if "admin_id" not in session:
+        return redirect("/admin_login")
+
+    if request.method == "POST":
+
+        fname = request.form["fname"]
+        lname = request.form["lname"]
+        # ft_name = request.form["ftname"]
+        # mt_name = request.form["mtname"]
+        email = request.form["email"]
+        sphone = request.form["sphno"]
+        # stdcls = request.form["stdclass"]
+        # cls_sec = request.form["classsec"]
+        password = request.form["password"]
+
+        conn = get_db()
+        cursor = conn.cursor()
+
+        cursor.execute(
+            "INSERT INTO students_rgd (first_name, last_name, email, phone, std_password) VALUES (%s, %s, %s, %s, %s)",
+            (fname, lname, email, sphone, password)
+        )
+        conn.commit()
+        conn.close()
+
+        return "Student Registered Successfully!"
+
+    return render_template("admin_register_students.html")
+
+
+
 if __name__ == "__main__":
     app.run(debug=True)
