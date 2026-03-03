@@ -11,6 +11,7 @@
     <a class="navbar-brand" href="/">School MS</a>
     <div>
       <a class="btn btn-light" href="#">Student</a>
+      <a class="btn btn-light" href="/student_login">Student Login</a>
       <a class="btn btn-light" href="#">Teacher</a>
       <a class="btn btn-light" href="#">Admin</a>
     </div>
@@ -19,6 +20,13 @@
 
 <div class="container mt-4">
     {% block content %}{% endblock %}
+</div>
+<div class="container mt-4">
+    {% block form %} {% endblock %}
+</div>
+
+<div class="container mt-4">
+    {% block student_login %}  {% endblock %}
 </div>
 
 </body>
