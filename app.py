@@ -51,7 +51,7 @@ def stddashboard():
 @app.route("/logout")
 def logout():
     session.clear()
-    return redirect("/")
+    return redirect("/student_login")
 
 
 if __name__ == "__main__":
