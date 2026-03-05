@@ -47,6 +47,60 @@ def stddashboard():
     return render_template("stddashboard.html", student=student)
 
 
+# #Student View Profile
+
+# @app.route("/stdstudent_profile")
+# def stdstudent_profile():
+
+#     if "student_id" not in session:
+#         return redirect("/student_login")
+
+#     conn = get_db()
+#     cursor = conn.cursor()
+
+#     cursor.execute(
+#         "SELECT * FROM students_rgd WHERE std_id=%s",
+#         (session["student_id"],)
+#     )
+
+#     student = cursor.fetchone()
+
+#     conn.close()
+
+#     return render_template("stdstudent_profile.html", student=student)
+
+#Code for View and Edit Student Profile self:
+@app.route("/stdstudent_profile", methods=["GET","POST"])
+def stdstudent_profile():
+
+    if "student_id" not in session:
+        return redirect("/student_login")
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    if request.method == "POST":
+
+        email = request.form["email"]
+        phone = request.form["phone"]
+
+        cursor.execute(
+            "UPDATE students_rgd SET email=%s, phone=%s WHERE std_id=%s",
+            (email, phone, session["student_id"])
+        )
+
+        conn.commit()
+
+    cursor.execute(
+        "SELECT * FROM students_rgd WHERE std_id=%s",
+        (session["student_id"],)
+    )
+
+    student = cursor.fetchone()
+
+    conn.close()
+
+    return render_template("stdstudent_profile.html", student=student)
 
 @app.route("/logout")
 def logout():

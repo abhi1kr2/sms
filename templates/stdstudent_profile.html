@@ -1,0 +1,27 @@
+<h2>Student Profile</h2>
+
+<form method="POST">
+
+First Name:
+<input type="text" value="{{ student[1] }}" readonly>
+<br><br>
+
+Last Name:
+<input type="text" value="{{ student[2] }}" readonly>
+<br><br>
+
+Email:
+<input type="email" name="email" value="{{ student[3] }}">
+<br><br>
+
+Phone:
+<input type="text" name="phone" value="{{ student[4] }}">
+<br><br>
+
+<button type="submit">Update Profile</button>
+
+</form>
+
+<br>
+
+<a href="/stddashboard">Back to Dashboard</a>
