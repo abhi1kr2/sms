@@ -169,6 +169,22 @@ def adm_edit_student(id):
 
     return render_template("adm_edit_student.html", student=student)
 
+#Admin can Delete Registered Students:
+@app.route("/delete_student/<int:id>")
+def delete_student(id):
+
+    if "admin_id" not in session:
+        return redirect("/admin_login")
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("DELETE FROM students_rgd WHERE std_id=%s", (id,))
+
+    conn.commit()
+    conn.close()
+
+    return redirect("/adm_students_list")
 
 
 if __name__ == "__main__":
