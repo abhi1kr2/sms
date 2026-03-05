@@ -1,0 +1,24 @@
+<h2>Registered Students</h2>
+
+<table border="1" cellpadding="10">
+<tr>
+    <th>ID</th>
+    <th>First Name</th>
+    <th>Last Name</th>
+    <th>Email</th>
+    <th>Phone</th>
+</tr>
+
+{% for s in adm_view_students %}
+
+<tr>
+    <td>{{ s[0] }}</td>
+    <td>{{ s[1] }}</td>
+    <td>{{ s[2] }}</td>
+    <td>{{ s[3] }}</td>
+    <td>{{ s[4] }}</td>
+</tr>
+
+{% endfor %}
+
+</table>

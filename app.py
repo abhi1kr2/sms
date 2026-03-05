@@ -117,6 +117,22 @@ def admin_register_students():
 
     return render_template("admin_register_students.html")
 
+#Admin View Registered Students:
+@app.route("/adm_students_list")
+def adm_students_list():
+
+    if "admin_id" not in session:
+        return redirect("/admin_login")
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM students_rgd")
+    adm_view_students = cursor.fetchall()
+
+    conn.close()
+
+    return render_template("adm_students_list.html", adm_view_students=adm_view_students)
 
 
 if __name__ == "__main__":
