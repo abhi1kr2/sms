@@ -134,6 +134,42 @@ def adm_students_list():
 
     return render_template("adm_students_list.html", adm_view_students=adm_view_students)
 
+#Admin can Edit Registered Students details:
+
+@app.route("/adm_edit_student/<int:id>", methods=["GET","POST"])
+def adm_edit_student(id):
+
+    if "admin_id" not in session:
+        return redirect("/admin_login")
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    if request.method == "POST":
+
+        fname = request.form["fname"]
+        lname = request.form["lname"]
+        email = request.form["email"]
+        phone = request.form["phone"]
+
+        cursor.execute(
+            "UPDATE students_rgd SET first_name=%s, last_name=%s, email=%s, phone=%s WHERE std_id=%s",
+            (fname, lname, email, phone, id)
+        )
+
+        conn.commit()
+        conn.close()
+
+        return redirect("/adm_students_list")
+
+    cursor.execute("SELECT * FROM students_rgd WHERE std_id=%s",(id,))
+    student = cursor.fetchone()
+
+    conn.close()
+
+    return render_template("adm_edit_student.html", student=student)
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)
