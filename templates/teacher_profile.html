@@ -1,0 +1,27 @@
+<h2>Teacher Profile</h2>
+
+<form method="POST">
+
+First Name:
+<input type="text" value="{{ teacher[1] }}" readonly>
+<br><br>
+
+Last Name:
+<input type="text" value="{{ teacher[2] }}" readonly>
+<br><br>
+
+Email:
+<input type="email" name="email" value="{{ teacher[3] }}">
+<br><br>
+
+Phone:
+<input type="text" name="phone" value="{{ teacher[4] }}">
+<br><br>
+
+<button type="submit">Update Profile</button>
+
+</form>
+
+<br>
+
+<a href="/teacher_dashboard">Back to Dashboard</a>

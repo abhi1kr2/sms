@@ -104,7 +104,84 @@ def stdstudent_profile():
 
 
 
+#Teacher part: #teacher login--
 
+@app.route("/teacher_login", methods=["GET","POST"])
+def teacher_login():
+
+    if request.method == "POST":
+
+        email = request.form["email"]
+        password = request.form["password"]
+
+        conn = get_db()
+        cursor = conn.cursor()
+
+        cursor.execute(
+            "SELECT * FROM teachers WHERE email=%s",
+            (email,)
+        )
+
+        teacher = cursor.fetchone()
+
+        conn.close()
+
+        if teacher and teacher[5] == password:
+
+            session["teacher_id"] = teacher[0]
+            session["teacher_name"] = teacher[1]
+
+            return redirect("/teacher_dashboard")
+
+        else:
+            return "Invalid Login"
+
+    return render_template("teacher_login.html")
+
+
+# Teacher dashboard Route... After success login below route will call
+@app.route("/teacher_dashboard")
+def teacher_dashboard():
+
+    if "teacher_id" not in session:
+        return redirect("/teacher_login")
+
+    return render_template("teacher_dashboard.html")
+
+
+#Update Teacher Profile:
+
+@app.route("/teacher_profile", methods=["GET","POST"])
+def teacher_profile():
+
+    if "teacher_id" not in session:
+        return redirect("/teacher_login")
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    if request.method == "POST":
+
+        email = request.form["email"]
+        phone = request.form["phone"]
+
+        cursor.execute(
+            "UPDATE teachers SET email=%s, phone=%s WHERE tchr_id=%s",
+            (email, phone, session["teacher_id"])
+        )
+
+        conn.commit()
+
+    cursor.execute(
+        "SELECT * FROM teachers WHERE tchr_id=%s",
+        (session["teacher_id"],)
+    )
+
+    teacher = cursor.fetchone()
+
+    conn.close()
+
+    return render_template("teacher_profile.html", teacher=teacher)
 
 
 @app.route("/logout")
