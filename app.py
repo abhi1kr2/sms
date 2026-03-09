@@ -102,6 +102,11 @@ def stdstudent_profile():
 
     return render_template("stdstudent_profile.html", student=student)
 
+
+
+
+
+
 @app.route("/logout")
 def logout():
     session.clear()
@@ -239,6 +244,40 @@ def delete_student(id):
     conn.close()
 
     return redirect("/adm_students_list")
+
+#Admin can add teacher
+
+@app.route("/admadd_teacher", methods=["GET","POST"])
+def admadd_teacher():
+
+    if "admin_id" not in session:
+        return redirect("/admin_login")
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    if request.method == "POST":
+
+        fname = request.form["fname"]
+        lname = request.form["lname"]
+        email = request.form["email"]
+        phone = request.form["phone"]
+        password = request.form["password"]
+
+        cursor.execute(
+            "INSERT INTO teachers (first_name,last_name,email,phone,teacher_password) VALUES (%s,%s,%s,%s,%s)",
+            (fname,lname,email,phone,password)
+        )
+
+        conn.commit()
+        conn.close()
+
+        return redirect("/admin_dashboard")
+
+    return render_template("admadd_teacher.html")
+
+
+
 
 
 if __name__ == "__main__":

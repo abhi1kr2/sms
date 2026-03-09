@@ -18,3 +18,12 @@ CREATE TABLE IF NOT EXISTS admins (
     phone VARCHAR(100),
     adm_password VARCHAR(255) NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS teachers (
+    tchr_id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(100),
+    last_name VARCHAR(100),
+    email VARCHAR(100) UNIQUE,
+    phone VARCHAR(20),
+    teacher_password VARCHAR(100)
+);
