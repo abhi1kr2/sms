@@ -102,6 +102,70 @@ def stdstudent_profile():
 
     return render_template("stdstudent_profile.html", student=student)
 
+#Student Forgot Password Route
+
+@app.route("/std_forgot_password", methods=["GET","POST"])
+def std_forgot_password():
+
+    error = None
+
+    if request.method == "POST":
+
+        # STEP 1 → verify email
+        if "email" in request.form:
+
+            email = request.form["email"]
+
+            conn = get_db()
+            cursor = conn.cursor()
+
+            cursor.execute(
+                "SELECT std_id FROM students_rgd WHERE email=%s",
+                (email,)
+            )
+
+            student = cursor.fetchone()
+            conn.close()
+
+            if student:
+                session["reset_student"] = student[0]
+            else:
+                error = "Email not found"
+
+        # STEP 2 → update password
+        elif "new_password" in request.form:
+
+            new_password = request.form["new_password"]
+            confirm_password = request.form["confirm_password"]
+
+            if new_password != confirm_password:
+                error = "Passwords do not match"
+
+            else:
+
+                conn = get_db()
+                cursor = conn.cursor()
+
+                cursor.execute(
+                    "UPDATE students_rgd SET std_password=%s WHERE std_id=%s",
+                    (new_password, session["reset_student"])
+                )
+                
+                conn.commit()
+                conn.close()
+
+                session.pop("reset_student")
+
+                return redirect("/student_login")
+
+    return render_template(
+        "std_forgot_password.html",
+        show_reset="reset_student" in session,
+        error=error
+    )
+
+
+
 
 
 #Teacher part: #teacher login--
