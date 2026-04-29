@@ -22,9 +22,10 @@ def student_login():
         student = cursor.fetchone()
         conn.close()
         #if student and check_password_hash(student[5], password): #Encrypt then Match password
-        if student and student[5] == password:   #Match with direct entered plain password
-            session["student_id"] = student[0]
-            session["student_name"] = student[1]
+
+        if student and student["std_password"] == password:   #Match with direct entered plain password
+            session["student_id"] = student["std_id"]
+            session["student_name"] = student["first_name"]
             return redirect("/stddashboard")
         else:
             return "Invalid Email or Password"

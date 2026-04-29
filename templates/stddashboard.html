@@ -6,7 +6,7 @@
 <div class="container border border-primary">
     <div class="card border border-primary">
         <div class="card-header row border border-danger">
-            <div class="col-md-4">Welcome {{ student[1] }}</div>
+            <div class="col-md-4">Welcome {{ student["first_name"] }}</div>
             <div class="col-md-7 "><h1>DASHBOARD</h1></div>
             <div class="col-md-1"><a class="light"href="/logout">Logout</a></div>
 
@@ -24,10 +24,10 @@
 
 <br><br><br><br><br><br><br>
 
-<p><strong>Name:</strong> {{ student[1] }}</p>
-<p><strong>Email:</strong> {{ student[2] }}</p>
-<p><strong>Email:</strong> {{ student[3] }}</p>
-<p><strong>Email:</strong> {{ student[4] }}</p>
+<p><strong>Name:</strong> {{ student["first_name"] }}</p>
+<p><strong>Last Name:</strong> {{ student["last_name"] }}</p>
+<p><strong>Email:</strong> {{ student["email"] }}</p>
+<p><strong>Phone:</strong> {{ student["phone"] }}</p>
 
 
 
