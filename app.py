@@ -129,7 +129,7 @@ def std_forgot_password():
             conn.close()
 
             if student:
-                session["reset_student"] = student[0]
+                session["reset_student"] = student["std_id"]
             else:
                 error = "Email not found"
 
@@ -150,9 +150,16 @@ def std_forgot_password():
                 cursor.execute(
                     "UPDATE students_rgd SET std_password=%s WHERE std_id=%s",
                     (new_password, session["reset_student"])
+                    
                 )
                 
                 conn.commit()
+
+                return render_template( "std_forgot_password.html",
+                success="Password updated Successfully!"
+                )
+
+
                 conn.close()
 
                 session.pop("reset_student")
