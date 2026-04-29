@@ -1,33 +1,36 @@
-<h2>Registered Students</h2>
+<h2 class="mb-3">Registered Students</h2>
 
-<table border="1" cellpadding="10">
-<tr>
-    <th>ID</th>
-    <th>First Name</th>
-    <th>Last Name</th>
-    <th>Email</th>
-    <th>Phone</th> 
-    <th>Action</th>
-</tr>
+<table border="1" class="table table-bordered table-hover"> 
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Phone</th> 
+            <th>Action</th>
+        </tr>
+    </thead>
 
-{% for s in adm_view_students %}
+    <tbody>
+    {% for s in adm_view_students %}
+        <tr>
+            <td>{{ s["std_id"] }}</td>
+            <td>{{ s["first_name"] }}</td>
+            <td>{{ s["last_name"] }}</td>
+            <td>{{ s["email"] }}</td>
+            <td>{{ s["phone"] }}</td>
 
-<tr>
-    <td>{{ s[0] }}</td>
-    <td>{{ s[1] }}</td>
-    <td>{{ s[2] }}</td>
-    <td>{{ s[3] }}</td>
-    <td>{{ s[4] }}</td>
+            <td>
+                <a href="/adm_edit_student/{{ s['std_id'] }}" class="btn btn-warning btn-sm">Edit</a>
 
-
-    <td>
-        <a href="/adm_edit_student/{{ s[0] }}">Edit</a> |
-        <a href="/delete_student/{{ s[0] }}">Delete</a>
-    </td>
-
-</tr>
-
-
-{% endfor %}
-
+                <a href="/delete_student/{{ s['std_id'] }}"
+                   class="btn btn-danger btn-sm"
+                   onclick="return confirm('Are you sure you want to delete this student?');">
+                   Delete
+                </a>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
 </table>

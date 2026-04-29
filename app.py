@@ -266,14 +266,15 @@ def admin_login():
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM admins WHERE adm_email=%s", (username,))
         admin = cursor.fetchone()
+        print(admin)
         conn.close()
 
-        if admin and admin[5] == password:
-            session["admin_id"] = admin[0]
-            session["admin_name"] = admin[1]
+        if admin and admin["adm_password"] == password:
+            session["admin_id"] = admin["adm_id"]
+            session["admin_name"] = admin["adm_fname"]
             return redirect("/admin_dashboard")
         else:
-            return "Invalid Admin Credentials"
+            return "Invalid Admin Credentials" 
 
     return render_template("admin_login.html")
 
@@ -290,7 +291,6 @@ def admin_dashboard():
 def admin_register_students():
     if "admin_id" not in session:
         return redirect("/admin_login")
-
     if request.method == "POST":
 
         fname = request.form["fname"]
@@ -306,14 +306,39 @@ def admin_register_students():
         conn = get_db()
         cursor = conn.cursor()
 
-        cursor.execute(
-            "INSERT INTO students_rgd (first_name, last_name, email, phone, std_password) VALUES (%s, %s, %s, %s, %s)",
-            (fname, lname, email, sphone, password)
-        )
-        conn.commit()
-        conn.close()
+        try:
+            # Check if email already exists
+            cursor.execute(
+                "SELECT std_id FROM students_rgd WHERE email=%s",
+                (email,)
+            )
+            if cursor.fetchone():
+                return render_template(
+                    "admin_register_students.html",
+                    error="Email already registered!"
+                )
 
-        return "Student Registered Successfully!"
+            #Insert
+            cursor.execute(
+                "INSERT INTO students_rgd (first_name, last_name, email, phone, std_password) VALUES (%s, %s, %s, %s, %s)",
+                (fname, lname, email, sphone, password)
+            )
+            conn.commit()
+
+            return render_template(
+                "admin_register_students.html",
+                success="Student Registered Successfully!"
+            )
+
+        except pymysql.err.IntegrityError:
+            # fallback safety (race condition protection)
+            return render_template(
+                "admin_register_students.html",
+                error="Email already exists (DB constraint)."
+            )
+
+        finally:
+            conn.close()
 
     return render_template("admin_register_students.html")
 
@@ -336,8 +361,8 @@ def adm_students_list():
 
 #Admin can Edit Registered Students details:
 
-@app.route("/adm_edit_student/<int:id>", methods=["GET","POST"])
-def adm_edit_student(id):
+@app.route("/adm_edit_student/<int:std_id>", methods=["GET","POST"])
+def adm_edit_student(std_id):
 
     if "admin_id" not in session:
         return redirect("/admin_login")
@@ -354,7 +379,7 @@ def adm_edit_student(id):
 
         cursor.execute(
             "UPDATE students_rgd SET first_name=%s, last_name=%s, email=%s, phone=%s WHERE std_id=%s",
-            (fname, lname, email, phone, id)
+            (fname, lname, email, phone, std_id)
         )
 
         conn.commit()
@@ -362,7 +387,7 @@ def adm_edit_student(id):
 
         return redirect("/adm_students_list")
 
-    cursor.execute("SELECT * FROM students_rgd WHERE std_id=%s",(id,))
+    cursor.execute("SELECT * FROM students_rgd WHERE std_id=%s",(std_id,))
     student = cursor.fetchone()
 
     conn.close()
@@ -370,8 +395,8 @@ def adm_edit_student(id):
     return render_template("adm_edit_student.html", student=student)
 
 #Admin can Delete Registered Students:
-@app.route("/delete_student/<int:id>")
-def delete_student(id):
+@app.route("/delete_student/<int:std_id>")
+def delete_student(std_id):
 
     if "admin_id" not in session:
         return redirect("/admin_login")
@@ -379,7 +404,7 @@ def delete_student(id):
     conn = get_db()
     cursor = conn.cursor()
 
-    cursor.execute("DELETE FROM students_rgd WHERE std_id=%s", (id,))
+    cursor.execute("DELETE FROM students_rgd WHERE std_id=%s", (std_id,))
 
     conn.commit()
     conn.close()

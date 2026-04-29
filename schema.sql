@@ -1,3 +1,7 @@
+CREATE DATABASE IF NOT EXISTS rkdf_pro;
+USE rkdf_pro;
+
+
 -- Students Table
 CREATE TABLE IF NOT EXISTS students_rgd (
     std_id INT AUTO_INCREMENT PRIMARY KEY,

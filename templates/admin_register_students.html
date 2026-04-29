@@ -1,5 +1,14 @@
 <h2>Admin Register New Student</h2>
 
+{% if error %}
+<div class="alert alert-danger">{{ error }}</div>
+{% endif %}
+
+{% if success %}
+<div class="alert alert-success">{{ success }}</div>
+{% endif %}
+
+
 <form method="POST">
     First Name: <input type="text" name="fname"><br><br>
     Last Name: <input type="text" name="lname"><br><br>
