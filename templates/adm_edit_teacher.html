@@ -1,0 +1,31 @@
+<h2>Edit Teacher</h2>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% for category, message in messages %}
+    <div class="alert alert-{{ category }}">{{ message }}</div>
+  {% endfor %}
+{% endwith %}
+
+{% if error %}
+<div class="alert alert-danger">{{ error }}</div>
+{% endif %}
+
+<form method="POST">
+
+First Name:
+<input type="text" name="fname" value="{{ teacher['first_name'] }}"><br><br>
+
+Last Name:
+<input type="text" name="lname" value="{{ teacher['last_name'] }}"><br><br>
+
+Email:
+<input type="email" name="email" value="{{ teacher['email'] }}"><br><br>
+
+Phone:
+<input type="text" name="phone" value="{{ teacher['phone'] }}"><br><br>
+
+<button type="submit">Update Teacher</button>
+
+</form>
+
+     <a href="/adm_teachers_list">See Updated List</a>

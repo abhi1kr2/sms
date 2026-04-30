@@ -3,11 +3,15 @@
 <form method="POST">
 
 Email:
-<input type="email" name="email"><br><br>
+<input type="email" name="email" required><br><br>
 
 Password:
-<input type="password" name="password"><br><br>
+<input type="password" name="password" required><br><br>
 
 <button type="submit">Login</button>
 
 </form>
+
+{% if error %}
+<p style="color:red">{{ error }}</p>
+{% endif %}

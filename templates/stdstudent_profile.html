@@ -3,22 +3,22 @@
 <form method="POST">
 
 First Name:
-<input type="text" value="{{ student[1] }}" readonly>
+<input type="text" value="{{ student['first_name'] }}" readonly>
 <br><br>
 
 Last Name:
-<input type="text" value="{{ student[2] }}" readonly>
+<input type="text" value="{{ student['last_name'] }}" readonly>
 <br><br>
 
 Email:
-<input type="email" name="email" value="{{ student[3] }}">
+<input type="email" name="email" value="{{ student['email'] }}" required>
 <br><br>
 
 Phone:
-<input type="text" name="phone" value="{{ student[4] }}">
+<input type="text" name="phone" value="{{ student['phone'] }}">
 <br><br>
 
-<button type="submit">Update Profile</button>
+<input type="submit" value="Update Profile" class="btn btn-success">
 
 </form>
 
