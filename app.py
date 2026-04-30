@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, flash, render_template, request, redirect, session
+import pymysql
 from werkzeug.security import generate_password_hash, check_password_hash
 from db import get_db
 from config import Config
@@ -159,7 +160,6 @@ def std_forgot_password():
                 success="Password updated Successfully!"
                 )
 
-
                 conn.close()
 
                 session.pop("reset_student")
@@ -171,9 +171,6 @@ def std_forgot_password():
         show_reset="reset_student" in session,
         error=error
     )
-
-
-
 
 
 #Teacher part: #teacher login--
@@ -198,18 +195,17 @@ def teacher_login():
 
         conn.close()
 
-        if teacher and teacher[5] == password:
+        if teacher and teacher["teacher_password"] == password:
 
-            session["teacher_id"] = teacher[0]
-            session["teacher_name"] = teacher[1]
+            session["teacher_id"] = teacher["tchr_id"]
+            session["teacher_name"] = teacher["first_name"]
 
             return redirect("/teacher_dashboard")
 
         else:
-            return "Invalid Login"
-
+            return render_template("teacher_login.html", error="Invalid Creadential")
+    
     return render_template("teacher_login.html")
-
 
 # Teacher dashboard Route... After success login below route will call
 @app.route("/teacher_dashboard")
@@ -293,6 +289,7 @@ def admin_dashboard():
         return redirect("/admin_login")
 
     return render_template("admin_dashboard.html")
+
 
 #From Admin Register Students
 @app.route("/admin_register_students", methods=["GET", "POST"])
@@ -427,9 +424,6 @@ def admadd_teacher():
     if "admin_id" not in session:
         return redirect("/admin_login")
 
-    conn = get_db()
-    cursor = conn.cursor()
-
     if request.method == "POST":
 
         fname = request.form["fname"]
@@ -438,17 +432,130 @@ def admadd_teacher():
         phone = request.form["phone"]
         password = request.form["password"]
 
-        cursor.execute(
-            "INSERT INTO teachers (first_name,last_name,email,phone,teacher_password) VALUES (%s,%s,%s,%s,%s)",
-            (fname,lname,email,phone,password)
-        )
+        conn = get_db()
+        cursor = conn.cursor()
 
-        conn.commit()
-        conn.close()
+        try:
+            # Check duplicate
+            cursor.execute("SELECT * FROM teachers WHERE email=%s", (email,))
+            if cursor.fetchone():
+                flash("Email already exists!", "danger")
+                return redirect("/admadd_teacher")
 
-        return redirect("/admin_dashboard")
+            # Insert
+            cursor.execute(
+                "INSERT INTO teachers (first_name,last_name,email,phone,teacher_password) VALUES (%s,%s,%s,%s,%s)",
+                (fname,lname,email,phone,password)
+            )
+
+            conn.commit()
+
+            return render_template("/admadd_teacher", success="Teacher Added Successfully!")
+
+        except pymysql.err.IntegrityError:
+
+            return render_template("/admadd_teacher", error="Duplicate email not allowed!")
+
+        finally:
+            conn.close()
 
     return render_template("admadd_teacher.html")
+
+
+#Admin View Registered Teachers:
+@app.route("/adm_teachers_list")
+def adm_teachers_list():
+
+    if "admin_id" not in session:
+        return redirect("/admin_login")
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM teachers")
+    adm_view_teacher = cursor.fetchall()
+
+    conn.close()
+
+    return render_template("adm_teachers_list.html", adm_view_teacher=adm_view_teacher)
+
+
+
+
+
+#Admin can Edit Registered Teachers details:
+@app.route("/adm_edit_teacher/<int:tchr_id>", methods=["GET","POST"])
+def adm_edit_teacher(tchr_id):
+
+    if "admin_id" not in session:
+        return redirect("/admin_login")
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    try:
+        if request.method == "POST":
+
+            fname = request.form["fname"]
+            lname = request.form["lname"]
+            email = request.form["email"].strip()
+            phone = request.form["phone"]
+
+            #duplicate check
+            cursor.execute(
+                "SELECT * FROM teachers WHERE email=%s AND tchr_id!=%s",
+                (email, tchr_id)
+            )
+            if cursor.fetchone():
+                # re-render with same data
+                return render_template(
+                    "adm_edit_teacher.html",
+                    teacher={
+                        "tchr_id": tchr_id,
+                        "first_name": fname,
+                        "last_name": lname,
+                        "email": email,
+                        "phone": phone
+                    },
+                    error="Email already exists!"
+                )
+
+            # update
+            cursor.execute(
+                "UPDATE teachers SET first_name=%s, last_name=%s, email=%s, phone=%s WHERE tchr_id=%s",
+                (fname, lname, email, phone, tchr_id)
+            )
+            conn.commit()
+
+            flash("Teacher updated successfully!", "success")
+            return redirect(f"/adm_edit_teacher/{tchr_id}")
+
+        # GET request
+        cursor.execute("SELECT * FROM teachers WHERE tchr_id=%s", (tchr_id,))
+        teacher = cursor.fetchone()
+
+        return render_template("adm_edit_teacher.html", teacher=teacher)
+
+    finally:
+        conn.close()
+
+
+#Admin can Delete Registered Teachers:
+@app.route("/delete_teacher/<int:tchr_id>")
+def delete_teacher(tchr_id):
+
+    if "admin_id" not in session:
+        return redirect("/admin_login")
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("DELETE FROM teachers WHERE tchr_id=%s", (tchr_id,))
+
+    conn.commit()
+    conn.close()
+
+    return redirect("/adm_teachers_list")
 
 
 
