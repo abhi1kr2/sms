@@ -1,17 +1,75 @@
-<h2>Teacher Login</h2>
+{% extends 'base.html'%}
+{% block title %}Student Login | LearnOrbit School{% endblock %}
+{% block content %}
+  <!-- Overlay school name -->
+  <h1 class="text-primary bg-white fw-bold position-absolute start-50 translate-middle-x mt-2">
+    LearnOrbit School
+  </h1>
 
-<form method="POST">
+<div class="container-fluid vh-100">
+  <div class="row h-100" style="background: url('{{ url_for('static', filename='images/teacher_login.jpg') }}') no-repeat center center; background-size: cover;">
 
-Email:
-<input type="email" name="email" required><br><br>
+    <!-- LEFT SIDE IMAGE -->
+   <div class="col-md-6 d-flex align-items-center justify-content-center"></div>
 
-Password:
-<input type="password" name="password" required><br><br>
+    <!-- RIGHT SIDE LOGIN -->
+    <div class="col-md-6 d-flex align-items-center justify-content-center">
 
-<button type="submit">Login</button>
+      <div class="card shadow-lg p-4" style="width: 100%; max-width: 400px; border-radius: 15px; background: rgba(243, 243, 232, 0.423);"> 
+        
+        <!-- Logo -->
+        <div class="text-center mb-3">
+          <img src="{{ url_for('static', filename='images/logo.png') }}" width="120">
+        </div>
 
-</form>
+        <!-- Heading -->
+        <h3 class="text-center fw-bold mb-3">Teacher Login</h3>
+        <p class="text-center text-muted">Welcome back! Please login</p>
 
-{% if error %}
-<p style="color:red">{{ error }}</p>
-{% endif %}
+        <!-- FORM -->
+        <form method="POST" action="{{ url_for('teacher_login') }}">
+          
+          <div class="mb-3">
+            <input type="text" class="form-control" name="email" placeholder="Email" required>
+          </div>
+
+          <div class="mb-3">
+            <input type="password" class="form-control" name="password" placeholder="Password" required>
+          </div>
+
+          <button type="submit" class="btn btn-primary w-100 fw-bold">Login</button>
+
+        </form>
+
+        <!-- Links -->
+        <div class="text-center mt-3">
+          <a href="{{ url_for('std_forgot_password') }}" class="text-danger text-decoration-none">
+            Forgot Password?
+          </a>
+        </div>
+
+        <div class="mt-3">
+          <a href="{{ url_for('home') }}" class="btn btn-outline-secondary w-100">
+            Back to Home
+          </a>
+        </div>
+
+        <!-- Error message -->
+        {% if error %}
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ error }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endif %}
+
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+
+
+
+{% endblock %}
