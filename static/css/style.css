@@ -40,3 +40,35 @@ section.bg-primary h1 {
 section.bg-primary p {
     font-size: 1.2rem;
 }
+
+/* Carousel */
+.carousel-item {
+    padding: 2rem;
+    background-color: #f1f5f9;
+    border-radius: 8px;
+}
+.carousel-item h5 {
+    color: #1E3A8A;
+    font-weight: bold;
+}
+.carousel-item p {
+    color: #555;
+}
+
+/* Features Section */
+#features h2 {
+    color: #1E3A8A;
+}
+#features h5 {
+    color: #F97316;
+    font-weight: bold;
+}
+
+/* Why Choose LearnOrbit */
+section.bg-light h2 {
+    color: #1E3A8A;
+}
+section.bg-light h6 {
+    color: #F97316;
+    font-weight: bold;
+}
