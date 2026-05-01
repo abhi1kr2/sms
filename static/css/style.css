@@ -15,15 +15,25 @@ html, body {
 }
 
 /* Navbar */
+.logo-img {
+    height: 70px;   /* increase this */
+    width: auto;
+}
 .navbar-brand {
     font-size: 2.5rem;
     color: #1E3A8A !important;
 }
 .nav-link {
-    color: #333 !important;
+    position: relative;
+    padding: 6px 12px;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    transition: all 0.25s ease-in-out;
 }
+
 .nav-link:hover {
-    color: #1E3A8A !important;
+    border-color: #4f46e5;
+    transform: translateY(-2px);
 }
 .btn-primary {
     background-color: #1E3A8A;
@@ -81,10 +91,8 @@ section.bg-light h6 {
 
 /* Card Styling */
 
-.d-flex {
-  background: url('/static/images/adm_dsh.jpg') no-repeat center;
-  background-size: cover;
-}
+
+
         .dashboard-card {
             padding: 30px;
             border-radius: 15px;

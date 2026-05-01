@@ -15,31 +15,43 @@
 <body>
 
 <!-- Header -->
-<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-2">
     <div class="container">
-        <div class="navbar-brand">
-            <a  href="{{ url_for('home') }}">
-            <img src="{{ url_for('static', filename='images/logo.png') }}" 
-           alt="LearnOrbit Logo" 
-           class="logo-img">
+
+        <!-- LOGO + BRAND -->
+        <a class="navbar-brand d-flex align-items-center" href="{{ url_for('home') }}">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" class="logo-img">
         </a>
-        </div>
+
+        <!-- TOGGLER -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
+
+        <!-- MENU -->
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
+            <ul class="navbar-nav ms-auto align-items-lg-center">
+
                 <li class="nav-item"><a class="nav-link" href="{{ url_for('home') }}">Home</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ url_for('about') }}">About</a></li>
-                <li class="nav-item"><a class="nav-link" href="/templates/about.html">Programs</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Programs</a></li>
                 <li class="nav-item"><a class="nav-link" href="#">Events</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Addmission</a></li>             
+                <li class="nav-item"><a class="nav-link" href="#">Admission</a></li>
                 <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
-                <li class="nav-item"><a class="nav-link me-2" href="{{ url_for('student_login') }}">Student Login</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('teacher_login') }}">Teacher login</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('admin_login') }}">Admin Login</a></li>
+
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('student_login') }}">Student</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('teacher_login') }}">Teacher</a></li>
+
+                <!-- 🔥 CTA BUTTON -->
+                <li class="nav-item ms-2">
+                    <a class="btn btn-primary btn-sm px-3" href="{{ url_for('admin_login') }}">
+                        Admin
+                    </a>
+                </li>
+
             </ul>
         </div>
+
     </div>
 </nav>
 
