@@ -46,7 +46,36 @@
 <!-- Dynamic Content -->
 {% block content %}{% endblock %}
 
-
+<!-- Footer -->
+<footer class="bg-dark text-white mt-5 pt-4 pb-3">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <h5>Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li><a href="{{ url_for('home') }}" class="text-white">Home</a></li>
+                    <li><a href="#features" class="text-white">Features</a></li>
+                    <li><a href="#about" class="text-white">About</a></li>
+                    <li><a href="#contact" class="text-white">Contact</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h5>Resources</h5>
+                <ul class="list-unstyled">
+                    <li><a href="#" class="text-white">Blog</a></li>
+                    <li><a href="#" class="text-white">FAQ</a></li>
+                    <li><a href="#" class="text-white">Support</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h5>Contact Us</h5>
+                <p>Email: info@learnorbit.com<br>Phone: +91 6200117821</p>
+            </div>
+        </div>
+        <hr class="border-light">
+        <p class="text-center mb-0">© 2026 LearnOrbit. All rights reserved.</p>
+    </div>
+</footer>
 
 <!-- Bootstrap JS -->
 <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>

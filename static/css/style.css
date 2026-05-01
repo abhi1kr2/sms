@@ -72,3 +72,18 @@ section.bg-light h6 {
     color: #F97316;
     font-weight: bold;
 }
+
+
+/* Footer */
+footer {
+    background-color: #1E3A8A;
+}
+footer h5 {
+    color: #F97316;
+}
+footer a {
+    text-decoration: none;
+}
+footer a:hover {
+    text-decoration: underline;
+}
