@@ -38,7 +38,8 @@ def student_login():
             session["student_name"] = student["first_name"]
             return redirect("/stddashboard")
         else:
-            return "Invalid Email or Password"
+            error = "Invalid Email or Password"
+            return render_template("student_login.html", error=error)
 
     return render_template("student_login.html")
 
