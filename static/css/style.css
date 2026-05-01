@@ -126,6 +126,229 @@ section.bg-light h6 {
 
 
 
+
+
+/*Crousal Code*/
+
+/* Full-width image */
+.carousel-item img {
+    width: 100%;
+    height: 450px;
+    object-fit: cover;
+}
+
+/* Overlay positioning */
+.hero-overlay {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding-left: 80px;
+}
+
+/* Glassmorphism box */
+.hero-box {
+    max-width: 550px;
+    background: rgba(37, 99, 235, 0.6);
+    backdrop-filter: blur(10px);
+    padding: 30px;
+    border-radius: 12px;
+    color: white;
+    animation: fadeUp 1s ease;
+}
+
+/* Text */
+.hero-box h1 {
+    font-size: 36px;
+    font-weight: 700;
+}
+
+.hero-box p {
+    font-size: 16px;
+}
+
+/* Button */
+.hero-box .btn-warning {
+    background: #f97316;
+    border: none;
+}
+
+/* Animation */
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* Full height control */
+.carousel-item img {
+    height: 450px;
+    object-fit: cover;
+}
+
+/* Overlay container */
+.hero-overlay {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding-left: 80px;
+}
+
+/* Glassmorphism box */
+.hero-box {
+    max-width: 550px;
+    background: rgba(37, 99, 235, 0.6);
+    backdrop-filter: blur(10px);
+    padding: 30px;
+    border-radius: 12px;
+    color: white;
+    animation: fadeUp 1s ease;
+}
+
+/* Text */
+.hero-box h1 {
+    font-size: 36px;
+    font-weight: 700;
+}
+
+.hero-box p {
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+
+/* Button styling */
+.hero-box .btn-warning {
+    background: #f97316;
+    border: none;
+}
+
+/* Animation */
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+
+
+/*   Index Page Features Section */
+
+.features-section {
+    background: #f8fafc;
+}
+
+/* Card */
+.feature-card {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+/* Image */
+.feature-card img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+}
+
+/* Bottom Gradient Content */
+.feature-content {
+    color: white;
+    padding: 20px;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+
+/* Floating Icon */
+.feature-icon {
+    position: absolute;
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 28px;
+    border: 4px solid white;
+}
+
+/* Colors */
+.bg-blue {
+    background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+}
+
+.bg-purple {
+    background: linear-gradient(135deg, #6d28d9, #7c3aed);
+}
+
+.bg-orange {
+    background: linear-gradient(135deg, #ea580c, #f97316);
+}
+
+/* Small icons */
+.icon-small {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+
+/* Why choose LearnOrbit*/
+/* Section */
+.why-section {
+    background: #f8fafc;
+}
+
+/* Card */
+.why-card {
+    padding: 20px;
+    transition: 0.3s;
+}
+
+.why-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Icon Circle */
+.icon-circle {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 26px;
+}
+
+/* Colors (match your image) */
+.blue { background: #2563eb; }
+.dark { background: #1e3a8a; }
+.orange { background: #f97316; }
+.lightblue { background: #38bdf8; }
+
+
+
+
+
 /* Footer */
 
 /* 🔷 CTA Gradient Background */

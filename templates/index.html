@@ -1,40 +1,53 @@
 {% extends "base.html" %}
 {% block content %}
 
-  <!-- carousel -->
-<div id="featureCarousel" class="carousel slide mt-4" data-bs-ride="carousel">
-  <div class="carousel-inner">
-    <div class="carousel-item active">
-      <img src="{{ url_for('static', filename='images/c1.jpg') }}" class="d-block w-100" alt="Efficient Administration" style="object-fit:cover; height:400px;">
+<!-- FULL WIDTH CAROUSEL -->
+<div class="container-fluid p-0">
+
+  <div id="featureCarousel" class="carousel slide" data-bs-ride="carousel">
+
+    <div class="carousel-inner">
+
+      <div class="carousel-item active">
+        <img src="{{ url_for('static', filename='images/c1.jpg') }}" class="d-block w-100" alt="Efficient Administration">
+      </div>
+
+      <div class="carousel-item">
+        <img src="{{ url_for('static', filename='images/c2.jpg') }}" class="d-block w-100" alt="Smart Learning Tools">
+      </div>
+
+      <div class="carousel-item">
+        <img src="{{ url_for('static', filename='images/c3.jpg') }}" class="d-block w-100" alt="Parent-Teacher Communication">
+      </div>
+
+      <div class="carousel-item">
+        <img src="{{ url_for('static', filename='images/c4.jpg') }}" class="d-block w-100" alt="School System">
+      </div>
+
     </div>
-    <div class="carousel-item">
-      <img src="{{ url_for('static', filename='images/c2.jpg') }}" class="d-block w-100" alt="Smart Learning Tools" style="object-fit:cover; height:400px;">
+
+    <!-- CONTROLS -->
+    <button class="carousel-control-prev" type="button" data-bs-target="#featureCarousel" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon"></span>
+    </button>
+
+    <button class="carousel-control-next" type="button" data-bs-target="#featureCarousel" data-bs-slide="next">
+      <span class="carousel-control-next-icon"></span>
+    </button>
+
+    <!-- PREMIUM OVERLAY -->
+    <div class="carousel-caption hero-overlay d-flex align-items-center">
+      <div class="hero-box">
+        <h1>Connecting Education, Inspiring Success!</h1>
+        <p>Advanced School Management System for Students, Teachers & Administrators</p>
+
+        <a href="{{ url_for('std_enquiry') }}" class="btn btn-warning me-2">Get Started</a>
+        <a href="#features" class="btn btn-outline-light">Learn More</a>
+      </div>
     </div>
-    <div class="carousel-item">
-      <img src="{{ url_for('static', filename='images/c3.jpg') }}" class="d-block w-100" alt="Parent-Teacher Communication" style="object-fit:cover; height:400px;">
-    </div>
-    <div class="carousel-item">
-      <img src="{{ url_for('static', filename='images/c4.jpg') }}" class="d-block w-100" alt="Parent-Teacher Communication" style="object-fit:cover; height:400px;">
-    </div>
+
   </div>
 
-  <!-- Controls -->
-  <button class="carousel-control-prev" type="button" data-bs-target="#featureCarousel" data-bs-slide="prev">
-    <span class="carousel-control-prev-icon"></span>
-  </button>
-  <button class="carousel-control-next" type="button" data-bs-target="#featureCarousel" data-bs-slide="next">
-    <span class="carousel-control-next-icon"></span>
-  </button>
-
-  <!-- Hero Overlay (always visible) -->
-  <div class="carousel-caption d-flex align-items-center justify-content-start text-start" style="top:50%; transform:translateY(-50%);">
-    <div class="bg-primary bg-opacity-75 p-4 rounded">
-      <h1 class="fw-bold text-white">Connecting Education, Inspiring Success!</h1>
-      <p class="lead text-white">Advanced School Management System for Students, Teachers & Administrators</p>
-      <a href="{{ url_for('std_enquiry') }}" class="btn btn-warning me-2">Get Started</a>
-      <a href="#features" class="btn btn-outline-light">Learn More</a>
-    </div>
-  </div>
 </div>
 
 
@@ -50,48 +63,154 @@
 
 
 <!-- Features Section -->
-<section id="features" class="py-5">
+<section class="features-section py-5">
     <div class="container text-center">
-        <h2 class="fw-bold mb-4">Our Key Features</h2>
-        <div class="row">
+
+        <!-- Heading -->
+        <h2 class="fw-bold mb-5">Key Features of Our School</h2>
+
+        <div class="row g-4">
+
+            <!-- Card 1 -->
             <div class="col-md-4">
-                <h5>Student Dashboard</h5>
-                <p>Track classes, assignments, and grades easily.</p>
+                <div class="feature-card">
+                    <img src="{{ url_for('static', filename='images/index_fe1.jpg') }}">
+                    
+                    <div class="feature-icon bg-blue">
+                        <i class="bi bi-clipboard-data"></i>
+                    </div>
+
+                    <div class="feature-content bg-blue">
+                        <h5>Efficient Administration</h5>
+                        <p>Manage student records, staff, and exams efficiently.</p>
+                    </div>
+                </div>
             </div>
+
+            <!-- Card 2 -->
             <div class="col-md-4">
-                <h5>Teacher Portal</h5>
-                <p>Manage lessons, exams, and student progress.</p>
+                <div class="feature-card">
+                    <img src="{{ url_for('static', filename='images/index_fe2.jpg') }}">
+                    
+                    <div class="feature-icon bg-purple">
+                        <i class="bi bi-book"></i>
+                    </div>
+
+                    <div class="feature-content bg-purple">
+                        <h5>Smart Learning Tools</h5>
+                        <p>Digital classrooms and interactive study materials.</p>
+                    </div>
+                </div>
             </div>
+
+            <!-- Card 3 -->
             <div class="col-md-4">
-                <h5>Admin Panel</h5>
-                <p>Oversee school activities and reports.</p>
+                <div class="feature-card">
+                    <img src="{{ url_for('static', filename='images/index_fe3.jpg') }}">
+                    
+                    <div class="feature-icon bg-orange">
+                        <i class="bi bi-people"></i>
+                    </div>
+
+                    <div class="feature-content bg-orange">
+                        <h5>Parent-Teacher Communication</h5>
+                        <p>Stay connected with real-time updates.</p>
+                    </div>
+                </div>
             </div>
+
         </div>
+
+        <!-- Bottom Features Row -->
+        <div class="row mt-5 text-center">
+
+            <div class="col-md-3">
+                <i class="bi bi-shield-check icon-small text-primary"></i>
+                <h6>Secure & Reliable</h6>
+                <p>Your data is safe with us</p>
+            </div>
+
+            <div class="col-md-3">
+                <i class="bi bi-bell icon-small text-warning"></i>
+                <h6>Instant Updates</h6>
+                <p>Real-time alerts & notifications</p>
+            </div>
+
+            <div class="col-md-3">
+                <i class="bi bi-bar-chart icon-small text-success"></i>
+                <h6>Performance Tracking</h6>
+                <p>Track academic progress</p>
+            </div>
+
+            <div class="col-md-3">
+                <i class="bi bi-phone icon-small text-info"></i>
+                <h6>Easy Access</h6>
+                <p>Access anytime, anywhere</p>
+            </div>
+
+        </div>
+
     </div>
 </section>
 
+
+
+
 <!-- Why Choose LearnOrbit -->
-<section class="bg-light py-5">
-    <div class="container text-center">
-        <h2 class="fw-bold mb-4">Why Choose LearnOrbit?</h2>
-        <div class="row">
+<section class="why-section py-5 text-center">
+    <div class="container">
+
+        <!-- Heading -->
+        <h2 class="fw-bold mb-5">Why Choose Our School?</h2>
+
+        <div class="row g-4">
+
+            <!-- Item 1 -->
             <div class="col-md-3">
-                <h6>AI-Powered Insights</h6>
-                <p>Predictive analytics for student success.</p>
+                <div class="why-card">
+                    <div class="icon-circle blue">
+                        <i class="bi bi-lightbulb"></i>
+                    </div>
+                    <h6 class="fw-bold mt-3">Smart Learning</h6>
+                    <p>Modern tools for better understanding.</p>
+                </div>
             </div>
+
+            <!-- Item 2 -->
             <div class="col-md-3">
-                <h6>Secure & Reliable</h6>
-                <p>Safe and protected data management.</p>
+                <div class="why-card">
+                    <div class="icon-circle dark">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+                    <h6 class="fw-bold mt-3">Safe & Secure</h6>
+                    <p>A protected and disciplined environment.</p>
+                </div>
             </div>
+
+            <!-- Item 3 -->
             <div class="col-md-3">
-                <h6>Notifications & Alerts</h6>
-                <p>Instant Email & SMS updates.</p>
+                <div class="why-card">
+                    <div class="icon-circle orange">
+                        <i class="bi bi-bell"></i>
+                    </div>
+                    <h6 class="fw-bold mt-3">Instant Updates</h6>
+                    <p>Regular notices and communication.</p>
+                </div>
             </div>
+
+            <!-- Item 4 -->
             <div class="col-md-3">
-                <h6>Easy to Use Interface</h6>
-                <p>User-friendly and intuitive design.</p>
+                <div class="why-card">
+                    <div class="icon-circle lightblue">
+                        <i class="bi bi-chat-dots"></i>
+                    </div>
+                    <h6 class="fw-bold mt-3">Easy Communication</h6>
+                    <p>Connect with teachers anytime.</p>
+                </div>
             </div>
+
         </div>
+
     </div>
 </section>
 {% endblock %}
