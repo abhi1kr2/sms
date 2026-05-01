@@ -30,8 +30,8 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item"><a class="nav-link" href="{{ url_for('home') }}">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="#features">About</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Programs</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('about') }}">About</a></li>
+                <li class="nav-item"><a class="nav-link" href="/templates/about.html">Programs</a></li>
                 <li class="nav-item"><a class="nav-link" href="#">Events</a></li>
                 <li class="nav-item"><a class="nav-link" href="#">Addmission</a></li>             
                 <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
@@ -45,6 +45,7 @@
 
 <!-- Dynamic Content -->
 {% block content %}{% endblock %}
+{% block about %}{% endblock %}
 
 <!-- Footer -->
 <footer class="bg-dark text-white mt-5 pt-4 pb-3">

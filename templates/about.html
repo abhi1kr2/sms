@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- About Us Hero -->
+<section class="bg-light py-5">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-md-6">
+        <h1 class="fw-bold text-primary">About Our School</h1>
+        <p class="lead">
+          LearnOrbit School is dedicated to nurturing young minds with modern teaching methods, 
+          advanced technology, and a supportive environment. We believe education is not just 
+          about academics, but about building character, creativity, and confidence.
+        </p>
+        <p>
+          Our students thrive in a culture of innovation and collaboration, guided by passionate 
+          teachers and supported by parents who are actively involved in their child’s journey. 
+          Together, we create a connected ecosystem where learning is inspiring and success is shared.
+        </p>
+      </div>
+      <div class="col-md-6 text-center">
+        <img src="{{ url_for('static', filename='images/main_building.png') }}" 
+             alt="Students at LearnOrbit" class="img-fluid rounded shadow" width="500" height="500">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="bg-light py-5">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-md-6">
+        <img src="{{ url_for('static', filename='images/about10.png') }}" 
+             alt="Students at LearnOrbit" class="img-fluid rounded shadow" width="500" height="500">
+      </div>
+      <div class="col-md-6">
+        <h1 class="fw-bold text-primary">Our Learning Community</h1>
+        <p>
+            At LearnOrbit School, students thrive in a culture of innovation and collaboration. 
+            Guided by passionate teachers and supported by parents, every child’s journey is enriched with encouragement and opportunity.
+        </p>
+        <p>
+            Together, we create a connected ecosystem where learning is inspiring, creativity is celebrated, and success is shared across the entire school community.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- Mission & Vision Section -->
+<section class="py-5 bg-light">
+  <div class="container text-center">
+    <h2 class="fw-bold text-primary mb-5">Our Mission & Vision</h2>
+    <div class="row align-items-center">
+      
+      <!-- Mission -->
+      <div class="col-md-6 mb-4">
+        <img src="{{ url_for('static', filename='images/mission.jpg') }}" 
+             alt="Our Mission" class="img-fluid rounded shadow mb-3">
+        <h5 class="fw-bold text-primary">Our Mission</h5>
+        <p class="text-muted">
+          To empower schools with technology that streamlines operations and enhances learning outcomes.
+          We aim to make education smarter, more accessible, and future-ready through innovation.
+        </p>
+      </div>
+
+      <!-- Vision -->
+      <div class="col-md-6 mb-4">
+        <img src="{{ url_for('static', filename='images/vision.jpg') }}" 
+             alt="Our Vision" class="img-fluid rounded shadow mb-3">
+        <h5 class="fw-bold text-primary">Our Vision</h5>
+        <p class="text-muted">
+          To create a connected ecosystem where students, teachers, and parents thrive together in a digital-first world.
+          We envision a learning community that inspires collaboration, creativity, and lifelong growth.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+
+<!-- Team Section -->
+<section class="py-5">
+  <div class="container text-center">
+    <h2 class="fw-bold text-primary mb-4">Meet Our School Team</h2>
+    <div class="row">
+      <div class="col-md-4">
+        <img src="{{ url_for('static', filename='images/principal.jpg') }}" 
+             class="rounded-circle mb-3" alt="Principal" width="250" height="250">
+        <h6 class="fw-bold">Dr. Meera Singh</h6>
+        <p>Principal</p>
+      </div>
+      <div class="col-md-4">
+        <img src="{{ url_for('static', filename='images/teacher.jpg') }}" 
+             class="rounded-circle mb-3" alt="Teacher" width="250" height="250">
+        <h6 class="fw-bold">Mr. Rajesh Kumar</h6>
+        <p>Senior Mathematics Teacher</p>
+      </div>
+      <div class="col-md-4">
+        <img src="{{ url_for('static', filename='images/coordinator.jpg') }}" 
+             class="rounded-circle mb-3" alt="Coordinator" width="250" height="250">
+        <h6 class="fw-bold">Mrs. Anjali Verma</h6>
+        <p>Academic Coordinator</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

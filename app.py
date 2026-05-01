@@ -15,6 +15,11 @@ def home():
 def std_enquiry():
     return render_template("index.html")
 
+@app.route("/about")
+def about():
+    return render_template("about.html")
+
+
 #Calling the Student login form
 @app.route("/student_login", methods=["GET", "POST"])
 def student_login():
