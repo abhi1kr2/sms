@@ -25,14 +25,14 @@
 
        <marquee behavior="alternate"><h2>Welcome To Admin Portal</h2></marquee>
 
-        <div class="row mt-4">
+        <div class="row">
 
             <!-- Student Card -->
             <div class="col-md-2">
                 <div class="card dashboard-card text-center">
                     <img src="{{ url_for('static', filename='images/icons/student.png') }}" class="icon">
                     <h5>Students</h5>
-                    <a href="/admin_register_students" class="btn btn-success">New Registration</a>
+                    <a href="/admin_register_students" class="btn btn-success mb-2">New Registration</a>
                     <a href="/adm_students_list" class="btn btn-warning">View & Modify</a>
                 </div>
             </div>
@@ -40,7 +40,7 @@
                 <div class="card dashboard-card text-center">
                     <img src="{{ url_for('static', filename='images/icons/marks.png') }}" class="icon">
                     <h5>Marksheet</h5>
-                    <a href="/admin_register_students" class="btn btn-success">Modify Marks</a>
+                    <a href="/admin_register_students" class="btn btn-success mb-2">Modify Marks</a>
                     <a href="/adm_students_list" class="btn btn-warning">View Marks</a>
                 </div>
             </div>
@@ -50,7 +50,7 @@
                 <div class="card dashboard-card text-center">
                     <img src="{{ url_for('static', filename='images/icons/teacher1.png') }}" class="icon">
                     <h5>Teachers</h5>
-                    <a href="/admadd_teacher" class="btn btn-success">New Registration</a>
+                    <a href="/admadd_teacher" class="btn btn-success mb-2">New Registration</a>
                     <a href="/adm_teachers_list" class="btn btn-warning">View & Modify</a>
                 </div>
             </div>
@@ -61,7 +61,7 @@
                     <img src="{{ url_for('static', filename='images/icons/gallery.png') }}" class="icon">
                     <h5>Gallery</h5>
                      <form class="header bg-light" method="post">
-                        <input class="form-control" type="file" id="formFile">
+                        <input class="form-control mb-2" type="file" id="formFile">
                         <input type="submit" value="Upload" class="btn btn-success p-1">
                         <a href="/admadd_teacher" class="btn btn-warning p-1">Modify</a>
                     </form>
@@ -73,7 +73,7 @@
                 <div class="card dashboard-card text-center">
                     <img src="{{ url_for('static', filename='images/icons/notice1.png') }}" class="icon">
                     <h5>Notice Board</h5>
-                    <a href="#" class="btn btn-success">Add New</a>
+                    <a href="#" class="btn btn-success mb-2">Add New</a>
                     <a href="#" class="btn btn-warning">View & Modify</a>
                 </div>
             </div>
@@ -83,8 +83,55 @@
                 <div class="card dashboard-card text-center">
                     <img src="{{ url_for('static', filename='images/icons/comsn.png') }}" class="icon">
                     <h5>Coming Soon</h5>
-                    <a href="#" class="btn btn-success">Loading</a>
+                    <a href="#" class="btn btn-success mb-2">Loading</a>
                     <a href="#" class="btn btn-warning">Loading</a>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row mt-4">
+
+            <!-- Student Card -->
+            <div class="col-md-2">
+                <div class="card dashboard-card text-center">
+                    <img src="{{ url_for('static', filename='images/icons/comsn.png') }}" class="icon">
+                    <h5>Coming Soon</h5>
+                    <a href="#" class="btn btn-success mb-2">Loading</a>
+                    <a href="#" class="btn btn-warning">Loading</a>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card dashboard-card text-center">
+                    
+                </div>
+            </div>
+
+            <!-- Teacher Card -->
+            <div class="col-md-2">
+                <div class="card dashboard-card text-center">
+                    
+                </div>
+            </div>
+
+            <!-- Gallery Card -->
+            <div class="col-md-2">
+                <div class="card dashboard-card text-center">
+                    
+                </div>
+            </div>
+
+           <!-- School Notice Board --> 
+            <div class="col-md-2">
+                <div class="card dashboard-card text-center">
+                    
+                </div>
+            </div>
+
+           <!-- Coming Soon --> 
+            <div class="col-md-2">
+                <div class="card dashboard-card text-center">
+                    
                 </div>
             </div>
 

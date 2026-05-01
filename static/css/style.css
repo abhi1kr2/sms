@@ -77,6 +77,46 @@ section.bg-light h6 {
     font-weight: bold;
 }
 
+/*Admin Dashboard*/
+
+/* Card Styling */
+
+.d-flex {
+  background: url('/static/images/adm_dsh.jpg') no-repeat center;
+  background-size: cover;
+}
+        .dashboard-card {
+            padding: 30px;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+
+        
+
+        /* Buttons */
+        .btn-success {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            border: none;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            border: none;
+            color: white;
+        }
+
+        h5 {
+            margin: 10px 0;
+            font-weight: 600;
+        }
+
+
 
 /* Footer */
 footer {
