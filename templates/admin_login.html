@@ -1,9 +1,109 @@
+{% extends 'base.html'%}
+{% block title %}Admin Login | LearnOrbit School{% endblock %}
 
+{% block content %}
 
-<h2>Admin Login</h2>
+<div class="container-fluid min-vh-100 d-flex flex-column p-0 position-relative">
 
-<form method="POST">
-    Username: <input type="text" name="admusername"><br><br>
-    Password: <input type="password" name="admpassword"><br><br>
-    <button type="submit">Login</button>
-</form>
+  <!-- BLURRED BACKGROUND -->
+  <div style="
+    position: absolute;
+    inset: 0;
+    background: url('{{ url_for('static', filename='images/admin_lgn.jpg') }}') no-repeat center center;
+    background-size: cover;
+    filter: blur(6px);
+    z-index: 1;
+  "></div>
+
+  <!-- DARK OVERLAY -->
+  <div style="
+    position: absolute;
+    inset: 0;
+    background: rgba(48, 47, 47, 0.35);
+    z-index: 2;
+  "></div>
+
+  <!-- MAIN CONTENT -->
+  <div class="position-relative d-flex flex-column flex-grow-1" style="z-index: 3;">
+
+    <!-- HEADER -->
+    <h1 class="text-white fw-bold text-center py-3 m-0">
+      LearnOrbit School
+    </h1>
+
+    <!-- CONTENT AREA -->
+    <div class="row flex-grow-1 m-0">
+
+      <!-- LEFT SIDE LOGIN -->
+      <div class="col-md-6 d-flex align-items-center justify-content-center">
+
+        <div class="card shadow-lg p-4"
+             style="width: 100%; max-width: 420px; border-radius: 20px; border: none; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px);">
+
+          <!-- Logo -->
+          <div class="text-center mb-3">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" width="120">
+          </div>
+
+          <!-- Heading -->
+          <h3 class="text-center fw-bold">Admin Login</h3>
+          <p class="text-center text-muted mb-4">Secure access to dashboard</p>
+
+          <!-- FORM -->
+          <form method="POST" action="{{ url_for('admin_login') }}">
+
+            <!-- EMAIL -->
+            <div class="mb-3 position-relative">
+              <input type="text" class="form-control ps-5" name="admusername" placeholder="Admin Email" required>
+              <i class="bi bi-person position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+            </div>
+
+            <!-- PASSWORD -->
+            <div class="mb-3 position-relative">
+              <input type="password" class="form-control ps-5 pe-5" id="admpassword" name="admpassword" placeholder="Password" required>
+              <i class="bi bi-lock position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+              <i class="bi bi-eye position-absolute top-50 end-0 translate-middle-y me-3 text-muted"></i>
+            </div>
+
+            <!-- REMEMBER + FORGOT -->
+            <div class="d-flex justify-content-between mb-3">
+              <div>
+                <input type="checkbox"> <small>Remember</small>
+              </div>
+              <a href="#" class="text-decoration-none text-primary">Forgot?</a>
+            </div>
+
+            <!-- BUTTON -->
+            <button type="submit" class="btn btn-primary w-100 fw-bold"
+                    style="border-radius: 10px; padding: 10px;">
+              Login to Dashboard
+            </button>
+
+          </form>
+
+          <!-- BACK -->
+          <div class="mt-3">
+            <a href="{{ url_for('home') }}" class="btn btn-outline-secondary w-100">
+              Back to Home
+            </a>
+          </div>
+
+          <!-- ERROR -->
+          {% if error %}
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ error }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endif %}
+
+        </div>
+
+      </div>
+
+      <!-- RIGHT SIDE EMPTY (for balance) -->
+      <div class="col-md-6 d-none d-md-flex"></div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

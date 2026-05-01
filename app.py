@@ -288,7 +288,8 @@ def admin_login():
             session["admin_name"] = admin["adm_fname"]
             return redirect("/admin_dashboard")
         else:
-            return "Invalid Admin Credentials" 
+            error = "Invalid Email or Password"
+            return render_template("admin_login.html", error=error) 
 
     return render_template("admin_login.html")
 
