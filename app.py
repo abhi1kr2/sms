@@ -11,6 +11,10 @@ app.secret_key = Config.SECRET_KEY
 def home():
     return render_template("index.html")
 
+@app.route("/std_enquiry", methods=["GET", "POST"])
+def std_enquiry():
+    return render_template("index.html")
+
 #Calling the Student login form
 @app.route("/student_login", methods=["GET", "POST"])
 def student_login():
