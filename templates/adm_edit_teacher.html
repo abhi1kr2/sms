@@ -1,3 +1,8 @@
+{% extends 'admin_base.html' %}
+
+{% block content %}
+
+
 <h2>Edit Teacher</h2>
 
 {% with messages = get_flashed_messages(with_categories=true) %}
@@ -29,3 +34,5 @@ Phone:
 </form>
 
      <a href="/adm_teachers_list">See Updated List</a>
+
+{% endblock %}

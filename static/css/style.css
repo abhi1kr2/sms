@@ -229,7 +229,51 @@ html, body {
     padding: 6px 10px;
     font-size: 13px;
 }
+
 /* End Admin View Enquiry */
+
+
+/*Admin Navigation*/
+
+/* HEADER */
+    .admin-navbar { 
+        background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: white;
+        }
+
+    .admin-navbar h5 {
+            margin: 0;
+            font-weight: 600;
+        }
+
+/* HOME BUTTON */
+    .home-btn {
+            background: white;
+            color: #1e3a8a;
+            font-weight: 500;
+        }
+
+    .home-btn:hover {
+            background: #e0e7ff;
+        }
+
+/* LOGOUT BUTTON */
+    .logout-btn {
+            border: 1px solid white;
+            color: white;
+        }
+
+    .logout-btn:hover {
+            background: white;
+            color: #1e3a8a;
+        }
+    .footer {
+        font-size: 13px;
+        opacity: 0.7;
+    }
+
+/*End Admin Navigation*/
+
 
 /* ========================= */
 /* FEATURES SECTION */

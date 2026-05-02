@@ -1,3 +1,6 @@
+{% extends 'admin_base.html' %}
+{% block content %}
+
 <h2>Admin Register New Student</h2>
 
 {% if error %}
@@ -21,3 +24,6 @@
     Password: <input type="password" name="password"><br><br>
     <button type="submit">Register</button>
 </form>
+
+
+{% endblock %}
