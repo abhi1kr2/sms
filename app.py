@@ -1,4 +1,4 @@
-from flask import Flask, flash, render_template, request, redirect, session
+from flask import Flask, flash, jsonify, render_template, request, redirect, session
 import pymysql
 from werkzeug.security import generate_password_hash, check_password_hash
 from db import get_db
@@ -11,10 +11,6 @@ app.secret_key = Config.SECRET_KEY
 def home():
     return render_template("index.html")
 
-@app.route("/std_enquiry", methods=["GET", "POST"])
-def std_enquiry():
-    return render_template("index.html")
-
 @app.route("/about")
 def about():
     return render_template("about.html")
@@ -23,6 +19,34 @@ def about():
 def programs():
     return render_template("programs.html")
 
+#For Enquiry- Insert into Table
+@app.route('/save_enquiry', methods=['POST'])
+def save_enquiry():
+    name = request.form.get('name')
+    email = request.form.get('email')
+    phone = request.form.get('phone')
+    course = request.form.get('course')
+    message = request.form.get('message')
+
+    if not name or not phone or not course:
+        return jsonify({"status": "error", "message": "Required fields missing"})
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("""
+            INSERT INTO enquiries (name, email, phone, course, message)
+            VALUES (%s, %s, %s, %s, %s)
+        """, (name, email, phone, course, message))
+
+        conn.commit()
+        cursor.close()
+
+        return jsonify({"status": "success"})
+
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)})
 
 #Calling the Student login form
 @app.route("/student_login", methods=["GET", "POST"])

@@ -40,8 +40,10 @@
       <div class="hero-box">
         <h1>Connecting Education, Inspiring Success!</h1>
         <p>Advanced School Management System for Students, Teachers & Administrators</p>
-
-        <a href="{{ url_for('std_enquiry') }}" class="btn btn-warning me-2">Get Started</a>
+   
+        <a href="#" class="btn btn-warning px-4 btn-pulse" data-bs-toggle="modal" data-bs-target="#enquiryModal">
+            <i class="bi bi-chat-dots me-2"></i> Get Started
+        </a>
         <a href="#features" class="btn btn-outline-light">Learn More</a>
       </div>
     </div>
@@ -56,14 +58,16 @@
     <div class="container">
         <h1 class="fw-bold">Connecting Education, Inspiring Success!</h1>
         <p class="lead">Advanced School Management System for Students, Teachers & Administrators</p>
-        <a href="{{ url_for('std_enquiry') }}" class="btn btn-warning me-2">Get Started</a>
+        <a href="#" class="btn btn-danger px-4 btn-pulse" data-bs-toggle="modal" data-bs-target="#enquiryModal">
+            <i class="bi bi-chat-dots me-2"></i> Get Started
+        </a>
         <a href="#features" class="btn btn-outline-light">Learn More</a>
     </div>
 </section>
 
 
 <!-- Features Section -->
-<section class="features-section py-5">
+<section class="features-section py-5" id="features">
     <div class="container text-center">
 
         <!-- Heading -->

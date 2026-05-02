@@ -32,3 +32,12 @@ CREATE TABLE IF NOT EXISTS teachers (
     teacher_password VARCHAR(100)
 );
 
+CREATE TABLE IF NOT EXISTS enquiries (
+            id INTEGER AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(100) NOT NULL,
+            email VARCHAR(100) NOT NULL,
+            phone VARCHAR(20) NOT NULL,
+            course VARCHAR(100) NOT NULL,
+            message TEXT(500),
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );

@@ -58,7 +58,7 @@
 <!-- Dynamic Content -->
 {% block content %}{% endblock %}
 
-<!-- 🔷 CTA / WAVE SECTION -->
+<!-- CTA / WAVE SECTION -->
 <section class="footer-cta position-relative text-white text-center">
 
     <!-- Top Wave (separates page content and footer) -->
@@ -71,7 +71,7 @@
     <!-- CTA Content -->
     <div class="container position-relative">
         <h2 class="fw-bold mb-2">Join LearnOrbit Today!</h2>
-        <p class="mb-4">Enhance Your School’s Efficiency & Communication</p>
+        <p class="mb-4">Enhance Your School's Efficiency & Communication</p>
         <a href="{{ url_for('home') }}" class="btn btn-warning btn-lg px-4">Get Started Now</a>
     </div>
 
@@ -79,10 +79,68 @@
 
 
 
+<!--Enquiry Mode Code-->
 
+<div class="modal fade" id="enquiryModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
 
+      <div class="modal-header">
+        <h5 class="modal-title">Enquiry Form</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
 
+      <div class="modal-body">
+        <form id="enquiryForm">
 
+          <input type="text" name="name" class="form-control mb-3" placeholder="Your Name" required>
+          <input type="email" name="email" class="form-control mb-3" placeholder="Email" required>
+          <input type="text" name="phone" class="form-control mb-3" placeholder="Mobile Number" required>
+
+          <select name="course" class="form-control mb-3" required>
+            <option value="">Select Program</option>
+            <option>Pre-Nursery to Primary</option>
+            <option>Middle Classes</option>
+            <option>High Classes</option>
+            <option>Special Education</option>
+          </select>
+
+          <textarea name="message" class="form-control mb-3" placeholder="Message (optional)"></textarea>
+
+          <button type="submit" class="btn btn-primary w-100">Submit Enquiry</button>
+
+        </form>
+
+        <div id="successMsg" class="text-success mt-3 d-none">
+          Enquiry submitted successfully!
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+<script>
+document.getElementById("enquiryForm").addEventListener("submit", function(e){
+    e.preventDefault();
+
+    let formData = new FormData(this);
+
+    fetch("/save_enquiry", {
+        method: "POST",
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.status === "success"){
+            document.getElementById("successMsg").classList.remove("d-none");
+            document.getElementById("enquiryForm").reset();
+        }
+    });
+});
+</script>
+
+<!--End Enquiry Mode code-->
 
 
 
