@@ -456,6 +456,74 @@ def delete_student(std_id):
 
     return redirect("/adm_students_list")
 
+
+#Admin will Save Marks for Students:
+
+@app.route("/admin_marks_entry", methods=["GET", "POST"])
+def admin_marks_entry():
+
+    if "admin_id" not in session:
+        return redirect("/admin_login")
+
+    conn = get_db()
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+    if request.method == "POST":
+
+        std_id = request.form.get("std_id")
+        exam_id = request.form.get("exam_id")
+
+        # get student class
+        cursor.execute("""
+            SELECT class FROM students_rgd WHERE std_id=%s
+        """, (std_id,))
+        student = cursor.fetchone()
+
+        if not student:
+            return "Student not found"
+
+        student_class = student["class"]
+
+        # fetch subjects
+        cursor.execute("""
+            SELECT id FROM subjects WHERE class=%s
+        """, (student_class,))
+        subjects = cursor.fetchall()
+
+        for s in subjects:
+            subject_id = s["id"]
+            field = f"marks_{subject_id}"
+            marks_val = request.form.get(field)
+
+            if not marks_val:
+                continue
+
+            cursor.execute("""
+                INSERT INTO marks (std_id, subject_id, exam_id, marks_obtained)
+                VALUES (%s, %s, %s, %s)
+                ON DUPLICATE KEY UPDATE marks_obtained=%s
+            """, (std_id, subject_id, exam_id, marks_val, marks_val))
+
+        conn.commit()
+        cursor.close()
+
+        return redirect("/admin_marks_entry")
+
+    # ✅ IMPORTANT: GET response
+    cursor.execute("SELECT DISTINCT class FROM students_rgd")
+    classes = cursor.fetchall()
+
+    cursor.execute("SELECT id, name, class FROM exams WHERE status='Active'")
+    exams = cursor.fetchall()
+
+    cursor.close()
+
+    return render_template("admin_marks_entry.html", classes=classes, exams=exams)
+
+
+
+
+
 #Admin can add teacher
 
 @app.route("/admadd_teacher", methods=["GET","POST"])

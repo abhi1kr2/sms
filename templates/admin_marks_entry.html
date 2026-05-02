@@ -1,0 +1,108 @@
+{% extends 'admin_base.html' %}
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Marks Entry</title>
+    <style>
+        body { font-family: Arial; padding: 20px; background: #f4f6f9; }
+        .container { max-width: 900px; margin: auto; background: #fff; padding: 20px; border-radius: 10px; }
+        h2 { margin-bottom: 20px; }
+        select, input { padding: 8px; margin: 5px; width: 200px; }
+        table { width: 100%; margin-top: 20px; border-collapse: collapse; }
+        th, td { padding: 10px; border-bottom: 1px solid #ddd; text-align: left; }
+        button { padding: 10px 20px; margin-top: 15px; background: #007bff; color: #fff; border: none; border-radius: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <h2>Marks Entry</h2>
+
+    <form method="POST" action="/save_marks">
+
+        <!-- Class -->
+        <label>Class:</label>
+        <select id="classSelect" required>
+            <option value="">Select Class</option>
+            {% for c in classes %}
+            <option value="{{ c.class }}">{{ c.class }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- Exam -->
+        <label>Exam:</label>
+        <select name="exam_id" required>
+            {% for e in exams %}
+            <option value="{{ e.id }}">{{ e.name }} ({{ e.class }})</option>
+            {% endfor %}
+        </select>
+
+        <!-- Student -->
+        <label>Student:</label>
+        <select id="studentSelect" name="std_id" required></select>
+
+        <!-- Subjects -->
+        <table id="marksTable">
+            <thead>
+                <tr>
+                    <th>Subject</th>
+                    <th>Marks</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <button type="submit">Save Marks</button>
+
+    </form>
+</div>
+
+<script>
+
+// Load students + subjects
+document.getElementById("classSelect").addEventListener("change", function () {
+    let cls = this.value;
+
+    // Students
+    fetch("/get_students/" + cls)
+    .then(res => res.json())
+    .then(data => {
+        let s = document.getElementById("studentSelect");
+        s.innerHTML = "";
+        data.forEach(st => {
+            s.innerHTML += `<option value="${st.std_id}">
+                ${st.first_name} (${st.reg_id})
+            </option>`;
+        });
+    });
+
+    // Subjects
+    fetch("/get_subjects/" + cls)
+    .then(res => res.json())
+    .then(data => {
+        let tbody = document.querySelector("#marksTable tbody");
+        tbody.innerHTML = "";
+
+        data.forEach(sub => {
+            tbody.innerHTML += `
+                <tr>
+                    <td>${sub.name}</td>
+                    <td>
+                        <input type="number" 
+                               name="marks_${sub.id}" 
+                               min="0" max="100" required>
+                    </td>
+                </tr>
+            `;
+        });
+    });
+});
+
+</script>
+
+</body>
+</html>
+
+{% endblock %}
