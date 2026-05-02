@@ -1,4 +1,4 @@
-from flask import Flask, flash, jsonify, render_template, request, redirect, session
+from flask import Flask, flash, jsonify, render_template, request, redirect, session, url_for
 import pymysql
 from werkzeug.security import generate_password_hash, check_password_hash
 from db import get_db
@@ -296,7 +296,8 @@ def logout():
     return redirect("/student_login")
 
 
-#Admin Part:
+#=====Admin Part=====
+#Admin Login-
 
 @app.route("/admin_login", methods=["GET", "POST"])
 def admin_login():
@@ -596,7 +597,83 @@ def delete_teacher(tchr_id):
 
     return redirect("/adm_teachers_list")
 
+#====Start Gallery====
 
+#====End Gallery====
+
+#====Start Notice====
+
+#====End Notice====
+
+#====Start Enquiry====
+@app.route("/adm_view_enquiries")
+def adm_view_enquiries():
+
+    if "admin_id" not in session:
+        return redirect("/admin_login")
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    # Get filter value
+    course = request.args.get("course")
+
+    if course:
+        cursor.execute(
+            "SELECT * FROM enquiries WHERE course=%s ORDER BY id DESC",
+            (course,)
+        )
+    else:
+        cursor.execute(
+            "SELECT * FROM enquiries ORDER BY id DESC"
+        )
+
+    enquiries = cursor.fetchall()
+    cursor.close()
+
+    return render_template("adm_view_enquiries.html", enquiries=enquiries)
+
+# UPDATE STATUS OF Enquiry
+@app.route("/update_status/<int:id>")
+def update_status(id):
+
+    if "admin_id" not in session:
+        return redirect("/admin_login")
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "UPDATE enquiries SET status='Contacted' WHERE id=%s",
+        (id,)
+    )
+    conn.commit()
+    cursor.close()
+    return redirect(url_for("adm_view_enquiries"))
+
+
+# DELETE ENQUIRY 
+@app.route("/delete_enquiry/<int:id>")
+def delete_enquiry(id):
+
+    if "admin_id" not in session:
+        return redirect("/admin_login")
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "DELETE FROM enquiries WHERE id=%s",
+        (id,)
+    )
+
+    conn.commit()
+    cursor.close()
+
+    return redirect(url_for("adm_view_enquiries"))
+
+
+#====End Enquiry====
 
 
 

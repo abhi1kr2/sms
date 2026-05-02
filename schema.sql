@@ -39,5 +39,6 @@ CREATE TABLE IF NOT EXISTS enquiries (
             phone VARCHAR(20) NOT NULL,
             course VARCHAR(100) NOT NULL,
             message TEXT(500),
+            status VARCHAR(20) DEFAULT 'Pending',
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );

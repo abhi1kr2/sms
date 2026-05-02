@@ -219,6 +219,17 @@ html, body {
     }
 }
 
+/*Admin View Enquiry */
+.table th {
+    background: #1e3a8a;
+    color: white;
+}
+
+.badge {
+    padding: 6px 10px;
+    font-size: 13px;
+}
+/* End Admin View Enquiry */
 
 /* ========================= */
 /* FEATURES SECTION */
