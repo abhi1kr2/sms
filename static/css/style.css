@@ -109,6 +109,117 @@ html, body {
     }
 }
 
+
+
+/* ========================= */
+/* PROGRAMS SECTION */
+/* ========================= */
+
+/* HERO */
+.program-hero {
+  background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+}
+
+/* CARD */
+.program-card {
+  border-radius: 15px;
+  overflow: hidden;
+  border: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.program-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+/* HEADER */
+.program-card .card-header {
+  background: #1e3a8a;
+  color: white;
+  font-size: 16px;
+  padding: 12px;
+}
+
+/* IMAGE */
+.program-img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  transition: 0.4s ease;
+}
+
+.program-card:hover .program-img {
+  transform: scale(1.1);
+}
+
+/* FOOTER */
+.program-card .card-footer {
+  background: #f8fafc;
+  padding: 15px;
+}
+
+/* FEES */
+.fee {
+  font-weight: 600;
+  color: #2563eb;
+  font-size: 14px;
+}
+
+.extra-fee {
+  font-weight: bold;
+  color: #dc2626;
+  font-size: 14px;
+}
+
+/* SPECIAL CARD HIGHLIGHT */
+.highlight {
+  border: 2px solid #7c3aed;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+    border: none;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #1e40af, #2563eb);
+}
+
+/* Premium button style */
+.btn-primary {
+    background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+    border: none;
+}
+
+/* Pulse animation (subtle + premium) */
+.btn-pulse {
+    animation: pulse 1.8s infinite;
+    transition: 0.3s;
+}
+
+/* Hover upgrade */
+.btn-pulse:hover {
+    transform: scale(1.08);
+}
+
+/* Keyframes */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.6);
+    }
+    70% {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 12px rgba(59, 130, 246, 0);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+
 /* ========================= */
 /* FEATURES SECTION */
 /* ========================= */

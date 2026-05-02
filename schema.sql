@@ -31,3 +31,4 @@ CREATE TABLE IF NOT EXISTS teachers (
     phone VARCHAR(20) NOT NULL,
     teacher_password VARCHAR(100)
 );
+

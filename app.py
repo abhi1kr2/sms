@@ -19,6 +19,10 @@ def std_enquiry():
 def about():
     return render_template("about.html")
 
+@app.route("/programs")
+def programs():
+    return render_template("programs.html")
+
 
 #Calling the Student login form
 @app.route("/student_login", methods=["GET", "POST"])
