@@ -205,6 +205,7 @@ CREATE TABLE IF NOT EXISTS gallery (
 -- DROP table teachers;
 
 
+
 --INSERT SOME DATE--
 
 -- INSERT INTO classes (class_name) VALUES
@@ -213,7 +214,13 @@ CREATE TABLE IF NOT EXISTS gallery (
 -- ('High Classes'),
 -- ('Special Education');
 
+-- INSERT Subject for Every Classes then Students marks will insert
 
+--INSERT EXAMS VALES:
+-- INSERT INTO exams (name, class_id, total_marks, exam_date)
+-- VALUES
+-- ('Midterm', 3, 100, '2026-09-10'),
+-- ('Final', 3, 100, '2026-12-15');
 
 
 -- INSERT INTO students_rgd 

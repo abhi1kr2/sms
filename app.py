@@ -520,71 +520,118 @@ def delete_student(std_id):
     return redirect("/adm_students_list")
 
 
-#Admin will Save Marks for Students:
 
-@app.route("/admin_marks_entry", methods=["GET", "POST"])
+
+#Start Code for Save/Enter Marks of Students by admin--
+
+
+@app.route("/admin_marks_entry")
 def admin_marks_entry():
 
     if "admin_id" not in session:
         return redirect("/admin_login")
 
     conn = get_db()
-    cursor = conn.cursor(pymysql.cursors.DictCursor)
+    cursor = conn.cursor()
 
-    if request.method == "POST":
-
-        std_id = request.form.get("std_id")
-        exam_id = request.form.get("exam_id")
-
-        # get student class
-        cursor.execute("""
-            SELECT class FROM students_rgd WHERE std_id=%s
-        """, (std_id,))
-        student = cursor.fetchone()
-
-        if not student:
-            return "Student not found"
-
-        student_class = student["class"]
-
-        # fetch subjects
-        cursor.execute("""
-            SELECT id FROM subjects WHERE class=%s
-        """, (student_class,))
-        subjects = cursor.fetchall()
-
-        for s in subjects:
-            subject_id = s["id"]
-            field = f"marks_{subject_id}"
-            marks_val = request.form.get(field)
-
-            if not marks_val:
-                continue
-
-            cursor.execute("""
-                INSERT INTO marks (std_id, subject_id, exam_id, marks_obtained)
-                VALUES (%s, %s, %s, %s)
-                ON DUPLICATE KEY UPDATE marks_obtained=%s
-            """, (std_id, subject_id, exam_id, marks_val, marks_val))
-
-        conn.commit()
-        cursor.close()
-
-        return redirect("/admin_marks_entry")
-
-    # ✅ IMPORTANT: GET response
-    cursor.execute("SELECT DISTINCT class FROM students_rgd")
+    cursor.execute("SELECT id, class_name FROM classes")
     classes = cursor.fetchall()
 
-    cursor.execute("SELECT id, name, class FROM exams WHERE status='Active'")
+    cursor.execute("SELECT id, name FROM exams WHERE status='Active'")
     exams = cursor.fetchall()
 
-    cursor.close()
+    conn.close()
 
     return render_template("admin_marks_entry.html", classes=classes, exams=exams)
 
 
+            #Loading Student Details
 
+
+@app.route("/get_students/<int:class_id>")
+def get_students(class_id):
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT std_id, first_name, reg_id
+        FROM students_rgd
+        WHERE class_id=%s
+    """, (class_id,))
+
+    students = cursor.fetchall()
+    conn.close()
+
+    return jsonify(students)
+
+
+            #Loading Subjects appear with input boxes
+
+@app.route("/get_subjects/<int:class_id>")
+def get_subjects(class_id):
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT id, name 
+        FROM subjects 
+        WHERE class_id=%s
+    """, (class_id,))
+
+    subjects = cursor.fetchall()
+    conn.close()
+
+    return jsonify(subjects)
+
+
+
+
+        #Code for Marks Saving
+
+
+@app.route("/save_marks", methods=["POST"])
+def save_marks():
+
+    std_id = request.form.get("std_id")
+    exam_id = request.form.get("exam_id")
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    # get subjects for student class
+    cursor.execute("""
+        SELECT id FROM subjects WHERE class_id = (
+            SELECT class_id FROM students_rgd WHERE std_id=%s
+        )
+    """, (std_id,))
+
+    subjects = cursor.fetchall()
+
+    for s in subjects:
+        subject_id = s["id"]
+        marks = request.form.get(f"marks_{subject_id}")
+
+        if not marks:
+            continue
+
+        cursor.execute("""
+            INSERT INTO marks (std_id, subject_id, exam_id, marks_obtained)
+            VALUES (%s, %s, %s, %s)
+            ON DUPLICATE KEY UPDATE marks_obtained=%s
+        """, (std_id, subject_id, exam_id, marks, marks))
+    conn.commit()
+    
+    flash("Marks saved successfully!", "success")
+    conn.close()
+    
+    return redirect("/admin_marks_entry")
+
+
+
+
+#End Code for Save/Enter Marks of Students by admin--
 
 
 #Admin can add teacher

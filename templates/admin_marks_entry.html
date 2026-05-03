@@ -1,108 +1,116 @@
 {% extends 'admin_base.html' %}
 {% block content %}
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Marks Entry</title>
-    <style>
-        body { font-family: Arial; padding: 20px; background: #f4f6f9; }
-        .container { max-width: 900px; margin: auto; background: #fff; padding: 20px; border-radius: 10px; }
-        h2 { margin-bottom: 20px; }
-        select, input { padding: 8px; margin: 5px; width: 200px; }
-        table { width: 100%; margin-top: 20px; border-collapse: collapse; }
-        th, td { padding: 10px; border-bottom: 1px solid #ddd; text-align: left; }
-        button { padding: 10px 20px; margin-top: 15px; background: #007bff; color: #fff; border: none; border-radius: 5px; }
-    </style>
-</head>
-<body>
 
-<div class="container">
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }} alert-dismissible fade show">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
 
-    <h2>Marks Entry</h2>
 
+<div class="container mt-4">
+    <h3>Marks Entry</h3>
     <form method="POST" action="/save_marks">
-
         <!-- Class -->
-        <label>Class:</label>
-        <select id="classSelect" required>
-            <option value="">Select Class</option>
-            {% for c in classes %}
-            <option value="{{ c.class }}">{{ c.class }}</option>
-            {% endfor %}
-        </select>
-
-        <!-- Exam -->
-        <label>Exam:</label>
-        <select name="exam_id" required>
-            {% for e in exams %}
-            <option value="{{ e.id }}">{{ e.name }} ({{ e.class }})</option>
-            {% endfor %}
-        </select>
+        <div class="mb-3">
+            <label>Class</label>
+            <select id="class_id" name="class_id" class="form-control" onchange="loadStudents()">
+                <option value="">Select Class</option>
+                {% for c in classes %}
+                    <option value="{{ c.id }}">{{ c.class_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
 
         <!-- Student -->
-        <label>Student:</label>
-        <select id="studentSelect" name="std_id" required></select>
+        <div class="mb-3">
+            <label>Student</label>
+                <select id="student_id" name="std_id" class="form-control" onchange="loadSubjects()">
+                <option value="">Select Student</option>
+            </select>
+        </div>
 
-        <!-- Subjects -->
-        <table id="marksTable">
-            <thead>
-                <tr>
-                    <th>Subject</th>
-                    <th>Marks</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+        <!-- Exam -->
+        <div class="mb-3">
+            <label>Exam</label>
+            <select id="exam_id" name="exam_id" class="form-control" required>
+                <option value="">Select</option>
+                {% for e in exams %}
+                    <option value="{{ e.id }}">{{ e.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
 
-        <button type="submit">Save Marks</button>
-
+        <div id="subjects_container" class="mt-3"></div>
+        <input type="submit" class="btn btn-danger" value="Save Marks">
     </form>
 </div>
 
+{% endblock %}
+
+{% block scripts %}
 <script>
+function loadStudents() {
+    var classId = document.getElementById("class_id").value;
+    var dd = document.getElementById("student_id");
 
-// Load students + subjects
-document.getElementById("classSelect").addEventListener("change", function () {
-    let cls = this.value;
+    // show immediate feedback
+    dd.innerHTML = '<option value="">Loading...</option>';
 
-    // Students
-    fetch("/get_students/" + cls)
-    .then(res => res.json())
-    .then(data => {
-        let s = document.getElementById("studentSelect");
-        s.innerHTML = "";
-        data.forEach(st => {
-            s.innerHTML += `<option value="${st.std_id}">
-                ${st.first_name} (${st.reg_id})
-            </option>`;
+    if (!classId) {
+        dd.innerHTML = '<option value="">Select Student</option>';
+        return;
+    }
+
+    fetch("/get_students/" + classId)
+        .then(function(r){ return r.json(); })
+        .then(function(data){
+            var html = '<option value="">Select Student</option>';
+            data.forEach(function(s){
+                html += '<option value="'+s.std_id+'">'
+                     +  s.first_name + ' (' + s.reg_id + ')'
+                     + '</option>';
+            });
+            dd.innerHTML = html;
+        })
+        .catch(function(){
+            dd.innerHTML = '<option value="">Error loading</option>';
         });
-    });
+}
 
-    // Subjects
-    fetch("/get_subjects/" + cls)
-    .then(res => res.json())
-    .then(data => {
-        let tbody = document.querySelector("#marksTable tbody");
-        tbody.innerHTML = "";
+function loadSubjects() {
+    var classId = document.getElementById("class_id").value;
+    var studentId = document.getElementById("student_id").value;
+    var box = document.getElementById("subjects_container");
 
-        data.forEach(sub => {
-            tbody.innerHTML += `
-                <tr>
-                    <td>${sub.name}</td>
-                    <td>
-                        <input type="number" 
-                               name="marks_${sub.id}" 
-                               min="0" max="100" required>
-                    </td>
-                </tr>
-            `;
+    box.innerHTML = '';
+
+    // prevent early firing
+    if (!classId || !studentId) return;
+
+    box.innerHTML = 'Loading subjects...';
+
+    fetch("/get_subjects/" + classId)
+        .then(function(r){ return r.json(); })
+        .then(function(data){
+            var html = '';
+            data.forEach(function(sub){
+                html += `
+                  <div class="mb-2">
+                    <label>${sub.name}</label>
+                    <input type="number" name="marks_${sub.id}" class="form-control" min="0" max="100" required>
+                  </div>`;
+            });
+            box.innerHTML = html;
+        })
+        .catch(function(){
+            box.innerHTML = 'Error loading subjects';
         });
-    });
-});
-
+}
 </script>
-
-</body>
-</html>
-
 {% endblock %}
