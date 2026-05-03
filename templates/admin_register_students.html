@@ -44,12 +44,15 @@
                         <input type="tel" name="sphno" pattern="[0-9]{10}" maxlength="10" minlength="10" class="form-control" placeholder="Enter 10 digit Student Phone* " required>
                     </div>
                     <div class="col-md-4">
-                        <select name="stdclass" class="form-select" required>
-                            <option value="">Select Class*</option>
-                            <option>Pre-Nursery to Primary</option>
-                            <option>Middle Classes</option>
-                            <option>High Classes</option>
-                            <option>Special Education</option>
+                        <select name="class_id" class="form-select" required>
+                            <option value="">Select Class</option>
+
+                            {% for c in classes %}
+                                <option value="{{ c.id }}">
+                                    {{ c.class_name }}
+                                </option>
+                            {% endfor %}
+                            
                         </select>
                     </div>
 

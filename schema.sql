@@ -2,6 +2,15 @@ CREATE DATABASE IF NOT EXISTS rkdf_pro;
 USE rkdf_pro;
 
 
+-- school_info Tables
+CREATE TABLE school_info (
+    id INT PRIMARY KEY DEFAULT 1122,
+    school_name VARCHAR(150),
+    address VARCHAR(255),
+    phone VARCHAR(20),
+    logo TEXT
+);
+
 -- Admin Table
 CREATE TABLE IF NOT EXISTS admins (
     adm_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -13,18 +22,16 @@ CREATE TABLE IF NOT EXISTS admins (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
--- teachers Table
-CREATE TABLE IF NOT EXISTS teachers (
-    tchr_id INT AUTO_INCREMENT PRIMARY KEY,
-    first_name VARCHAR(100) NOT NULL,
-    last_name VARCHAR(100) NOT NULL,
-    tchr_dob DATE NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    phone VARCHAR(20) NOT NULL,
-    teacher_password VARCHAR(255),
-    tchr_img TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+
+-- classes Tables
+CREATE TABLE classes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    class_name VARCHAR(100) UNIQUE NOT NULL,
+    status VARCHAR(20) DEFAULT 'Active'
 ) ENGINE=InnoDB;
+
+
 
 -- Students Table
 CREATE TABLE IF NOT EXISTS students_rgd (
@@ -35,9 +42,9 @@ CREATE TABLE IF NOT EXISTS students_rgd (
     std_dob DATE,
     email VARCHAR(100) UNIQUE NOT NULL,
     phone VARCHAR(20) NOT NULL,
-    class VARCHAR(50) NOT NULL,
+    class_id INT NOT NULL,
     father_name VARCHAR(100) NOT NULL,
-    mother_name VARCHAR(100) NULL,
+    mother_name VARCHAR(100),
     parent_phone VARCHAR(20) NOT NULL,
     address VARCHAR(255),
     state VARCHAR(100),
@@ -48,21 +55,12 @@ CREATE TABLE IF NOT EXISTS students_rgd (
     std_img TEXT,
     status VARCHAR(20) DEFAULT 'Active',
     std_password VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB;
-
-
-
--- enquiries Table
-CREATE TABLE IF NOT EXISTS enquiries (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    email VARCHAR(100) NOT NULL,
-    phone VARCHAR(20) NOT NULL,
-    course VARCHAR(100) NOT NULL,
-    message TEXT,
-    status VARCHAR(20) DEFAULT 'Pending',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_student_class
+        FOREIGN KEY (class_id)
+        REFERENCES classes(id)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 
@@ -70,40 +68,59 @@ CREATE TABLE IF NOT EXISTS enquiries (
 CREATE TABLE IF NOT EXISTS subjects (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
-    class VARCHAR(50) NOT NULL,
+    class_id INT,
     passing_marks INT DEFAULT 33,
-    sub_teacher_id INT,   -- teacher assigned
-    UNIQUE KEY uniq_subject_class (name, class),
-    CONSTRAINT fk_subject_teacher
-        FOREIGN KEY (sub_teacher_id)
-        REFERENCES teachers(tchr_id)
+
+    UNIQUE KEY uniq_subject_class (name, class_id),
+
+    CONSTRAINT fk_subject_class
+        FOREIGN KEY (class_id)
+        REFERENCES classes(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+
+-- teachers Table
+CREATE TABLE IF NOT EXISTS teachers (
+    tchr_id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    tchr_dob DATE NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    phone VARCHAR(20) NOT NULL,
+    class_id INT,  -- ⭐ optional but useful
+    teacher_password VARCHAR(255),
+    tchr_img TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_teacher_class
+        FOREIGN KEY (class_id)
+        REFERENCES classes(id)
         ON DELETE SET NULL
         ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 
-
 -- EXAMS Tables
-CREATE TABLE IF NOT EXISTS exams (
+CREATE TABLE exams (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
-    class VARCHAR(50) NOT NULL,
+    class_id INT NOT NULL,
     total_marks INT DEFAULT 100,
     exam_date DATE,
-    exam_time VARCHAR(50),
     status VARCHAR(20) DEFAULT 'Active', -- Active / Inactive
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE KEY uniq_exam_class (name, class)
+
+    UNIQUE KEY uniq_exam_class (name, class_id),
+
+    CONSTRAINT fk_exam_class
+        FOREIGN KEY (class_id)
+        REFERENCES classes(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
--- school_info Tables
-CREATE TABLE school_info (
-    id INT PRIMARY KEY DEFAULT 1122,
-    school_name VARCHAR(150),
-    address VARCHAR(255),
-    phone VARCHAR(20),
-    logo TEXT
-);
 
 -- MARKS (core table)
 CREATE TABLE IF NOT EXISTS marks (
@@ -137,6 +154,19 @@ CREATE TABLE IF NOT EXISTS marks (
 ) ENGINE=InnoDB;
 
 
+-- enquiries Table
+CREATE TABLE IF NOT EXISTS enquiries (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    phone VARCHAR(20) NOT NULL,
+    course VARCHAR(100) NOT NULL,
+    message TEXT,
+    status VARCHAR(20) DEFAULT 'Pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+
 -- Notices - Table
 CREATE TABLE IF NOT EXISTS notices (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -148,6 +178,8 @@ CREATE TABLE IF NOT EXISTS notices (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
+
+
 -- Gallery - Table
 CREATE TABLE IF NOT EXISTS gallery (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -158,6 +190,28 @@ CREATE TABLE IF NOT EXISTS gallery (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
+
+--Create table as per above order
+
+
+
+-- RESET--
+-- DROP table marks;
+-- DROP table students_rgd;
+-- DROP table classes;
+-- DROP table subjects;
+-- DROP table exams;
+-- DROP table school_info;
+-- DROP table teachers;
+
+
+--INSERT SOME DATE--
+
+-- INSERT INTO classes (class_name) VALUES
+-- ('Pre-Nursery to Primary'),
+-- ('Middle Classes'),
+-- ('High Classes'),
+-- ('Special Education');
 
 
 

@@ -334,7 +334,9 @@ def admin_dashboard():
     return render_template("admin_dashboard.html")
 
 
-#From Admin Register Students
+
+#Start code for student registration by admin---
+
 @app.route("/admin_register_students", methods=["GET", "POST"])
 def admin_register_students():
 
@@ -342,7 +344,11 @@ def admin_register_students():
         return redirect("/admin_login")
 
     conn = get_db()
-    cursor = conn.cursor(pymysql.cursors.DictCursor)
+    cursor = conn.cursor()
+
+    #fetch classes (needed for both GET & POST re-render)
+    cursor.execute("SELECT id, class_name FROM classes WHERE status='Active'")
+    classes = cursor.fetchall()
 
     if request.method == "POST":
         try:
@@ -353,7 +359,7 @@ def admin_register_students():
 
             email = request.form["email"].strip()
             sphone = request.form["sphno"].strip()
-            stdclass = request.form["stdclass"].strip()
+            class_id = request.form["class_id"].strip()  # From fronted take class_id
 
             father = request.form["ftname"].strip()
             mother = request.form.get("mtname")
@@ -377,9 +383,11 @@ def admin_register_students():
             cursor.execute("SELECT std_id FROM students_rgd WHERE email=%s", (email,))
             if cursor.fetchone():
                 return render_template("admin_register_students.html", error="Email already exists")
+            
             #Value for admission date
             if not admission_date:
                 admission_date = date.today()
+            
             #Creating default Password
             # sanitize first name (letters/numbers only)
             safe_fname = re.sub(r'[^a-zA-Z0-9]', '', fname).lower()
@@ -398,7 +406,7 @@ def admin_register_students():
             cursor.execute("""
                 INSERT INTO students_rgd (
                     reg_id, first_name, last_name, std_dob,
-                    email, phone, class,
+                    email, phone, class_id,
                     father_name, mother_name, parent_phone,
                     address, state, pincode,
                     prev_school_name, prev_school_address,
@@ -407,7 +415,7 @@ def admin_register_students():
                 VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,'Active',%s)
             """, (
                 reg_id, fname, lname, dob,
-                email, sphone, stdclass,
+                email, sphone, class_id,
                 father, mother, parent_phone,
                 address, state, pincode,
                 prev_school, prev_address,
@@ -415,9 +423,11 @@ def admin_register_students():
             ))
 
             conn.commit()
-
-            return render_template("admin_register_students.html",
-                                   success=f"Student Registered Successfully! ID: {reg_id}")
+            return render_template(
+                "admin_register_students.html",
+                success=f"Student Registered Successfully! ID: {reg_id}",
+                classes=classes
+            )
 
         except Exception as e:
             return f"Error: {e}"
@@ -425,9 +435,13 @@ def admin_register_students():
         finally:
             conn.close()
 
-    return render_template("admin_register_students.html")
+    return render_template(
+        "admin_register_students.html",
+        classes=classes   # REQUIRED for dropdown
+    )
 
 
+#End code for student registration by admin---
 
 
 #Admin View Registered Students:
@@ -447,6 +461,11 @@ def adm_students_list():
     conn.close()
 
     return render_template("adm_students_list.html", adm_view_students=adm_view_students)
+
+
+
+
+
 
 #Admin can Edit Registered Students details:
 
