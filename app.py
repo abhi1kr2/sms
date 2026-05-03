@@ -1,3 +1,6 @@
+from datetime import date
+import re
+
 from flask import Flask, flash, jsonify, render_template, request, redirect, session, url_for
 import pymysql
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -334,60 +337,101 @@ def admin_dashboard():
 #From Admin Register Students
 @app.route("/admin_register_students", methods=["GET", "POST"])
 def admin_register_students():
+
     if "admin_id" not in session:
         return redirect("/admin_login")
+
+    conn = get_db()
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
+
     if request.method == "POST":
-
-        fname = request.form["fname"]
-        lname = request.form["lname"]
-        # ft_name = request.form["ftname"]
-        # mt_name = request.form["mtname"]
-        email = request.form["email"]
-        sphone = request.form["sphno"]
-        # stdcls = request.form["stdclass"]
-        # cls_sec = request.form["classsec"]
-        password = request.form["password"]
-
-        conn = get_db()
-        cursor = conn.cursor()
-
         try:
-            # Check if email already exists
-            cursor.execute(
-                "SELECT std_id FROM students_rgd WHERE email=%s",
-                (email,)
-            )
-            if cursor.fetchone():
-                return render_template(
-                    "admin_register_students.html",
-                    error="Email already registered!"
-                )
+            # -------- FORM DATA --------
+            fname = request.form["fname"].strip()
+            lname = request.form["lname"].strip()
+            dob = request.form.get("dob")
 
-            #Insert
-            cursor.execute(
-                "INSERT INTO students_rgd (first_name, last_name, email, phone, std_password) VALUES (%s, %s, %s, %s, %s)",
-                (fname, lname, email, sphone, password)
-            )
+            email = request.form["email"].strip()
+            sphone = request.form["sphno"].strip()
+            stdclass = request.form["stdclass"].strip()
+
+            father = request.form["ftname"].strip()
+            mother = request.form.get("mtname")
+            parent_phone = request.form["pphno"].strip()
+
+            address = request.form.get("address")
+            state = request.form.get("state")
+            pincode = request.form.get("pincode")
+
+            prev_school = request.form.get("prev_school")
+            prev_address = request.form.get("prev_address")
+
+            admission_date = request.form.get("admission_date")
+            password_input = request.form["password"]
+
+            # -------- VALIDATION --------
+            if len(sphone) < 10:
+                return render_template("admin_register_students.html", error="Invalid phone number")
+
+            # -------- EMAIL CHECK --------
+            cursor.execute("SELECT std_id FROM students_rgd WHERE email=%s", (email,))
+            if cursor.fetchone():
+                return render_template("admin_register_students.html", error="Email already exists")
+            #Value for admission date
+            if not admission_date:
+                admission_date = date.today()
+            #Creating default Password
+            # sanitize first name (letters/numbers only)
+            safe_fname = re.sub(r'[^a-zA-Z0-9]', '', fname).lower()
+
+            if not password_input:
+                default_password = f"{safe_fname}@{sphone}"
+            else:
+                default_password = password_input
+            
+            # -------- GENERATE REG ID --------
+            cursor.execute("SELECT COUNT(*) AS c FROM students_rgd")
+            count = cursor.fetchone()["c"] + 1
+            reg_id = f"STD-{str(count).zfill(4)}"
+
+            # -------- INSERT --------
+            cursor.execute("""
+                INSERT INTO students_rgd (
+                    reg_id, first_name, last_name, std_dob,
+                    email, phone, class,
+                    father_name, mother_name, parent_phone,
+                    address, state, pincode,
+                    prev_school_name, prev_school_address,
+                    admission_date, status, std_password
+                )
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,'Active',%s)
+            """, (
+                reg_id, fname, lname, dob,
+                email, sphone, stdclass,
+                father, mother, parent_phone,
+                address, state, pincode,
+                prev_school, prev_address,
+                admission_date, default_password
+            ))
+
             conn.commit()
 
-            return render_template(
-                "admin_register_students.html",
-                success="Student Registered Successfully!"
-            )
+            return render_template("admin_register_students.html",
+                                   success=f"Student Registered Successfully! ID: {reg_id}")
 
-        except pymysql.err.IntegrityError:
-            # fallback safety (race condition protection)
-            return render_template(
-                "admin_register_students.html",
-                error="Email already exists (DB constraint)."
-            )
+        except Exception as e:
+            return f"Error: {e}"
 
         finally:
             conn.close()
 
     return render_template("admin_register_students.html")
 
+
+
+
 #Admin View Registered Students:
+
 @app.route("/adm_students_list")
 def adm_students_list():
 
