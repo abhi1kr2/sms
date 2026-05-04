@@ -45,9 +45,12 @@
                 <option value="">Select Student</option>
             </select>
         </div>
+        <div class="mb-3">
+            <div id="result_preview" class="mt-3"></div>
+        </div>
 
         <div id="subjects_container" class="mt-3"></div>
-        <input type="submit" class="btn btn-danger" value="Save Marks">
+        <input type="submit" id="saveBtn" class="btn btn-danger" value="Save Marks" disabled>
     </form>
 </div>
 
@@ -55,6 +58,7 @@
 
 {% block scripts %}
 <script>
+
 function loadStudents() {
     var classId = document.getElementById("class_id").value;
     var dd = document.getElementById("student_id");
@@ -123,19 +127,98 @@ function loadSubjects() {
                             <div class="mb-2">
                                 <label>${sub.name}</label>
                                 <input type="number"
-                                       name="marks_${sub.id}"
-                                       class="form-control"
-                                       min="0" max="100"
-                                       value="${value}">
+                                    name="marks_${sub.id}"
+                                    class="form-control"
+                                    min="0" max="100"
+                                    value="${value}"
+                                    oninput="calculateTotal()">
                             </div>
                         `;
                     });
+                    let isEdit = existing.length > 0;
 
-                    container.innerHTML = html;
+                    let modeText = isEdit 
+                        ? '<div class="alert alert-warning">Editing Existing Marks</div>' 
+                        : '<div class="alert alert-info">New Marks Entry</div>';
+
+                    container.innerHTML = modeText + html;
+                    //container.innerHTML = html;
 
                 });
 
         });
 }
+
+
+function checkReady() {
+    let c = document.getElementById("class_id").value;
+    let s = document.getElementById("student_id").value;
+    let e = document.getElementById("exam_id").value;
+
+    document.getElementById("saveBtn").disabled = !(c && s && e);
+}
+
+document.getElementById("class_id").addEventListener("change", checkReady);
+document.getElementById("student_id").addEventListener("change", checkReady);
+document.getElementById("exam_id").addEventListener("change", checkReady);
+
+
+
+
+
+// =====================
+// TOTAL + % CALCULATION
+// =====================
+function calculateTotal() {
+
+    let inputs = document.querySelectorAll("#subjects_container input");
+    let total = 0;
+    let count = 0;
+
+    inputs.forEach(inp => {
+        let val = parseInt(inp.value);
+
+        if (!isNaN(val)) {
+            total += val;
+            count++;
+
+            // Highlight fail
+            if (val < 33) {
+                inp.style.border = "2px solid red";
+            } else {
+                inp.style.border = "";
+            }
+        }
+    });
+
+    let percent = count ? (total / (count * 100)) * 100 : 0;
+
+    let resultDiv = document.getElementById("result_preview");
+
+    if (resultDiv) {
+        resultDiv.innerHTML = `
+            <div class="alert alert-info">
+                Total: ${total} | Percentage: ${percent.toFixed(2)}%
+            </div>
+        `;
+    }
+}
+
+
+// =====================
+// EVENT LISTENER (IMPORTANT)
+// =====================
+document.addEventListener("input", function(e) {
+
+    // Debug line (remove later)
+    console.log("Input detected");
+
+    if (e.target.closest("#subjects_container")) {
+        calculateTotal();
+    }
+});
+
+
+
 </script>
 {% endblock %}
