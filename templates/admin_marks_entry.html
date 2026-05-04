@@ -1,19 +1,20 @@
 {% extends 'admin_base.html' %}
 {% block content %}
 
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
+
+<div class="container mt-4">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
     {% for category, message in messages %}
       <div class="alert alert-{{ category }} alert-dismissible fade show">
         {{ message }}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
       </div>
     {% endfor %}
-  {% endif %}
-{% endwith %}
+    {% endif %}
+    {% endwith %}
 
-
-<div class="container mt-4">
     <h3>Marks Entry</h3>
     <form method="POST" action="/save_marks">
         <!-- Class -->
@@ -45,8 +46,17 @@
                 <option value="">Select Student</option>
             </select>
         </div>
-        <div class="mb-3">
-            <div id="result_preview" class="mt-3"></div>
+        <div class="mb-3 col-md-3">
+            <div id="result_preview" class="mt-3">
+                <div class="alert alert-secondary">
+                        <div class="card p-3">
+                            <h5>Total: </h5>
+                            <h5>Percentage: </h5>
+                            <h5>Status: <span class=""></span></h5>
+                            <h5>Grade: <span class="text-primary"></span></h5>
+                        </div>
+                </div>
+            </div>
         </div>
 
         <div id="subjects_container" class="mt-3"></div>
@@ -132,6 +142,8 @@ function loadSubjects() {
                                     min="0" max="100"
                                     value="${value}"
                                     oninput="calculateTotal()">
+
+                                <small id="status_${sub.id}" class="text-muted"></small>
                             </div>
                         `;
                     });
@@ -142,7 +154,8 @@ function loadSubjects() {
                         : '<div class="alert alert-info">New Marks Entry</div>';
 
                     container.innerHTML = modeText + html;
-                    //container.innerHTML = html;
+                    setTimeout(() => calculateTotal(), 50);
+                    
 
                 });
 
@@ -158,11 +171,14 @@ function checkReady() {
     document.getElementById("saveBtn").disabled = !(c && s && e);
 }
 
-document.getElementById("class_id").addEventListener("change", checkReady);
-document.getElementById("student_id").addEventListener("change", checkReady);
-document.getElementById("exam_id").addEventListener("change", checkReady);
+document.addEventListener("DOMContentLoaded", function() {
 
+    document.getElementById("class_id").addEventListener("change", checkReady);
+    document.getElementById("student_id").addEventListener("change", checkReady);
+    document.getElementById("exam_id").addEventListener("change", checkReady);
 
+    checkReady(); // initial state
+});
 
 
 
@@ -175,25 +191,59 @@ function calculateTotal() {
     let total = 0;
     let count = 0;
 
+    let failed = false;
+
     inputs.forEach(inp => {
         let val = parseInt(inp.value);
+        let subjectId = inp.name.split("_")[1];
+        let statusEl = document.getElementById("status_" + subjectId);
 
         if (!isNaN(val)) {
             total += val;
             count++;
 
-            // Highlight fail
             if (val < 33) {
-                inp.style.border = "2px solid red";
+                failed = true;
+
+                inp.classList.add("border-danger");
+
+                if (statusEl) {
+                    statusEl.innerHTML = "FAIL";
+                    statusEl.className = "text-danger";
+                }
+
             } else {
-                inp.style.border = "";
+                inp.classList.remove("border-danger");
+
+                if (statusEl) {
+                    statusEl.innerHTML = "PASS";
+                    statusEl.className = "text-success";
+                }
             }
         }
     });
 
     let percent = count ? (total / (count * 100)) * 100 : 0;
+    let status = failed ? "FAIL" : "PASS";
 
-    let resultDiv = document.getElementById("result_preview");
+    let grade = "";
+    if (percent >= 90) grade = "A+";
+    else if (percent >= 75) grade = "A";
+    else if (percent >= 60) grade = "B";
+    else if (percent >= 50) grade = "C";
+    else if (percent >= 33) grade = "D";
+    else grade = "F";
+
+    let color = status === "PASS" ? "success" : "danger";
+
+    document.getElementById("result_preview").innerHTML = `
+    <div class="card p-3 border-${color}">
+        <h5>Total: ${total}</h5>
+        <h5>Percentage: ${percent.toFixed(2)}%</h5>
+        <h5>Status: <span class="text-${color}">${status}</span></h5>
+        <h5>Grade: <span class="text-primary">${grade}</span></h5>
+    </div>
+    `;
 
     if (resultDiv) {
         resultDiv.innerHTML = `
@@ -203,22 +253,6 @@ function calculateTotal() {
         `;
     }
 }
-
-
-// =====================
-// EVENT LISTENER (IMPORTANT)
-// =====================
-document.addEventListener("input", function(e) {
-
-    // Debug line (remove later)
-    console.log("Input detected");
-
-    if (e.target.closest("#subjects_container")) {
-        calculateTotal();
-    }
-});
-
-
 
 </script>
 {% endblock %}
