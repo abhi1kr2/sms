@@ -27,22 +27,22 @@
             </select>
         </div>
 
+        <!-- Exam -->
+        <div class="mb-3">
+            <label>Exam</label>
+            <select id="exam_id" name="exam_id"  class="form-control" required onchange="loadSubjects()">
+                <option value="">Select</option>
+                {% for e in exams %}
+                    <option value="{{ e.id }}">{{ e.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
         <!-- Student -->
         <div class="mb-3">
             <label>Student</label>
                 <select id="student_id" name="std_id" class="form-control" onchange="loadSubjects()">
                 <option value="">Select Student</option>
-            </select>
-        </div>
-
-        <!-- Exam -->
-        <div class="mb-3">
-            <label>Exam</label>
-            <select id="exam_id" name="exam_id" class="form-control" required>
-                <option value="">Select</option>
-                {% for e in exams %}
-                    <option value="{{ e.id }}">{{ e.name }}</option>
-                {% endfor %}
             </select>
         </div>
 
@@ -84,32 +84,57 @@ function loadStudents() {
 }
 
 function loadSubjects() {
-    var classId = document.getElementById("class_id").value;
-    var studentId = document.getElementById("student_id").value;
-    var box = document.getElementById("subjects_container");
 
-    box.innerHTML = '';
+    let classId = document.getElementById("class_id").value;
+    let studentId = document.getElementById("student_id").value;
+    let examId = document.getElementById("exam_id").value;
+    let container = document.getElementById("subjects_container");
 
-    // prevent early firing
-    if (!classId || !studentId) return;
+    container.innerHTML = "Loading...";
 
-    box.innerHTML = 'Loading subjects...';
+    if (!classId || !studentId || !examId) {
+        container.innerHTML = "";
+        return;
+    }
 
+    // 1️⃣ Load subjects
     fetch("/get_subjects/" + classId)
-        .then(function(r){ return r.json(); })
-        .then(function(data){
-            var html = '';
-            data.forEach(function(sub){
-                html += `
-                  <div class="mb-2">
-                    <label>${sub.name}</label>
-                    <input type="number" name="marks_${sub.id}" class="form-control" min="0" max="100" required>
-                  </div>`;
-            });
-            box.innerHTML = html;
-        })
-        .catch(function(){
-            box.innerHTML = 'Error loading subjects';
+        .then(res => res.json())
+        .then(subjects => {
+
+            // 2️⃣ Load existing marks
+            fetch("/get_marks/" + studentId + "/" + examId)
+                .then(res => res.json())
+                .then(existing => {
+
+                    let marksMap = {};
+                    existing.forEach(m => {
+                        marksMap[m.subject_id] = m.marks_obtained;
+                    });
+
+                    let html = "";
+
+                    subjects.forEach(sub => {
+
+                        //let value = marksMap[sub.id] || "";
+                        let value = (marksMap[sub.id] !== undefined) ? marksMap[sub.id] : "";
+
+                        html += `
+                            <div class="mb-2">
+                                <label>${sub.name}</label>
+                                <input type="number"
+                                       name="marks_${sub.id}"
+                                       class="form-control"
+                                       min="0" max="100"
+                                       value="${value}">
+                            </div>
+                        `;
+                    });
+
+                    container.innerHTML = html;
+
+                });
+
         });
 }
 </script>

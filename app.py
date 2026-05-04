@@ -629,6 +629,28 @@ def save_marks():
     return redirect("/admin_marks_entry")
 
 
+    #code for autofilled(if marks inserted->fetch) and update Marks
+
+
+@app.route("/get_marks/<int:std_id>/<int:exam_id>")
+def get_marks(std_id, exam_id):
+
+    conn = get_db()
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+    cursor.execute("""
+        SELECT subject_id, marks_obtained
+        FROM marks
+        WHERE std_id=%s AND exam_id=%s
+    """, (std_id, exam_id))
+
+    data = cursor.fetchall()
+    conn.close()
+
+    return jsonify(data)
+
+
+
 
 
 #End Code for Save/Enter Marks of Students by admin--
