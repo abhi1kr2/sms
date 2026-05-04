@@ -650,10 +650,152 @@ def get_marks(std_id, exam_id):
     return jsonify(data)
 
 
-
-
-
 #End Code for Save/Enter Marks of Students by admin--
+
+
+
+# Start Admin view Students Marksheet
+
+@app.route("/admin_marks_view", methods=["GET", "POST"])
+def admin_marks_view():
+
+    if "admin_id" not in session:
+        return redirect("/admin_login")
+
+    conn = get_db()
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+    if request.method == "POST":
+
+        std_id = request.form.get("std_id")
+        exam_id = request.form.get("exam_id")
+
+        return redirect(f"/admin_marks_result/{std_id}/{exam_id}")
+
+    # GET → load dropdowns
+    cursor.execute("SELECT id, class_name FROM classes")
+    classes = cursor.fetchall()
+
+    cursor.execute("SELECT id, name FROM exams WHERE status='Active'")
+    exams = cursor.fetchall()
+
+    return render_template("admin_marks_view.html", classes=classes, exams=exams)
+
+
+
+
+
+@app.route("/admin_marks_result/<int:std_id>/<int:exam_id>")
+def admin_marks_result(std_id, exam_id):
+
+    # 🔒 Admin authentication
+    if "admin_id" not in session:
+        return redirect("/admin_login")
+
+    conn = get_db()
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+    # =====================
+    # FETCH STUDENT
+    # =====================
+    cursor.execute("""
+        SELECT first_name, last_name, reg_id
+        FROM students_rgd
+        WHERE std_id=%s
+    """, (std_id,))
+    student = cursor.fetchone()
+
+    if not student:
+        flash("No marks found. Please enter marks first.", "warning")
+        return redirect("/admin_marks_view")
+
+    # =====================
+    # FETCH EXAM
+    # =====================
+    cursor.execute("""
+        SELECT id, name
+        FROM exams
+        WHERE id=%s
+    """, (exam_id,))
+    exam = cursor.fetchone()
+
+    if not exam:
+        flash("Exam not found!", "danger")
+        return redirect("/admin_marks_view")
+
+    # =====================
+    # FETCH MARKS
+    # =====================
+    cursor.execute("""
+        SELECT s.name AS subject,
+               s.passing_marks,
+               m.marks_obtained
+        FROM marks m
+        JOIN subjects s ON m.subject_id = s.id
+        WHERE m.std_id=%s AND m.exam_id=%s
+        ORDER BY s.name
+    """, (std_id, exam_id))
+
+    rows = cursor.fetchall()
+
+    # =====================
+    # 🔴 VALIDATION (IMPORTANT)
+    # =====================
+    if not rows:
+        flash("No marks found. Please enter marks first.", "warning")
+        return redirect("/admin_marks_view")
+
+    # =====================
+    # CALCULATIONS
+    # =====================
+    total = sum(r["marks_obtained"] for r in rows)
+    max_total = len(rows) * 100
+
+    percent = (total / max_total * 100) if max_total else 0
+
+    # Subject-wise fail check
+    failed = any(r["marks_obtained"] < r["passing_marks"] for r in rows)
+    status = "FAIL" if failed else "PASS"
+
+    # Grade logic
+    if percent >= 90:
+        grade = "A+"
+    elif percent >= 75:
+        grade = "A"
+    elif percent >= 60:
+        grade = "B"
+    elif percent >= 50:
+        grade = "C"
+    elif percent >= 33:
+        grade = "D"
+    else:
+        grade = "F"
+
+    conn.close()
+
+    # =====================
+    # RENDER RESULT PAGE
+    # =====================
+    return render_template(
+        "admin_marks_result.html",
+        student=student,
+        exam=exam,
+        rows=rows,
+        total=total,
+        percent=round(percent, 2),
+        status=status,
+        grade=grade
+    )
+
+
+
+
+
+
+
+
+# End Admin view Students Marksheet
+
 
 
 #Admin can add teacher

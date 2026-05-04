@@ -1,0 +1,112 @@
+{% extends 'admin_base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+<!-- Flash Messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }} alert-dismissible fade show">
+        {{ message }} <a href="/admin_marks_entry" class="btn btn-warning">Enter Mark </a>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+    <h3>View Marksheet</h3>
+
+
+    <form method="POST" action="/admin_marks_view">
+
+        <!-- Class -->
+        <div class="mb-3">
+            <label>Class</label>
+            <select id="class_id" name="class_id" class="form-control" onchange="loadStudents()" required>
+                <option value="">Select Class</option>
+                {% for c in classes %}
+                    <option value="{{ c.id }}">{{ c.class_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Exam -->
+        <div class="mb-3">
+            <label>Exam</label>
+            <select name="exam_id" class="form-control" required>
+                <option value="">Select Exam</option>
+                {% for e in exams %}
+                    <option value="{{ e.id }}">{{ e.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Student -->
+        <div class="mb-3">
+            <label>Student</label>
+            <select id="student_id" name="std_id" class="form-control" required>
+                <option value="">Select Student</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">View Marksheet</button>
+
+    </form>
+
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+
+function loadStudents() {
+
+    let classId = document.getElementById("class_id").value;
+    let dd = document.getElementById("student_id");
+
+    dd.innerHTML = '<option>Loading...</option>';
+
+    if (!classId) {
+        dd.innerHTML = '<option>Select Student</option>';
+        return;
+    }
+
+    fetch("/get_students/" + classId)
+        .then(res => res.json())
+        .then(data => {
+
+            let html = '<option value="">Select Student</option>';
+
+            data.forEach(s => {
+                html += `<option value="${s.std_id}">
+                            ${s.first_name} (${s.reg_id})
+                         </option>`;
+            });
+
+            dd.innerHTML = html;
+        });
+}
+
+
+
+
+document.querySelector("form").addEventListener("submit", function(e) {
+
+    let c = document.getElementById("class_id").value;
+    let s = document.getElementById("student_id").value;
+    let eId = document.querySelector("[name='exam_id']").value;
+
+    if (!c || !s || !eId) {
+        alert("Please select Class, Student and Exam");
+        e.preventDefault();
+    }
+});
+
+
+</script>
+
+{% endblock %}

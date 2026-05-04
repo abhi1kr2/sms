@@ -1,0 +1,101 @@
+{% extends 'admin_base.html' %}
+
+{% block content %}
+
+<div class="row mt-4 justify-content-center">
+
+
+<div class="card p-4 bg-white col-md-9">
+    <div class="text-center">
+        <img src="{{ url_for('static', filename='images/logo.png') }}"
+            alt="School Logo"
+            style="height:50px;">
+            
+        <h5 class="">LearnOrbit Harmu, Ranchi</h5>
+        <p class="mb-0">Affiliated to CBSE, ICSE and ISC, State Boards </p>
+        <small>Academic Session 2025-26</small>
+        <p class="text-muted">Official Marksheet</p>
+    </div>
+    <hr>
+
+    <!-- Student Info -->
+    <div class="row">
+        <div class="col-md-6">
+            <p><b>Name:</b> {{ student.first_name }} {{ student.last_name }}</p>
+            <p><b>Reg ID:</b> {{ student.reg_id }}</p>
+        </div>
+        <div class="col-md-6 text-end">
+            <p><b>Exam:</b> {{ exam.name }}</p>
+        </div>
+    </div>
+
+    <!-- Marks Table -->
+    <table class="table table-bordered mt-3">
+        <thead class="table-dark">
+            <tr>
+                <th>Subject</th>
+                <th>Marks</th>
+                <th>Passing Marks</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for r in rows %}
+            <tr>
+                <td>{{ r.subject }}</td>
+                <td>{{ r.marks_obtained }}</td>
+                <td>{{ r.passing_marks }}</td>
+                <td>
+                    {% if r.marks_obtained < r.passing_marks %}
+                        <span class="text-danger fw-bold">FAIL</span>
+                    {% else %}
+                        <span class="text-success fw-bold">PASS</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Result Summary -->
+    <hr>
+
+    <div class="row text-center">
+        <div class="col-md-3">
+            <h5>Total</h5>
+            <p>{{ total }}</p>
+        </div>
+        <div class="col-md-3">
+            <h5>Percentage</h5>
+            <p>{{ percent }}%</p>
+        </div>
+        <div class="col-md-3">
+            <h5>Status</h5>
+            <p class="{% if status=='PASS' %}text-success{% else %}text-danger{% endif %}">
+                {{ status }}
+            </p>
+        </div>
+        <div class="col-md-3">
+            <h5>Grade</h5>
+            <p class="text-primary fw-bold">{{ grade }}</p>
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="text-center mt-4">
+        <button onclick="window.print()" class="btn btn-success">
+            Print / Save PDF
+        </button>
+
+        <a href="/admin_marks_view" class="btn btn-secondary">
+            Back
+        </a>
+    </div>
+
+</div>
+```
+
+</div>
+
+{% endblock %}
