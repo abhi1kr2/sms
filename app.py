@@ -286,37 +286,49 @@ def build_feedback(rows, percent):
 # Start Student Performace feedback builder
 
 #Code for View and Edit Student Profile self:
-@app.route("/stdstudent_profile", methods=["GET","POST"])
+@app.route("/stdstudent_profile", methods=["GET", "POST"])
 def stdstudent_profile():
 
     if "student_id" not in session:
         return redirect("/student_login")
 
     conn = get_db()
-    cursor = conn.cursor()
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+    std_id = session["student_id"]
+
+    message = None
 
     if request.method == "POST":
 
-        email = request.form["email"]
-        phone = request.form["phone"]
+        email = request.form.get("email")
+        phone = request.form.get("sphno")
+        address = request.form.get("address")
+        state = request.form.get("state")
+        pincode = request.form.get("pincode")
 
-        cursor.execute(
-            "UPDATE students_rgd SET email=%s, phone=%s WHERE std_id=%s",
-            (email, phone, session["student_id"])
-        )
+        # Validation
+        if phone and (not phone.isdigit() or len(phone) != 10):
+            message = "Phone must be 10 digits!"
+        else:
+            cursor.execute("""
+                UPDATE students_rgd SET email=%s, phone=%s, address=%s, state=%s, pincode=%s WHERE std_id=%s """, (email, phone, address, state, pincode, std_id))
 
-        conn.commit()
+            conn.commit()
+            message = "Profile updated successfully!"
 
-    cursor.execute(
-        "SELECT * FROM students_rgd WHERE std_id=%s",
-        (session["student_id"],)
-    )
-
+    cursor.execute("SELECT * FROM students_rgd WHERE std_id=%s", (std_id,))
     student = cursor.fetchone()
 
     conn.close()
 
-    return render_template("stdstudent_profile.html", student=student)
+    return render_template(
+        "stdstudent_profile.html",
+        student=student,
+        message=message
+    )
+
+
 
 #Student Forgot Password Route
 
