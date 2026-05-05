@@ -1,44 +1,51 @@
-{% extends "base.html" %}
+{% extends 'student_base.html' %}
 
 {% block content %}
-       
-<div class="row">
-    <!-- 🔵 NAVBAR -->
-    <nav class="navbar navbar-dark bg-primary px-3 text-white">
-        <div class="col-md-2 ">Welcome {{ student["first_name"] }}</div>
-        <div class="col-md-5 "><h2>Dashboard</h2></div>
-        <div class="col-md-4">
-            <a href="/stddashboard" class="btn btn-light btn-sm me-2">Dashboard</a>
-            <a href="/student_logout" class="btn btn-danger btn-sm">Logout</a>
-        </div>
-    </nav>
-</div>
 
-        
-<div class="container border border-primary">
-    <div class="card border border-primary">
-        <div class="card-header row border border-danger">
+<h3>Student Dashboard</h3>
 
+<div class="row mt-4">
 
-
-            
-        </div>
-        <div class="card-body">
-            <a class="btn btn-danger" href="/stdstudent_profile" role="button">Update Profile</a>
-            <a class="btn btn-warning" href="#" role="button">Check Admit Card</a>
-            <a class="btn btn-success" href="std_view_marks" role="button">Check Result</a>
-            <a class="btn btn-primary" href="#" role="button">Library Book Status</a>
-            <a class="btn btn-danger" href="std_forgot_password" role="button">Password Reset(now without session)</a>
-            <a class="btn btn-secondary" href="#" role="button">Suggestion Box</a>
+    <div class="col-md-3">
+        <div class="card p-3 text-center shadow">
+            <h5>🖼 Profile</h5>
+            <a href="/stdstudent_profile" class="btn btn-warning mt-2">View</a>
         </div>
     </div>
 
-<br><br><br><br><br><br><br>
+    <div class="col-md-3">
+        <div class="card p-3 text-center shadow">
+            <h5>📊 Marksheet</h5>
+            <a href="/std_view_marks" class="btn btn-warning mt-2">View</a>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card p-3 text-center shadow">
+            <h5>Suggestion Box</h5>
+            <a href="/std_view_marks" class="btn btn-danger mt-2">View</a>
+        </div>
+    </div>
 
-<p><strong>Name:</strong> {{ student["first_name"] }}</p>
-<p><strong>Last Name:</strong> {{ student["last_name"] }}</p>
-<p><strong>Email:</strong> {{ student["email"] }}</p>
-<p><strong>Phone:</strong> {{ student["phone"] }}</p>
+    <div class="col-md-3">
+        <div class="card p-3 text-center shadow">
+            <h5>📢 Notices</h5>
+            <a href="/notices" class="btn btn-primary mt-2">Open</a>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card p-3 text-center shadow">
+            <h5>🖼 Library Book Status</h5>
+            <a href="/gallery" class="btn btn-warning mt-2">View</a>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card p-3 text-center shadow">
+            <h5>🖼 Gallery</h5>
+            <a href="/gallery" class="btn btn-warning mt-2">View</a>
+        </div>
+    </div>
 
 </div>
 
@@ -47,7 +54,4 @@
 
 
 
-
-
-
-{% endblock%}
+{% endblock %}

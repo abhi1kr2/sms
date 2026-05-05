@@ -75,7 +75,7 @@ def student_login():
     return render_template("student_login.html")
 
 
-
+#Code for Student Dashboard Route
 @app.route("/stddashboard")
 def stddashboard():
     if "student_id" not in session:
@@ -88,6 +88,34 @@ def stddashboard():
     conn.close()
 
     return render_template("stddashboard.html", student=student)
+
+#Code for Student Dashboard Route
+@app.context_processor
+def inject_student():
+
+    if "student_id" in session:
+
+        conn = get_db()
+        cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+        cursor.execute("""
+            SELECT first_name FROM students_rgd WHERE std_id=%s
+        """, (session["student_id"],))
+
+        student = cursor.fetchone()
+        conn.close()
+
+        return dict(current_student=student)
+
+    return dict(current_student=None)
+
+# Code for Student Logout
+
+@app.route("/student_logout")
+def student_logout():
+    session.clear()
+    return redirect("/student_login")
+
 
 
 # #Student View Profile
