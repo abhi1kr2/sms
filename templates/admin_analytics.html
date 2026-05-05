@@ -3,220 +3,219 @@
 {% block content %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-
-<form method="GET" class="row mb-4">
-
-    <div class="col-md-4">
-        <select name="class_id" class="form-control" required>
-            <option value="">Select Class</option>
-            {% for c in classes %}
-                <option value="{{ c.id }}"
-                    {% if selected_class == c.id|string %}selected{% endif %}>
-                    {{ c.class_name }}
-                </option>
-            {% endfor %}
-        </select>
-    </div>
-
-    <div class="col-md-4">
-        <select name="exam_id" class="form-control">
-            <option value="">All Exams</option>
-            {% for e in exams %}
-                <option value="{{ e.id }}"
-                    {% if selected_exam == e.id|string %}selected{% endif %}>
-                    {{ e.name }}
-                </option>
-            {% endfor %}
-        </select>
-    </div>
-
-    <div class="col-md-2">
-        <button class="btn btn-primary">Apply</button>
-    </div>
-
-</form>
-
-
-
-
 <div class="container mt-4">
-    <h3>Analytics Dashboard</h3>
+    <div class="row mt-4 mb-4 text-center text-success"><h3>Welcome to Admin Analytics Dashboard</h3></div>
 
-<div class="row mt-4">
+    <div class="row justify-content-center">
 
-<!-- TOPPER -->
-<div class="col-md-6">
-    <div class="card p-3 shadow text-center border-success">
-        <h5>🏆 Topper</h5>
-        <h3 class="text-success">
-            {{ topper.first_name if topper else 'N/A' }}
-        </h3>
-        <p>Total: {{ topper.total_marks if topper else 0 }}</p>
+        <div class="card bg-white col-md-6">
+            <h5>Select you choice</h5>
+            <form method="GET" class="row mb-4 mt-4">
+                <div class="col-md-5">
+                    <select name="class_id" class="form-control" required>
+                        <option value="">Select Class</option>
+                        {% for c in classes %}
+                            <option value="{{ c.id }}"
+                                {% if selected_class == c.id|string %}selected{% endif %}>
+                                {{ c.class_name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-5">
+                    <select name="exam_id" class="form-control">
+                        <option value="">All Exams</option>
+                        {% for e in exams %}
+                            <option value="{{ e.id }}"
+                                {% if selected_exam == e.id|string %}selected{% endif %}>
+                                {{ e.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-2">
+                    <button class="btn btn-primary">Apply</button>
+                </div>
+
+            </form>
+        </div><!--Card-->
+
     </div>
-</div>
-
-<!-- PERFORMANCE -->
-<div class="col-md-6">
-    <div class="card p-3 shadow text-center">
-        <h5>📊 Overall Performance</h5>
-        <h3>{{ performance }}</h3>
-    </div>
-</div>
 
 
-</div>
 
-
-<!-- SUMMARY CARDS -->
-<div class="row mt-4">
-
-    <div class="col-md-3">
-        <div class="card p-3 text-center shadow">
-            <h5>Total Students</h5>
-            <h3>{{ total_students }}</h3>
+    <div class="row text-white"><h3>Analytics Dashboard</h3></div>
+    <div class="row mt-4">
+        <!-- TOPPER -->
+        <div class="col-md-6">
+            <div class="card p-3 shadow text-center border-success">
+                <h5>🏆 Topper</h5>
+                <h3 class="text-success">
+                    {{ topper.first_name if topper else 'N/A' }}
+                </h3>
+                <p>Total: {{ topper.total_marks if topper else 0 }}</p>
+            </div>
+        </div>
+        <!-- PERFORMANCE -->
+        <div class="col-md-6">
+            <div class="card p-3 shadow text-center">
+                <h5>📊 Overall Performance</h5>
+                <h3>{{ performance }}</h3>
+            </div>
         </div>
     </div>
 
-    <div class="col-md-3">
-        <div class="card p-3 text-center shadow">
-            <h5>Pass %</h5>
-            <h3>{{ pass_percent }}%</h3>
+    
+    <!-- SUMMARY CARDS -->
+    <div class="row mt-4">
+
+        <div class="col-md-3">
+            <div class="card p-3 text-center shadow">
+                <h5>Total Students</h5>
+                <h3>{{ total_students }}</h3>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card p-3 text-center shadow">
+                <h5>Pass %</h5>
+                <h3>{{ pass_percent }}%</h3>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card p-3 text-center shadow">
+                <h5>Failures</h5>
+                <h3>{{ fail_count }}</h3>
+            </div>
+        </div>
+
+        <!-- <div class="col-md-3">
+            <div class="card p-3 text-center shadow">
+                <h5>Topper</h5>
+                <h3>{{ topper_name }}</h3>
+            </div>
+        </div> -->
+
+    </div>
+
+    <div class="row mt-4">
+        <!-- WEAK SUBJECT -->
+        <div class="col-md-4">
+            <div class="card p-3 shadow text-center border-danger">
+                <h5>⚠ Weak Subject</h5>
+                <h4 class="text-danger">
+                    {{ weak_subject.name if weak_subject else 'N/A' }}
+                </h4>
+            </div>
+        </div>
+
+        <!-- TOP SUBJECT -->
+        <div class="col-md-4">
+            <div class="card p-3 shadow text-center border-success">
+                <h5>🏆 Top Subject</h5>
+                <h4 class="text-success">
+                    {{ top_subject.name if top_subject else 'N/A' }}
+                </h4>
+            </div>
+        </div>
+
+        <!-- PERFORMANCE -->
+        <div class="col-md-4">
+            <div class="card p-3 shadow text-center">
+                <h5>📊 Overall Performance</h5>
+                <h4 class="
+                    {% if performance == 'Excellent' %}text-success
+                    {% elif performance == 'Average' %}text-warning
+                    {% else %}text-danger
+                    {% endif %}
+                ">
+                    {{ performance }}
+                </h4>
+            </div>
         </div>
     </div>
 
-    <div class="col-md-3">
-        <div class="card p-3 text-center shadow">
-            <h5>Failures</h5>
-            <h3>{{ fail_count }}</h3>
+    <div class="row  mt-4">
+        <!-- BAR CHART -->
+        <div class="col-md-8">
+            <div class="card p-3 shadow">
+                <h5>Subject-wise Average</h5>
+                <canvas id="barChart"></canvas>
+            </div>
         </div>
-    </div>
 
-    <div class="col-md-3">
-        <div class="card p-3 text-center shadow">
-            <h5>Topper</h5>
-            <h3>{{ topper_name }}</h3>
+        <!-- PIE CHART -->
+        <div class="col-md-4">
+            <div class="card p-3 shadow">
+                <h5>Pass vs Fail</h5>
+                <canvas id="pieChart"></canvas>
+            </div>
         </div>
+
+
     </div>
 
-</div>
 
-<div class="row mt-4">
+    <div class="row">
+        <div class="card mt-4 shadow">
+            <h5>🏅 Top 5 Students</h5>
 
-<div class="row mt-4">
+            <table class="table table-bordered mt-3 text-center">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Rank</th>
+                        <th>Name</th>
+                        <th>Total Marks</th>
+                    </tr>
+                </thead>
 
-<!-- WEAK SUBJECT -->
-<div class="col-md-4">
-    <div class="card p-3 shadow text-center border-danger">
-        <h5>⚠ Weak Subject</h5>
-        <h4 class="text-danger">
-            {{ weak_subject.name if weak_subject else 'N/A' }}
-        </h4>
-    </div>
-</div>
+                <tbody>
+                    {% for s in top_students %}
+                    <tr>
+                        <td>
+                            {% if s.rank == 1 %}🥇
+                            {% elif s.rank == 2 %}🥈
+                            {% elif s.rank == 3 %}🥉
+                            {% else %}{{ s.rank }}
+                            {% endif %}
+                        </td>
+                        <td>{{ s.first_name }}</td>
+                        <td>{{ s.total_marks }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
 
-<!-- TOP SUBJECT -->
-<div class="col-md-4">
-    <div class="card p-3 shadow text-center border-success">
-        <h5>🏆 Top Subject</h5>
-        <h4 class="text-success">
-            {{ top_subject.name if top_subject else 'N/A' }}
-        </h4>
-    </div>
-</div>
+            </table>
 
-<!-- PERFORMANCE -->
-<div class="col-md-4">
-    <div class="card p-3 shadow text-center">
-        <h5>📊 Overall Performance</h5>
-        <h4 class="
-            {% if performance == 'Excellent' %}text-success
-            {% elif performance == 'Average' %}text-warning
-            {% else %}text-danger
-            {% endif %}
-        ">
-            {{ performance }}
-        </h4>
-    </div>
-</div>
+            </div>
 
-</div>
+            <!-- SUBJECT AVERAGE -->
+            <div class="card mt-4 p-4 shadow">
+                <h5>Subject-wise Average</h5>
 
+                <table class="table table-bordered mt-3">
+                    <tr>
+                        <th>Subject</th>
+                        <th>Average Marks</th>
+                    </tr>
 
-<!-- BAR CHART -->
-<div class="col-md-8">
-    <div class="card p-3 shadow">
-        <h5>Subject-wise Average</h5>
-        <canvas id="barChart"></canvas>
-    </div>
-</div>
+                    {% for s in subject_data %}
+                    <tr>
+                        <td>{{ s.name }}</td>
+                        <td>{{ "%.2f"|format(s.avg_marks) }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
 
-<!-- PIE CHART -->
-<div class="col-md-4">
-    <div class="card p-3 shadow">
-        <h5>Pass vs Fail</h5>
-        <canvas id="pieChart"></canvas>
-    </div>
-</div>
+        </div>
 
 
-</div>
+</div><!--End of Main Container-->
 
-
-<div class="card mt-4 p-4 shadow">
-<h5>🏅 Top 5 Students</h5>
-
-<table class="table table-bordered mt-3 text-center">
-    <thead class="table-dark">
-        <tr>
-            <th>Rank</th>
-            <th>Name</th>
-            <th>Total Marks</th>
-        </tr>
-    </thead>
-
-    <tbody>
-        {% for s in top_students %}
-        <tr>
-            <td>
-                {% if s.rank == 1 %}🥇
-                {% elif s.rank == 2 %}🥈
-                {% elif s.rank == 3 %}🥉
-                {% else %}{{ s.rank }}
-                {% endif %}
-            </td>
-            <td>{{ s.first_name }}</td>
-            <td>{{ s.total_marks }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-
-</table>
-
-</div>
-
-
-
-<!-- SUBJECT AVERAGE -->
-<div class="card mt-4 p-4 shadow">
-    <h5>Subject-wise Average</h5>
-
-    <table class="table table-bordered mt-3">
-        <tr>
-            <th>Subject</th>
-            <th>Average Marks</th>
-        </tr>
-
-        {% for s in subject_data %}
-        <tr>
-            <td>{{ s.name }}</td>
-            <td>{{ "%.2f"|format(s.avg_marks) }}</td>
-        </tr>
-        {% endfor %}
-    </table>
-</div>
-
-
-</div>
 
 
 
