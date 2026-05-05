@@ -328,7 +328,78 @@ def stdstudent_profile():
         message=message
     )
 
+#End View Edit Student Profile..
 
+
+#Start Student Setting Dashboard--
+
+@app.route("/student_settings", methods=["GET", "POST"])
+def student_settings():
+
+    if "student_id" not in session:
+        return redirect("/student_login")
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    pwd_changed = session.pop("pwd_changed", None)
+    std_id = session["student_id"]
+    message = None
+    msg_type = None  # success / danger / warning
+
+    if request.method == "POST":
+
+        current_pwd = request.form.get("current_password")
+        new_pwd = request.form.get("new_password")
+        confirm_pwd = request.form.get("confirm_password")
+
+        # Fetch existing password hash
+        cursor.execute("SELECT std_password FROM students_rgd WHERE std_id=%s", (std_id,))
+        row = cursor.fetchone()
+
+        if not row:
+            message = "User not found."
+            msg_type = "danger"
+
+        #elif not check_password_hash(row["std_password"], current_pwd): #for secure if used hash the need to update during new insertion of pass
+        elif row["std_password"] != current_pwd:   #for plain password
+            message = "Current password is incorrect."
+            msg_type = "danger"
+
+        elif new_pwd != confirm_pwd:
+            message = "New password and confirm password do not match."
+            msg_type = "warning"
+
+        elif len(new_pwd) < 6:
+            message = "Password must be at least 6 characters."
+            msg_type = "warning"
+
+        else:
+            # new_hash = generate_password_hash(new_pwd)  #This is for Hash password insert in the DB
+            # cursor.execute(
+            #     "UPDATE students_rgd SET password=%s WHERE std_id=%s",
+            #     (new_hash, std_id)
+
+            # )
+            # Plain password (temporary)
+            cursor.execute(
+                "UPDATE students_rgd SET std_password=%s WHERE std_id=%s",
+                (new_pwd, std_id)
+            )
+            conn.commit()
+
+            session["pwd_changed"] = True
+            return redirect("/student_settings")
+
+    conn.close()
+
+    return render_template(
+        "student_settings.html",
+        message=message,
+        msg_type=msg_type, pwd_changed=pwd_changed
+    )
+
+#End Stuent Setting Dashboard-
 
 #Student Forgot Password Route
 

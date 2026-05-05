@@ -1,0 +1,56 @@
+{% extends 'student_base.html' %}
+
+{% block content %}
+
+{% if pwd_changed %}
+
+<div class="alert alert-success text-center">
+    ✅ Password updated successfully! You will be logged out in 10 seconds...
+</div>
+
+<script>
+setTimeout(function() {
+    window.location.href = "/student_logout";
+}, 10000);
+</script>
+
+{% endif %}
+
+    <div class="card shadow-lg p-4 rounded-4" style="max-width:600px; margin:auto;">
+
+        <h3 class="mb-3 text-center">🔐 Change Password</h3>
+
+        {% if message %}
+        <div class="alert alert-{{ msg_type }}">
+            {{ message }}
+        </div>
+        {% endif %}
+
+        <form method="POST">
+
+            <div class="mb-3">
+                <label>Current Password</label>
+                <input type="password" name="current_password" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label>New Password</label>
+                <input type="password" name="new_password" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label>Confirm New Password</label>
+                <input type="password" name="confirm_password" class="form-control" required>
+            </div>
+
+            <div class="text-end">
+                <button class="btn btn-primary px-4">Update Password</button>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}
