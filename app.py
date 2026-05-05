@@ -889,92 +889,153 @@ def admin_marks_result(std_id, exam_id):
 
 # Start Admin Analytics Dashboard#
 
-
 @app.route("/admin_analytics")
 def admin_analytics():
 
     if "admin_id" not in session:
         return redirect("/admin_login")
 
+    class_id = request.args.get("class_id")
+    exam_id = request.args.get("exam_id")
+
     conn = get_db()
     cursor = conn.cursor()
 
-    # =====================
-    # TOTAL STUDENTS
-    # =====================
-    cursor.execute("SELECT COUNT(*) as total FROM students_rgd")
-    total_students = cursor.fetchone()["total"]
+    # -----------------------
+    # LOAD FILTER DATA
+    # -----------------------
+    cursor.execute("SELECT id, class_name FROM classes")
+    classes = cursor.fetchall()
 
-    # =====================
-    # PASS / FAIL COUNT
-    # =====================
-    cursor.execute("""
-        SELECT std_id,
-        SUM(CASE WHEN marks_obtained < passing_marks THEN 1 ELSE 0 END) as fails
-        FROM marks m
-        JOIN subjects s ON m.subject_id = s.id
-        GROUP BY std_id
-    """)
+    cursor.execute("SELECT id, name FROM exams WHERE status='Active'")
+    exams = cursor.fetchall()
 
-    results = cursor.fetchall()
+    # Default outputs
+    total_students = pass_count = fail_count = 0
+    pass_percent = 0
+    subject_data = []
+    weak_subject = top_subject = None
+    performance = "N/A"
+    top_students = []
+    topper = None
 
-    pass_count = sum(1 for r in results if r["fails"] == 0)
-    fail_count = sum(1 for r in results if r["fails"] > 0)
+    # -----------------------
+    # APPLY FILTER
+    # -----------------------
+    if class_id:
 
-    pass_percent = round((pass_count / total_students) * 100, 2) if total_students else 0
+        # Total students in class
+        cursor.execute("""
+            SELECT COUNT(*) as total
+            FROM students_rgd
+            WHERE class_id=%s
+        """, (class_id,))
+        total_students = cursor.fetchone()["total"]
 
-    # =====================
-    # SUBJECT-WISE AVERAGE
-    # =====================
-    cursor.execute("""
-        SELECT s.name,
-               AVG(m.marks_obtained) as avg_marks
-        FROM marks m
-        JOIN subjects s ON m.subject_id = s.id
-        GROUP BY s.name
-    """)
+        # Pass / Fail (exam-wise if selected)
+        query = """
+            SELECT m.std_id,
+                   SUM(CASE WHEN m.marks_obtained < s.passing_marks THEN 1 ELSE 0 END) AS fails
+            FROM marks m
+            JOIN subjects s ON m.subject_id = s.id
+            JOIN students_rgd st ON st.std_id = m.std_id
+            WHERE st.class_id=%s
+        """
+        params = [class_id]
 
-    subject_data = cursor.fetchall()
+        if exam_id:
+            query += " AND m.exam_id=%s"
+            params.append(exam_id)
 
-    # =====================
-    # TOPPER
-    # =====================
-    cursor.execute("""
-        SELECT std_id, SUM(marks_obtained) as total
-        FROM marks
-        GROUP BY std_id
-        ORDER BY total DESC
-        LIMIT 1
-    """)
+        query += " GROUP BY m.std_id"
 
-    topper_data = cursor.fetchone()
+        cursor.execute(query, params)
+        results = cursor.fetchall()
 
-    topper_name = "N/A"
+        pass_count = sum(1 for r in results if r["fails"] == 0)
+        fail_count = sum(1 for r in results if r["fails"] > 0)
 
-    if topper_data:
-        cursor.execute("SELECT first_name FROM students_rgd WHERE std_id=%s",
-                       (topper_data["std_id"],))
-        topper_name = cursor.fetchone()["first_name"]
+        pass_percent = round((pass_count / total_students) * 100, 2) if total_students else 0
+
+        # -----------------------
+        # SUBJECT AVERAGE
+        # -----------------------
+        query = """
+            SELECT s.name, AVG(m.marks_obtained) AS avg_marks
+            FROM marks m
+            JOIN subjects s ON m.subject_id = s.id
+            JOIN students_rgd st ON st.std_id = m.std_id
+            WHERE st.class_id=%s
+        """
+        params = [class_id]
+
+        if exam_id:
+            query += " AND m.exam_id=%s"
+            params.append(exam_id)
+
+        query += " GROUP BY s.name"
+
+        cursor.execute(query, params)
+        subject_data = cursor.fetchall()
+
+        # Weak & Top subject
+        if subject_data:
+            weak_subject = min(subject_data, key=lambda x: x["avg_marks"])
+            top_subject = max(subject_data, key=lambda x: x["avg_marks"])
+
+        # -----------------------
+        # PERFORMANCE TAG
+        # -----------------------
+        if pass_percent >= 75:
+            performance = "Excellent"
+        elif pass_percent >= 50:
+            performance = "Average"
+        else:
+            performance = "Needs Improvement"
+
+        # -----------------------
+        # RANK SYSTEM (EXAM-WISE)
+        # -----------------------
+        if exam_id:
+            cursor.execute("""
+                SELECT st.first_name,
+                       SUM(m.marks_obtained) AS total_marks
+                FROM marks m
+                JOIN students_rgd st ON m.std_id = st.std_id
+                WHERE st.class_id=%s AND m.exam_id=%s
+                GROUP BY m.std_id
+                ORDER BY total_marks DESC
+                LIMIT 5
+            """, (class_id, exam_id))
+
+            top_students = cursor.fetchall()
+
+            for i, s in enumerate(top_students, start=1):
+                s["rank"] = i
+
+            topper = top_students[0] if top_students else None
 
     conn.close()
 
     return render_template(
         "admin_analytics.html",
+        classes=classes,
+        exams=exams,
+        selected_class=class_id,
+        selected_exam=exam_id,
         total_students=total_students,
         pass_percent=pass_percent,
+        pass_count=pass_count,
         fail_count=fail_count,
-        pass_count=pass_count, 
         subject_data=subject_data,
-        topper_name=topper_name
+        weak_subject=weak_subject,
+        top_subject=top_subject,
+        performance=performance,
+        top_students=top_students,
+        topper=topper
     )
 
-
-
-
-# End Admin Analytics Dashboard#
-
-
-
+# end Admin Analytics Dashboard#
 
 
 #Admin can add teacher
