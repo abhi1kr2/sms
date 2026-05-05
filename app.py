@@ -112,6 +112,100 @@ def stddashboard():
 
 #     return render_template("stdstudent_profile.html", student=student)
 
+
+
+#Start Code for View Marks by student Dasboard---
+
+@app.route("/std_view_marks")
+def std_view_marks():
+
+    if "student_id" not in session:
+        return redirect("/student_login")
+
+    std_id = session["student_id"]
+    exam_id = request.args.get("exam_id")
+
+    conn = get_db()
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+    # Load exams for dropdown
+    cursor.execute("SELECT id, name FROM exams WHERE status='Active'")
+    exams = cursor.fetchall()
+
+    # Default (no result yet)
+    data = None
+    message = None
+
+    if exam_id:
+
+        # student
+        cursor.execute("""
+            SELECT first_name, last_name, reg_id
+            FROM students_rgd
+            WHERE std_id=%s
+        """, (std_id,))
+        student = cursor.fetchone()
+
+        # exam
+        cursor.execute("SELECT id, name FROM exams WHERE id=%s", (exam_id,))
+        exam = cursor.fetchone()
+
+        # marks
+        cursor.execute("""
+            SELECT s.name AS subject,
+                   s.passing_marks,
+                   m.marks_obtained
+            FROM marks m
+            JOIN subjects s ON m.subject_id = s.id
+            WHERE m.std_id=%s AND m.exam_id=%s
+            ORDER BY s.name
+        """, (std_id, exam_id))
+
+        rows = cursor.fetchall()
+
+        if not rows:
+            message = "No marks available for selected exam."
+        else:
+            total = sum(r["marks_obtained"] for r in rows)
+            max_total = len(rows) * 100
+            percent = (total / max_total * 100) if max_total else 0
+
+            failed = any(r["marks_obtained"] < r["passing_marks"] for r in rows)
+            status = "FAIL" if failed else "PASS"
+
+            if percent >= 90: grade = "A+"
+            elif percent >= 75: grade = "A"
+            elif percent >= 60: grade = "B"
+            elif percent >= 50: grade = "C"
+            elif percent >= 33: grade = "D"
+            else: grade = "F"
+
+            data = {
+                "student": student,
+                "exam": exam,
+                "rows": rows,
+                "total": total,
+                "percent": round(percent, 2),
+                "status": status,
+                "grade": grade
+            }
+
+    conn.close()
+
+    return render_template(
+        "std_view_marks.html",
+        exams=exams,
+        data=data,
+        message=message,
+        selected_exam=exam_id
+    )
+
+
+
+#End Code for View Marks by student Dasboard---
+
+
+
 #Code for View and Edit Student Profile self:
 @app.route("/stdstudent_profile", methods=["GET","POST"])
 def stdstudent_profile():
