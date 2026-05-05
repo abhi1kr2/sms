@@ -882,13 +882,98 @@ def admin_marks_result(std_id, exam_id):
     )
 
 
-
-
-
-
-
-
 # End Admin view Students Marksheet
+
+
+
+
+# Start Admin Analytics Dashboard#
+
+
+@app.route("/admin_analytics")
+def admin_analytics():
+
+    if "admin_id" not in session:
+        return redirect("/admin_login")
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    # =====================
+    # TOTAL STUDENTS
+    # =====================
+    cursor.execute("SELECT COUNT(*) as total FROM students_rgd")
+    total_students = cursor.fetchone()["total"]
+
+    # =====================
+    # PASS / FAIL COUNT
+    # =====================
+    cursor.execute("""
+        SELECT std_id,
+        SUM(CASE WHEN marks_obtained < passing_marks THEN 1 ELSE 0 END) as fails
+        FROM marks m
+        JOIN subjects s ON m.subject_id = s.id
+        GROUP BY std_id
+    """)
+
+    results = cursor.fetchall()
+
+    pass_count = sum(1 for r in results if r["fails"] == 0)
+    fail_count = sum(1 for r in results if r["fails"] > 0)
+
+    pass_percent = round((pass_count / total_students) * 100, 2) if total_students else 0
+
+    # =====================
+    # SUBJECT-WISE AVERAGE
+    # =====================
+    cursor.execute("""
+        SELECT s.name,
+               AVG(m.marks_obtained) as avg_marks
+        FROM marks m
+        JOIN subjects s ON m.subject_id = s.id
+        GROUP BY s.name
+    """)
+
+    subject_data = cursor.fetchall()
+
+    # =====================
+    # TOPPER
+    # =====================
+    cursor.execute("""
+        SELECT std_id, SUM(marks_obtained) as total
+        FROM marks
+        GROUP BY std_id
+        ORDER BY total DESC
+        LIMIT 1
+    """)
+
+    topper_data = cursor.fetchone()
+
+    topper_name = "N/A"
+
+    if topper_data:
+        cursor.execute("SELECT first_name FROM students_rgd WHERE std_id=%s",
+                       (topper_data["std_id"],))
+        topper_name = cursor.fetchone()["first_name"]
+
+    conn.close()
+
+    return render_template(
+        "admin_analytics.html",
+        total_students=total_students,
+        pass_percent=pass_percent,
+        fail_count=fail_count,
+        pass_count=pass_count, 
+        subject_data=subject_data,
+        topper_name=topper_name
+    )
+
+
+
+
+# End Admin Analytics Dashboard#
+
+
 
 
 
