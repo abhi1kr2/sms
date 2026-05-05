@@ -191,12 +191,16 @@ def std_view_marks():
 
         rows = cursor.fetchall()
 
+        feedback = [] 
+        data = None     
+
         if not rows:
             message = "No marks available for selected exam."
         else:
             total = sum(r["marks_obtained"] for r in rows)
             max_total = len(rows) * 100
             percent = (total / max_total * 100) if max_total else 0
+            feedback = build_feedback(rows, percent)
 
             failed = any(r["marks_obtained"] < r["passing_marks"] for r in rows)
             status = "FAIL" if failed else "PASS"
@@ -215,7 +219,8 @@ def std_view_marks():
                 "total": total,
                 "percent": round(percent, 2),
                 "status": status,
-                "grade": grade
+                "grade": grade,
+                "feedback": feedback 
             }
 
     conn.close()
@@ -233,6 +238,52 @@ def std_view_marks():
 #End Code for View Marks by student Dasboard---
 
 
+
+# Start Student Performace feedback builder
+
+
+def build_feedback(rows, percent):
+    messages = []
+
+    # --- Overall feedback ---
+    if percent >= 85:
+        messages.append("Excellent performance. Keep it up.")
+    elif percent >= 70:
+        messages.append("Good performance. Aim for excellence.")
+    elif percent >= 50:
+        messages.append("Average performance. Needs improvement.")
+    elif percent >= 33:
+        messages.append("Below average. Focus required.")
+    else:
+        messages.append("Poor performance. Immediate attention needed.")
+
+    # --- Subject feedback ---
+    weak = []
+    strong = []
+
+    for r in rows:
+        m = r["marks_obtained"]
+        p = r["passing_marks"]
+        name = r["subject"]
+
+        if m < p:
+            messages.append(f"Fail in {name} – urgent attention required.")
+            weak.append(name)
+        elif m >= 80:
+            strong.append(name)
+        elif m < 60:
+            weak.append(name)
+
+    if strong:
+        messages.append("Strong subjects: " + ", ".join(strong))
+
+    if weak:
+        messages.append("Focus on: " + ", ".join(weak))
+
+    return messages
+
+
+# Start Student Performace feedback builder
 
 #Code for View and Edit Student Profile self:
 @app.route("/stdstudent_profile", methods=["GET","POST"])

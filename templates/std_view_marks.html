@@ -96,6 +96,38 @@
 {% endif %}
 
 <br>
+
+
+{% if data.feedback %}
+<div class="card mt-4 p-3 shadow border-info">
+
+    <h5 class="text-info">🧠 Performance Feedback</h5>
+
+    <ul class="mt-2 mb-0">
+
+        {% for f in data.feedback %}
+            {% set msg = f.lower() %}
+
+            <li class="
+                {% if 'fail' in msg %}
+                    text-danger fw-bold
+                {% elif 'excellent' in msg or 'strong' in msg %}
+                    text-success
+                {% elif 'focus' in msg or 'improvement' in msg or 'average' in msg %}
+                    text-warning
+                {% else %}
+                    text-secondary
+                {% endif %}
+            ">
+                {{ f }}
+            </li>
+        {% endfor %}
+
+    </ul>
+
+</div>
+{% endif %}
+
 </div>
 
 {% endblock %}
