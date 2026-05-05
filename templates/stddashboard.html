@@ -1,14 +1,25 @@
 {% extends "base.html" %}
 
 {% block content %}
+       
+<div class="row">
+    <!-- 🔵 NAVBAR -->
+    <nav class="navbar navbar-dark bg-primary px-3 text-white">
+        <div class="col-md-2 ">Welcome {{ student["first_name"] }}</div>
+        <div class="col-md-5 "><h2>Dashboard</h2></div>
+        <div class="col-md-4">
+            <a href="/stddashboard" class="btn btn-light btn-sm me-2">Dashboard</a>
+            <a href="/student_logout" class="btn btn-danger btn-sm">Logout</a>
+        </div>
+    </nav>
+</div>
 
         
 <div class="container border border-primary">
     <div class="card border border-primary">
         <div class="card-header row border border-danger">
-            <div class="col-md-4">Welcome {{ student["first_name"] }}</div>
-            <div class="col-md-7 "><h1>DASHBOARD</h1></div>
-            <div class="col-md-1"><a class="light"href="/logout">Logout</a></div>
+
+
 
             
         </div>
@@ -17,7 +28,7 @@
             <a class="btn btn-warning" href="#" role="button">Check Admit Card</a>
             <a class="btn btn-success" href="std_view_marks" role="button">Check Result</a>
             <a class="btn btn-primary" href="#" role="button">Library Book Status</a>
-            <a class="btn btn-danger" href="#" role="button">Password Reset</a>
+            <a class="btn btn-danger" href="std_forgot_password" role="button">Password Reset(now without session)</a>
             <a class="btn btn-secondary" href="#" role="button">Suggestion Box</a>
         </div>
     </div>
@@ -28,36 +39,6 @@
 <p><strong>Last Name:</strong> {{ student["last_name"] }}</p>
 <p><strong>Email:</strong> {{ student["email"] }}</p>
 <p><strong>Phone:</strong> {{ student["phone"] }}</p>
-
-<div>
-    <div class="card p-3 mt-3">
-    <h5>My Results</h5>
-
-    {% if message %}
-        <div class="alert alert-warning">
-            {{ message }}
-        </div>
-    {% endif %}
-
-    <form method="GET" action="/student_marks">
-
-        <select name="exam_id" class="form-control mb-2" required>
-            <option value="">Select Exam</option>
-            {% for e in exams %}
-                <option value="{{ e.id }}">{{ e.name }}</option>
-            {% endfor %}
-        </select>
-
-        <button class="btn btn-success">
-            View Marksheet
-        </button>
-
-    </form>
-</div>
-
-
-</div>
-
 
 </div>
 
