@@ -1,0 +1,142 @@
+{% extends 'admin_base.html' %}
+{% block content %}
+
+<div class="container mt-4">
+        <h3>Manage Notices</h3>
+    <div class="row justify-content-center">
+<!-- ADD FORM -->
+        <div class="col-md-5 border border-primary">
+            <div class="card">
+                <h6 class="card-header text-center text-danger fw-bold">Add New Notice</h6>
+                <div class="card-body">
+                    <form method="POST" action="/add_notice" class="card p-3 mb-4">
+                    <input name="title" placeholder="Title" class="form-control mb-2" required>
+                    <textarea name="description" class="form-control mb-2" placeholder="Description" required></textarea>
+                    <input name="category" class="form-control mb-2" placeholder="Category">
+                    <input type="date" name="notice_date" class="form-control mb-2" required>
+                    <input type="date" name="expiry_date" class="form-control mb-2">
+                    <input type="number" name="priority" class="form-control mb-2" placeholder="Priority (higher = top)">
+                    <input name="image_url" class="form-control mb-2" placeholder="Image URL">
+                    <button class="btn btn-success">Add Notice</button>
+                </form>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+
+
+
+
+    <!-- TABLE -->
+
+    <table class="table table-bordered mt-2">
+
+    <tr>
+    <th>Title</th>
+    <th>Date</th>
+    <th>Priority</th>
+    <th>Expiry Date</th>
+    <th>Action</th>
+    </tr>
+
+    {% for n in notices %}
+
+    <tr>
+    <td>{{ n.title }}</td>
+    <td>{{ n.notice_date }}</td>
+    <td>{{ n.priority }}</td>
+    <td>{{ n.expiry_date }}</td>
+    <td>
+        <button class="btn btn-warning btn-sm"
+            data-bs-toggle="modal"
+            data-bs-target="#editModal"
+            onclick="openEditModal(
+                '{{ n.id }}',
+                '{{ n.title|escape }}',
+                `{{ n.description|escape }}`,
+                '{{ n.category|escape }}',
+                '{{ n.notice_date }}',
+                '{{ n.expiry_date or "" }}',
+                '{{ n.priority }}',
+                '{{ n.image_url or "" }}'
+            )">
+            Edit
+        </button>
+
+        <a href="/delete_notice/{{ n.id }}" class="btn btn-sm btn-danger">Delete</a>
+    </td>
+    </tr>
+    {% endfor %}
+
+    </table>
+
+</div>
+
+
+
+
+<!--Edit Model-->
+
+<div class="modal fade" id="editModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <form method="POST" action="/edit_notice">
+
+        <div class="modal-header">
+          <h5>Edit Notice</h5>
+          <button class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body">
+
+          <input type="hidden" name="id" id="edit_id">
+
+          <input name="title" id="edit_title" class="form-control mb-2" placeholder="Title" required>
+
+          <textarea name="description" id="edit_desc" class="form-control mb-2" required></textarea>
+
+          <input name="category" id="edit_category" class="form-control mb-2">
+
+          <input type="date" name="notice_date" id="edit_date" class="form-control mb-2">
+
+          <input type="date" name="expiry_date" id="edit_expiry" class="form-control mb-2">
+
+          <input type="number" name="priority" id="edit_priority" class="form-control mb-2">
+
+          <input name="image_url" id="edit_image" class="form-control mb-2">
+
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-success">Update</button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+</div>
+
+
+
+
+<script>
+function openEditModal(id, title, desc, category, date, expiry, priority, image) {
+
+    document.getElementById("edit_id").value = id;
+    document.getElementById("edit_title").value = title;
+    document.getElementById("edit_desc").value = desc;
+    document.getElementById("edit_category").value = category;
+    document.getElementById("edit_date").value = date;
+    document.getElementById("edit_expiry").value = expiry;
+    document.getElementById("edit_priority").value = priority;
+    document.getElementById("edit_image").value = image;
+}
+</script>
+
+
+{% endblock %}

@@ -887,6 +887,139 @@ def admin_marks_result(std_id, exam_id):
 
 
 
+
+# Start Admin Notice- Insert, Update, delete
+
+# Route Nocice
+
+@app.route("/admin_notices")
+def admin_notices():
+
+    if "admin_id" not in session:
+        return redirect("/admin_login")
+
+    conn = get_db()
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+    cursor.execute("""
+        SELECT * FROM notices
+        ORDER BY priority DESC, notice_date DESC
+    """)
+
+    notices = cursor.fetchall()
+    conn.close()
+
+    return render_template("admin_notices.html", notices=notices)
+
+
+
+#Insert Notice-
+
+@app.route("/add_notice", methods=["POST"])
+def add_notice():
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        INSERT INTO notices
+        (title, description, category, notice_date, expiry_date, priority, image_url)
+        VALUES (%s,%s,%s,%s,%s,%s,%s)
+    """, (
+        request.form.get("title"),
+        request.form.get("description"),
+        request.form.get("category"),
+        request.form.get("notice_date"),
+        request.form.get("expiry_date") or None,
+        request.form.get("priority") or 0,
+        request.form.get("image_url")
+    ))
+
+    conn.commit()
+    conn.close()
+
+    return redirect("/admin_notices")
+
+
+#Delete Notice-
+
+@app.route("/delete_notice/<int:id>")
+def delete_notice(id):
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("DELETE FROM notices WHERE id=%s", (id,))
+
+    conn.commit()
+    conn.close()
+
+    return redirect("/admin_notices")
+
+
+#Update Notice-
+@app.route("/edit_notice", methods=["POST"])
+def edit_notice():
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        UPDATE notices
+        SET title=%s,
+            description=%s,
+            category=%s,
+            notice_date=%s,
+            expiry_date=%s,
+            priority=%s,
+            image_url=%s
+        WHERE id=%s
+    """, (
+        request.form.get("title"),
+        request.form.get("description"),
+        request.form.get("category"),
+        request.form.get("notice_date"),
+        request.form.get("expiry_date") or None,
+        request.form.get("priority") or 0,
+        request.form.get("image_url"),
+        request.form.get("id")
+    ))
+
+    conn.commit()
+    conn.close()
+
+    return redirect("/admin_notices")
+
+
+
+# End Admin Notice- Insert, Update, delete
+
+
+# Start Public View Notice.html page #
+
+@app.route("/notices")
+def notices():
+
+    conn = get_db()
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+    cursor.execute("""
+        SELECT * FROM notices
+        WHERE status='Active'
+        AND (expiry_date IS NULL OR expiry_date >= CURDATE())
+        ORDER BY priority DESC, notice_date DESC
+    """)
+
+    notices = cursor.fetchall()
+    conn.close()
+
+    return render_template("notices.html", notices=notices)
+
+# End Public View Notice
+
+
+
+
 # Start Admin Analytics Dashboard#
 
 @app.route("/admin_analytics")

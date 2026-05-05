@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container bg-solid">
+<h3 class="text-danger mt-2 mb-2">Notices</h3>
+<!-- ADD FORM -->
+    <div class="row mb-4 mt-2">
+        {% for n in notices %}
+        <div class="col-md-3 mb-2">
+            <div class="card">
+                <h6 class="card-header">{{ n.title }}</h6>
+                <div class="card-body">                           
+                    <small>{{ n.notice_date }} | {{ n.category }}</small>
+
+                    <p class="card-text">
+                        {{ n.description[:20] }}{% if n.description|length > 20 %}...{% endif %}
+                    </p>
+
+                    <button class="btn btn-primary btn-sm"
+                            data-bs-toggle="modal"
+                            data-bs-target="#noticeModal"
+                            onclick="openNotice(
+                                '{{ n.title|escape }}',
+                                '{{ n.notice_date }}',
+                                '{{ n.category|escape }}',
+                                `{{ n.description|escape }}`,
+                                '{{ n.image_url or "" }}',
+                                '{{ n.views }}'
+                            )">
+                        Read More
+                    </button>
+                </div>
+    
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+
+
+
+ 
+
+</div>
+
+<div class="modal fade" id="noticeModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalTitle"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <p><b>Date:</b> <span id="modalDate"></span></p>
+        <p><b>Category:</b> <span id="modalCategory"></span></p>
+        <p><b>Views:</b> <span id="modalViews"></span></p>
+
+        <hr>
+
+        <p id="modalDesc"></p>
+
+        <img id="modalImage" class="img-fluid mt-3 d-none">
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+<script>
+function openNotice(title, date, category, desc, image, views) {
+
+    document.getElementById("modalTitle").innerText = title;
+    document.getElementById("modalDate").innerText = date;
+    document.getElementById("modalCategory").innerText = category;
+    document.getElementById("modalDesc").innerText = desc;
+    document.getElementById("modalViews").innerText = views;
+
+    let img = document.getElementById("modalImage");
+
+    if (image && image !== "None") {
+        img.src = image;
+        img.classList.remove("d-none");
+    } else {
+        img.classList.add("d-none");
+    }
+}
+</script>
+
+
+{% endblock %}
