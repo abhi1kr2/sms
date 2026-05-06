@@ -1,6 +1,7 @@
 from datetime import date
 import re
-
+import os
+from werkzeug.utils import secure_filename
 from flask import Flask, flash, jsonify, render_template, request, redirect, session, url_for
 import pymysql
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -1333,50 +1334,186 @@ def admin_analytics():
 # end Admin Analytics Dashboard#
 
 
-#Admin can add teacher
+#Start Admin can add teacher
 
-@app.route("/admadd_teacher", methods=["GET","POST"])
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+MAX_IMAGE_SIZE = 2 * 1024 * 1024   # 2MB
+
+
+@app.route("/admadd_teacher", methods=["GET", "POST"])
 def admadd_teacher():
 
     if "admin_id" not in session:
         return redirect("/admin_login")
 
+    conn = get_db()
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+    # ---------------- FETCH CLASSES ----------------
+    cursor.execute("SELECT * FROM classes")
+    classes = cursor.fetchall()
+
+    # ---------------- FETCH SUBJECTS ----------------
+    cursor.execute("SELECT * FROM subjects")
+    subjects = cursor.fetchall()
+
+    message = None
+    msg_type = None
+
     if request.method == "POST":
 
-        fname = request.form["fname"]
-        lname = request.form["lname"]
-        email = request.form["email"]
-        phone = request.form["phone"]
-        password = request.form["password"]
+        first_name = request.form.get("first_name").strip()
+        last_name = request.form.get("last_name").strip()
+        dob = request.form.get("tchr_dob")
+        email = request.form.get("email").strip()
+        phone = request.form.get("phone").strip()
 
-        conn = get_db()
-        cursor = conn.cursor()
+        class_id = request.form.get("class_id")
 
-        try:
-            # Check duplicate
-            cursor.execute("SELECT * FROM teachers WHERE email=%s", (email,))
-            if cursor.fetchone():
-                flash("Email already exists!", "danger")
-                return redirect("/admadd_teacher")
+        # Get class name from DB
+        cursor.execute(
+            "SELECT class_name FROM classes WHERE id=%s",
+            (class_id,)
+        )
 
-            # Insert
-            cursor.execute(
-                "INSERT INTO teachers (first_name,last_name,email,phone,teacher_password) VALUES (%s,%s,%s,%s,%s)",
-                (fname,lname,email,phone,password)
-            )
+        class_row = cursor.fetchone()
+        class_name = class_row["class_name"] if class_row else ""
+
+        # ---------------- MULTIPLE SUBJECTS ----------------
+        subjects_list = request.form.getlist("subjects")
+
+        # Convert list → comma string
+        subject_string = ",".join(subjects_list)
+
+        # ---------------- PASSWORD ----------------
+        password = request.form.get("teacher_password")
+
+        # Auto password if blank
+        if not password:
+            password = f"{first_name}@{phone[-4:]}"
+
+        # ---------------- VALIDATION ----------------
+
+        # Duplicate Email Check
+        cursor.execute(
+            "SELECT tchr_id FROM teachers WHERE email=%s",
+            (email,)
+        )
+
+        existing = cursor.fetchone()
+
+        if existing:
+            message = "Email already exists!"
+            msg_type = "danger"
+
+        elif not phone.isdigit() or len(phone) != 10:
+            message = "Phone must be exactly 10 digits!"
+            msg_type = "warning"
+
+        elif len(subjects_list) == 0:
+            message = "Please select at least one subject!"
+            msg_type = "warning"
+
+        else:
+
+            # ---------------- IMAGE UPLOAD ----------------
+            image = request.files.get("tchr_img")
+            filename = ""
+
+            if image and image.filename != "":
+
+                # IMAGE SIZE VALIDATION
+                image.seek(0, os.SEEK_END)
+                size = image.tell()
+                image.seek(0)
+
+                if size > MAX_IMAGE_SIZE:
+
+                    conn.close()
+
+                    return render_template(
+                        "admadd_teacher.html",
+                        classes=classes,
+                        subjects=subjects,
+                        message="Image size must be less than 2MB!",
+                        msg_type="danger"
+                    )
+
+                # FILE TYPE VALIDATION
+                ext = image.filename.rsplit('.', 1)[-1].lower()
+
+                if ext not in ALLOWED_EXTENSIONS:
+
+                    conn.close()
+
+                    return render_template(
+                        "admadd_teacher.html",
+                        classes=classes,
+                        subjects=subjects,
+                        message="Only JPG, JPEG, PNG files allowed!",
+                        msg_type="danger"
+                    )
+
+                # SECURE FILE NAME
+                filename = secure_filename(image.filename)
+
+                # CREATE FOLDER IF NOT EXISTS
+                os.makedirs("static/uploads/teachers", exist_ok=True)
+
+                # SAVE IMAGE
+                image.save(
+                    os.path.join(
+                        "static/uploads/teachers",
+                        filename
+                    )
+                )
+
+            # ---------------- INSERT TEACHER ----------------
+
+            cursor.execute("""
+                INSERT INTO teachers
+                (
+                    first_name,
+                    last_name,
+                    tchr_dob,
+                    email,
+                    phone,
+                    class_id,
+                    class,
+                    subject,
+                    teacher_password,
+                    tchr_img
+                )
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+            """, (
+                first_name,
+                last_name,
+                dob,
+                email,
+                phone,
+                class_id,
+                class_name,
+                subject_string,
+                password,
+                filename
+            ))
 
             conn.commit()
 
-            return render_template("/admadd_teacher", success="Teacher Added Successfully!")
+            message = f"Teacher registered successfully! Default Password: {password}"
+            msg_type = "success"
 
-        except pymysql.err.IntegrityError:
+    conn.close()
 
-            return render_template("/admadd_teacher", error="Duplicate email not allowed!")
+    return render_template(
+        "admadd_teacher.html",
+        classes=classes,
+        subjects=subjects,
+        message=message,
+        msg_type=msg_type
+    )
 
-        finally:
-            conn.close()
-
-    return render_template("admadd_teacher.html")
+#End Admin can add teacher
 
 
 #Admin View Registered Teachers:

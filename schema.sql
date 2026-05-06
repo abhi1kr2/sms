@@ -89,7 +89,9 @@ CREATE TABLE IF NOT EXISTS teachers (
     tchr_dob DATE NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     phone VARCHAR(20) NOT NULL,
-    class_id INT,  -- ⭐ optional but useful
+    class_id INT,  
+    class VARCHAR(20),  
+    subject VARCHAR(20),  
     teacher_password VARCHAR(255),
     tchr_img TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
