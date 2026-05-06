@@ -549,6 +549,133 @@ def teacher_profile():
 
     return render_template("teacher_profile.html", teacher=teacher)
 
+#Start Insert new marks only for student by teachers
+
+@app.route("/teacher_add_marks", methods=["GET", "POST"])
+def teacher_add_marks():
+
+    if "teacher_id" not in session:
+        return redirect("/teacher_login")
+
+    conn = get_db()
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+    message = None
+    msg_type = None
+
+    # ---------------- FETCH DROPDOWNS ----------------
+
+    cursor.execute("SELECT * FROM classes")
+    classes = cursor.fetchall()
+
+    cursor.execute("SELECT * FROM exams")
+    exams = cursor.fetchall()
+
+    students = []
+    subjects = []
+
+    selected_class = request.args.get("class_id")
+
+    if selected_class:
+
+        cursor.execute(
+            "SELECT * FROM students_rgd WHERE class_id=%s",
+            (selected_class,)
+        )
+
+        students = cursor.fetchall()
+
+        cursor.execute(
+            "SELECT * FROM subjects WHERE class_id=%s",
+            (selected_class,)
+        )
+
+        subjects = cursor.fetchall()
+
+    # ---------------- INSERT MARKS ----------------
+
+    if request.method == "POST":
+
+        std_id = request.form.get("std_id")
+        exam_id = request.form.get("exam_id")
+
+        subject_ids = request.form.getlist("subject_id")
+        marks_list = request.form.getlist("marks")
+
+        already_exists = False
+
+        for subject_id, marks in zip(subject_ids, marks_list):
+
+            # CHECK EXISTING MARKS
+            cursor.execute("""
+                SELECT id FROM marks
+                WHERE std_id=%s
+                AND exam_id=%s
+                AND subject_id=%s
+            """, (
+                std_id,
+                exam_id,
+                subject_id
+            ))
+
+            existing = cursor.fetchone()
+
+            if existing:
+                already_exists = True
+                continue
+
+            # VALIDATION
+            if marks.strip() == "":
+                continue
+
+            marks = int(marks)
+
+            if marks < 0 or marks > 100:
+                continue
+
+            # INSERT ONLY
+            cursor.execute("""
+                INSERT INTO marks
+                (
+                    std_id,
+                    exam_id,
+                    subject_id,
+                    marks_obtained
+                )
+                VALUES (%s,%s,%s,%s)
+            """, (
+                std_id,
+                exam_id,
+                subject_id,
+                marks
+            ))
+
+        conn.commit()
+
+        if already_exists:
+            message = "Some marks already exist. Teacher cannot edit existing marks."
+            msg_type = "warning"
+        else:
+            message = "Marks uploaded successfully!"
+            msg_type = "success"
+
+    conn.close()
+
+    return render_template(
+        "teacher_add_marks.html",
+        classes=classes,
+        exams=exams,
+        students=students,
+        subjects=subjects,
+        selected_class=selected_class,
+        message=message,
+        msg_type=msg_type
+    )
+
+
+
+#End Insert new marks only for student by teachers
+
 
 @app.route("/logout")
 def logout():

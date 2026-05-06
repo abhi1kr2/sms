@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow-lg p-4 rounded-4">
+
+        <h3 class="mb-4">📝 Upload Student Marks</h3>
+
+        {% if message %}
+        <div class="alert alert-{{ msg_type }}">
+            {{ message }}
+        </div>
+        {% endif %}
+
+        <!-- FILTER FORM -->
+        <form method="GET">
+
+            <div class="row g-3">
+
+                <!-- CLASS -->
+                <div class="col-md-4">
+                    <label>Class</label>
+
+                    <select name="class_id"
+                            class="form-select"
+                            required>
+
+                        <option value="">Select Class</option>
+
+                        {% for c in classes %}
+                        <option value="{{ c.id }}"
+                            {% if selected_class == c.id|string %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ c.class_name }}
+                        </option>
+                        {% endfor %}
+
+                    </select>
+                </div>
+
+                <div class="col-md-2 d-flex align-items-end">
+                    <button class="btn btn-primary">
+                        Load Students
+                    </button>
+                </div>
+
+            </div>
+
+        </form>
+
+        {% if students %}
+
+        <hr>
+
+        <!-- MARKS FORM -->
+        <form method="POST">
+
+            <div class="row g-3">
+
+                <!-- STUDENT -->
+                <div class="col-md-6">
+                    <label>Student</label>
+
+                    <select name="std_id"
+                            class="form-select"
+                            required>
+
+                        {% for s in students %}
+                        <option value="{{ s.std_id }}">
+                            {{ s.first_name }} {{ s.last_name }}
+                        </option>
+                        {% endfor %}
+
+                    </select>
+                </div>
+
+                <!-- EXAM -->
+                <div class="col-md-6">
+                    <label>Exam</label>
+
+                    <select name="exam_id"
+                            class="form-select"
+                            required>
+
+                        {% for e in exams %}
+                        <option value="{{ e.id }}">
+                            {{ e.name }}
+                        </option>
+                        {% endfor %}
+
+                    </select>
+                </div>
+
+            </div>
+
+            <hr>
+
+            <!-- SUBJECT MARKS -->
+            <table class="table table-bordered">
+
+                <thead class="table-dark">
+                    <tr>
+                        <th>Subject</th>
+                        <th>Marks</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for sub in subjects %}
+                    <tr>
+
+                        <td>
+                            {{ sub.name }}
+
+                            <input type="hidden"
+                                name="subject_id"
+                                value="{{ sub.id }}">
+                        </td>
+
+                        <td>
+                            <input type="number"
+                                name="marks"
+                                class="form-control"
+                                min="0"
+                                max="100"
+                                required>
+                        </td>
+
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+            <div class="text-end">
+
+                <button class="btn btn-success">
+                    Upload Marks
+                </button>
+
+            </div>
+
+        </form>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}
