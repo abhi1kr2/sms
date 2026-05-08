@@ -14,17 +14,20 @@
         </div>
         {% endif %}
 
-        <!-- FILTER FORM -->
+        <!-- ================= GET FORM ================= -->
+
         <form method="GET">
 
             <div class="row g-3">
 
                 <!-- CLASS -->
                 <div class="col-md-4">
+
                     <label>Class</label>
 
                     <select name="class_id"
                             class="form-select"
+                            onchange="this.form.submit()"
                             required>
 
                         <option value="">Select Class</option>
@@ -40,66 +43,81 @@
                         {% endfor %}
 
                     </select>
+
                 </div>
 
-                <div class="col-md-2 d-flex align-items-end">
-                    <button class="btn btn-primary">
-                        Load Students
-                    </button>
+                <!-- STUDENT -->
+                <div class="col-md-4">
+
+                    <label>Student</label>
+
+                    <select name="std_id"
+                            class="form-select"
+                            onchange="this.form.submit()"
+                            required>
+
+                        <option value="">Select Student</option>
+
+                        {% for s in students %}
+                        <option value="{{ s.std_id }}"
+                            {% if selected_student == s.std_id|string %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ s.first_name }} {{ s.last_name }}
+                        </option>
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+                <!-- EXAM -->
+                <div class="col-md-4">
+
+                    <label>Exam</label>
+
+                    <select name="exam_id"
+                            class="form-select"
+                            onchange="this.form.submit()"
+                            required>
+
+                        <option value="">Select Exam</option>
+
+                        {% for e in exams %}
+                        <option value="{{ e.id }}"
+                            {% if selected_exam == e.id|string %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ e.name }}
+                        </option>
+                        {% endfor %}
+
+                    </select>
+
                 </div>
 
             </div>
 
         </form>
 
-        {% if students %}
+        <!-- ================= MARKS FORM ================= -->
+
+        {% if subjects %}
 
         <hr>
 
-        <!-- MARKS FORM -->
         <form method="POST">
 
-            <div class="row g-3">
+            <input type="hidden"
+                name="std_id"
+                value="{{ selected_student }}">
 
-                <!-- STUDENT -->
-                <div class="col-md-6">
-                    <label>Student</label>
+            <input type="hidden"
+                name="exam_id"
+                value="{{ selected_exam }}">
 
-                    <select name="std_id"
-                            class="form-select"
-                            required>
-
-                        {% for s in students %}
-                        <option value="{{ s.std_id }}">
-                            {{ s.first_name }} {{ s.last_name }}
-                        </option>
-                        {% endfor %}
-
-                    </select>
-                </div>
-
-                <!-- EXAM -->
-                <div class="col-md-6">
-                    <label>Exam</label>
-
-                    <select name="exam_id"
-                            class="form-select"
-                            required>
-
-                        {% for e in exams %}
-                        <option value="{{ e.id }}">
-                            {{ e.name }}
-                        </option>
-                        {% endfor %}
-
-                    </select>
-                </div>
-
-            </div>
-
-            <hr>
-
-            <!-- SUBJECT MARKS -->
             <table class="table table-bordered">
 
                 <thead class="table-dark">
@@ -112,6 +130,7 @@
                 <tbody>
 
                     {% for sub in subjects %}
+
                     <tr>
 
                         <td>
@@ -123,15 +142,26 @@
                         </td>
 
                         <td>
+
                             <input type="number"
                                 name="marks"
                                 class="form-control"
+
                                 min="0"
                                 max="100"
+
+                                value="{{ existing_marks.get(sub.id, '') }}"
+
+                                {% if sub.id in existing_marks %}
+                                    readonly
+                                {% endif %}
+
                                 required>
+
                         </td>
 
                     </tr>
+
                     {% endfor %}
 
                 </tbody>
@@ -155,3 +185,4 @@
 </div>
 
 {% endblock %}
+

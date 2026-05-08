@@ -549,7 +549,13 @@ def teacher_profile():
 
     return render_template("teacher_profile.html", teacher=teacher)
 
+
+
+
+
+
 #Start Insert new marks only for student by teachers
+
 
 @app.route("/teacher_add_marks", methods=["GET", "POST"])
 def teacher_add_marks():
@@ -563,7 +569,7 @@ def teacher_add_marks():
     message = None
     msg_type = None
 
-    # ---------------- FETCH DROPDOWNS ----------------
+    # ---------------- DROPDOWNS ----------------
 
     cursor.execute("SELECT * FROM classes")
     classes = cursor.fetchall()
@@ -573,8 +579,15 @@ def teacher_add_marks():
 
     students = []
     subjects = []
+    existing_marks = {}
+
+    # ---------------- GET VALUES ----------------
 
     selected_class = request.args.get("class_id")
+    selected_student = request.args.get("std_id")
+    selected_exam = request.args.get("exam_id")
+
+    # ---------------- LOAD STUDENTS & SUBJECTS ----------------
 
     if selected_class:
 
@@ -592,6 +605,26 @@ def teacher_add_marks():
 
         subjects = cursor.fetchall()
 
+    # ---------------- LOAD EXISTING MARKS ----------------
+
+    if selected_student and selected_exam:
+
+        cursor.execute("""
+            SELECT subject_id, marks_obtained
+            FROM marks
+            WHERE std_id=%s
+            AND exam_id=%s
+        """, (
+            selected_student,
+            selected_exam
+        ))
+
+        rows = cursor.fetchall()
+
+        # Convert to dictionary
+        for row in rows:
+            existing_marks[row["subject_id"]] = row["marks_obtained"]
+
     # ---------------- INSERT MARKS ----------------
 
     if request.method == "POST":
@@ -606,7 +639,7 @@ def teacher_add_marks():
 
         for subject_id, marks in zip(subject_ids, marks_list):
 
-            # CHECK EXISTING MARKS
+            # CHECK EXISTING
             cursor.execute("""
                 SELECT id FROM marks
                 WHERE std_id=%s
@@ -620,11 +653,12 @@ def teacher_add_marks():
 
             existing = cursor.fetchone()
 
+            # If exists → skip
             if existing:
                 already_exists = True
                 continue
 
-            # VALIDATION
+            # Validation
             if marks.strip() == "":
                 continue
 
@@ -633,7 +667,7 @@ def teacher_add_marks():
             if marks < 0 or marks > 100:
                 continue
 
-            # INSERT ONLY
+            # INSERT
             cursor.execute("""
                 INSERT INTO marks
                 (
@@ -653,7 +687,7 @@ def teacher_add_marks():
         conn.commit()
 
         if already_exists:
-            message = "Some marks already exist. Teacher cannot edit existing marks."
+            message = "Some marks already exist. Teacher cannot edit them."
             msg_type = "warning"
         else:
             message = "Marks uploaded successfully!"
@@ -667,11 +701,13 @@ def teacher_add_marks():
         exams=exams,
         students=students,
         subjects=subjects,
+        existing_marks=existing_marks,
         selected_class=selected_class,
+        selected_student=selected_student,
+        selected_exam=selected_exam,
         message=message,
         msg_type=msg_type
     )
-
 
 
 #End Insert new marks only for student by teachers
