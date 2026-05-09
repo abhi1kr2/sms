@@ -1,0 +1,421 @@
+{% extends 'admin_base.html' %}
+
+{% block content %}
+
+<div class="container-fluid mt-4">
+    <h2 class="mb-4">
+        <!-- FLASH MESSAGE -->
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+
+            {% for category, message in messages %}
+
+            <div class="alert alert-{{ category }} alert-dismissible fade show">
+
+                {{ message }}
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"></button>
+
+            </div>
+
+            {% endfor %}
+
+        {% endwith %}
+
+    </h2>
+
+    <h2 class="mb-4">
+        ⚙ Master Data Management
+    </h2>
+
+    <!-- ================= CLASSES ================= -->
+
+    <div class="card shadow-lg border-0 rounded-4 mb-5">
+
+        <div class="card-header bg-primary text-white">
+
+            <h4 class="mb-0">
+                🏫 Manage Classes
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <!-- ADD CLASS -->
+
+            <form method="POST" class="row g-3 mb-4">
+
+                <input type="hidden"
+                       name="form_type"
+                       value="add_class">
+
+                <div class="col-md-8">
+
+                    <input type="text"
+                           name="class_name"
+                           class="form-control"
+                           placeholder="Enter Class Name"
+                           required>
+
+                </div>
+
+                <div class="col-md-4">
+
+                    <button class="btn btn-primary w-100">
+
+                        Add Class
+
+                    </button>
+
+                </div>
+
+            </form>
+
+            <!-- CLASS TABLE -->
+
+            <table class="table table-bordered">
+
+                <thead class="table-dark">
+
+                    <tr>
+
+                        <th>ID</th>
+                        <th>Class Name</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for c in classes %}
+
+                    <tr>
+
+                        <td>{{ c.id }}</td>
+
+                        <td>
+
+                            <span class="badge bg-primary p-2">
+
+                                {{ c.class_name }}
+
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <!-- ================= SUBJECTS ================= -->
+
+    <div class="card shadow-lg border-0 rounded-4 mb-5">
+
+        <div class="card-header bg-success text-white">
+
+            <h4 class="mb-0">
+                📚 Manage Subjects
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <!-- ADD SUBJECT -->
+
+            <form method="POST" class="row g-3 mb-4">
+
+                <input type="hidden"
+                       name="form_type"
+                       value="add_subject">
+
+                <!-- SUBJECT -->
+
+                <div class="col-md-4">
+
+                    <input type="text"
+                           name="subject_name"
+                           class="form-control"
+                           placeholder="Subject Name"
+                           required>
+
+                </div>
+
+                <!-- CLASS -->
+
+                <div class="col-md-4">
+
+                    <select name="class_id"
+                            class="form-select"
+                            required>
+
+                        <option value="">
+                            Select Class
+                        </option>
+
+                        {% for c in classes %}
+
+                        <option value="{{ c.id }}">
+
+                            {{ c.class_name }}
+
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+                <!-- PASSING MARKS -->
+
+                <div class="col-md-2">
+
+                    <input type="number"
+                           name="passing_marks"
+                           class="form-control"
+                           placeholder="Passing"
+                           value="33"
+                           required>
+
+                </div>
+
+                <!-- BUTTON -->
+
+                <div class="col-md-2">
+
+                    <button class="btn btn-success w-100">
+
+                        Add Subject
+
+                    </button>
+
+                </div>
+
+            </form>
+
+            <!-- SUBJECT TABLE -->
+
+            <table class="table table-bordered">
+
+                <thead class="table-dark">
+
+                    <tr>
+
+                        <th>ID</th>
+                        <th>Subject</th>
+                        <th>Class</th>
+                        <th>Passing Marks</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for s in subjects %}
+
+                    <tr>
+
+                        <td>{{ s.id }}</td>
+
+                        <td>
+
+                            <span class="badge bg-success p-2">
+
+                                {{ s.name }}
+
+                            </span>
+
+                        </td>
+
+                        <td>{{ s.class_name }}</td>
+
+                        <td>{{ s.passing_marks }}</td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <!-- ================= EXAMS ================= -->
+
+    <div class="card shadow-lg border-0 rounded-4 mb-5">
+
+        <div class="card-header bg-warning">
+
+            <h4 class="mb-0">
+                📝 Manage Exams
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <!-- ADD EXAM -->
+            <form method="POST" class="row g-3 mb-4">
+
+                <input type="hidden"
+                    name="form_type"
+                    value="add_exam">
+
+                <!-- EXAM NAME -->
+
+                <div class="col-md-3">
+
+                    <input type="text"
+                        name="exam_name"
+                        class="form-control"
+                        placeholder="Exam Name"
+                        required>
+
+                </div>
+
+                <!-- CLASS -->
+
+                <div class="col-md-3">
+
+                    <select name="class_id"
+                            class="form-select"
+                            required>
+
+                        <option value="">
+                            Select Class
+                        </option>
+
+                        {% for c in classes %}
+
+                        <option value="{{ c.id }}">
+
+                            {{ c.class_name }}
+
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+                <!-- TOTAL MARKS -->
+
+                <div class="col-md-2">
+
+                    <input type="number"
+                        name="total_marks"
+                        class="form-control"
+                        placeholder="Total Marks"
+                        value="100"
+                        required>
+
+                </div>
+
+                <!-- EXAM DATE -->
+
+                <div class="col-md-2">
+
+                    <input type="date"
+                        name="exam_date"
+                        class="form-control" required>
+
+                </div>
+
+                <!-- BUTTON -->
+
+                <div class="col-md-2">
+
+                    <button class="btn btn-warning w-100">
+
+                        Add Exam
+
+                    </button>
+
+                </div>
+
+            </form>
+
+
+            <!-- EXAM TABLE -->
+
+            <table class="table table-bordered">
+
+                <thead class="table-dark">
+
+                    <tr>
+
+                        <th>ID</th>
+                        <th>Exam Name</th>
+                        <th>Class</th>
+                        <th>Total Marks</th>
+                        <th>Exam Date</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for e in exams %}
+
+                    <tr>
+
+                        <td>{{ e.id }}</td>
+
+                        <td>
+
+                            <span class="badge bg-warning text-dark p-2">
+
+                                {{ e.name }}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <span class="badge bg-primary">
+
+                                {{ e.class_name }}
+
+                            </span>
+
+                        </td>
+
+                        <td>{{ e.total_marks }}</td>
+
+                        <td>{{ e.exam_date }}</td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -2641,6 +2641,238 @@ def admin_assignments():
 #End Code for view assignment by admin
 
 
+
+
+# =================Start MASTER MANAGEMENT of class, subject, Exam (with CURD)=================
+
+@app.route("/admin_mng_cls_sub_exm", methods=["GET", "POST"])
+def admin_mng_cls_sub_exm():
+
+    if "admin_id" not in session:
+        return redirect("/admin_login")
+
+    conn = get_db()
+
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+    # ---------------- ADD CLASS ----------------
+
+    if request.method == "POST":
+
+        form_type = request.form.get("form_type")
+
+        # ==================================================
+        # ADD CLASS
+        # ==================================================
+
+        if form_type == "add_class":
+
+            class_name = request.form.get("class_name").strip()
+
+            # DUPLICATE CHECK
+
+            cursor.execute("""
+                SELECT *
+                FROM classes
+                WHERE class_name=%s
+            """, (class_name,))
+
+            existing = cursor.fetchone()
+
+            if existing:
+
+                flash(
+                    "Class already exists!",
+                    "danger"
+                )
+
+            else:
+
+                cursor.execute("""
+                    INSERT INTO classes (class_name)
+                    VALUES (%s)
+                """, (class_name,))
+
+                conn.commit()
+
+                flash(
+                    "Class added successfully!",
+                    "success"
+                )
+
+        # ==================================================
+        # ADD SUBJECT
+        # ==================================================
+
+        elif form_type == "add_subject":
+
+            subject_name = request.form.get("subject_name").strip()
+
+            class_id = request.form.get("class_id")
+
+            passing_marks = request.form.get("passing_marks")
+
+            # DUPLICATE CHECK
+
+            cursor.execute("""
+                SELECT *
+                FROM subjects
+                WHERE name=%s
+                AND class_id=%s
+            """, (
+                subject_name,
+                class_id
+            ))
+
+            existing = cursor.fetchone()
+
+            if existing:
+
+                flash(
+                    "Subject already exists for this class!",
+                    "danger"
+                )
+
+            else:
+
+                cursor.execute("""
+                    INSERT INTO subjects
+                    (
+                        name,
+                        class_id,
+                        passing_marks
+                    )
+                    VALUES (%s,%s,%s)
+                """, (
+                    subject_name,
+                    class_id,
+                    passing_marks
+                ))
+
+                conn.commit()
+
+                flash(
+                    "Subject added successfully!",
+                    "success"
+                )
+
+        # ==================================================
+        # ADD EXAM
+        # ==================================================
+
+        elif form_type == "add_exam":
+
+            exam_name = request.form.get("exam_name").strip()
+
+            class_id = request.form.get("class_id")
+
+            total_marks = request.form.get("total_marks")
+
+            exam_date = request.form.get("exam_date")
+
+            # DUPLICATE CHECK
+
+            cursor.execute("""
+                SELECT *
+                FROM exams
+                WHERE name=%s
+                AND class_id=%s
+            """, (
+                exam_name,
+                class_id
+            ))
+
+            existing = cursor.fetchone()
+
+            if existing:
+
+                flash(
+                    "Exam already exists for this class!",
+                    "danger"
+                )
+
+            else:
+
+                cursor.execute("""
+                    INSERT INTO exams
+                    (
+                        name,
+                        class_id,
+                        total_marks,
+                        exam_date
+                    )
+                    VALUES (%s,%s,%s,%s)
+                """, (
+                    exam_name,
+                    class_id,
+                    total_marks,
+                    exam_date
+                ))
+
+                conn.commit()
+
+                flash(
+                    "Exam added successfully!",
+                    "success"
+                )
+
+        return redirect("/admin_mng_cls_sub_exm")
+
+
+
+    # ---------------- FETCH CLASSES ----------------
+
+    cursor.execute("""
+        SELECT *
+        FROM classes
+        ORDER BY id DESC
+    """)
+
+    classes = cursor.fetchall()
+
+    # ---------------- FETCH SUBJECTS ----------------
+
+    cursor.execute("""
+
+        SELECT
+            s.*,
+            c.class_name
+
+        FROM subjects s
+
+        LEFT JOIN classes c
+            ON s.class_id = c.id
+
+        ORDER BY s.id DESC
+
+    """)
+
+    subjects = cursor.fetchall()
+
+    # ---------------- FETCH EXAMS ----------------
+
+    cursor.execute(""" SELECT e.*, c.class_name FROM exams e LEFT JOIN classes c ON e.class_id = c.id ORDER BY e.id DESC """)
+
+    exams = cursor.fetchall()
+
+    conn.close()
+
+    return render_template(
+        "admin_mng_cls_sub_exm.html",
+
+        classes=classes,
+        subjects=subjects,
+        exams=exams
+    )
+
+
+
+# =================End MASTER MANAGEMENT of class, subject, Exam (with CURD)=================
+
+
+
+
+
 #====Start Gallery====
 
 #====End Gallery====
