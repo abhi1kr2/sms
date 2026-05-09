@@ -71,7 +71,6 @@
                     </button>
 
                 </div>
-
             </form>
 
             <!-- CLASS TABLE -->
@@ -84,6 +83,7 @@
 
                         <th>ID</th>
                         <th>Class Name</th>
+                        <th width="180">Action</th>
 
                     </tr>
 
@@ -106,6 +106,26 @@
                             </span>
 
                         </td>
+                        <td>
+                            <!-- EDIT -->
+
+                            <button class="btn btn-sm btn-warning"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#editClassModal{{ c.id }}">
+
+                                Edit
+                            </button>
+
+                            <!-- DELETE -->
+
+                            <a href="/delete_class/{{ c.id }}"
+                            class="btn btn-sm btn-danger"
+                            onclick="return confirm('Delete this class?')">
+
+                                Delete
+
+                            </a>
+                        </td>
 
                     </tr>
 
@@ -114,10 +134,75 @@
                 </tbody>
 
             </table>
+            
+            {% for c in classes %}
+
+            <div class="modal fade"
+                id="editClassModal{{ c.id }}"
+                tabindex="-1">
+
+                <div class="modal-dialog">
+
+                    <div class="modal-content">
+
+                        <form method="POST"
+                            action="/update_class/{{ c.id }}">
+
+                            <div class="modal-header bg-primary text-white">
+
+                                <h5 class="modal-title">
+
+                                    Edit Class
+
+                                </h5>
+
+                                <button type="button"
+                                        class="btn-close btn-close-white"
+                                        data-bs-dismiss="modal"></button>
+
+                            </div>
+
+                            <div class="modal-body">
+
+                                <label>Class Name</label>
+
+                                <input type="text"
+                                    name="class_name"
+                                    class="form-control"
+                                    value="{{ c.class_name }}"
+                                    required>
+
+                            </div>
+
+                            <div class="modal-footer">
+
+                                <button class="btn btn-primary">
+
+                                    Update
+
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
 
         </div>
 
     </div>
+
+
+
+
+
 
     <!-- ================= SUBJECTS ================= -->
 
@@ -218,6 +303,7 @@
                         <th>Subject</th>
                         <th>Class</th>
                         <th>Passing Marks</th>
+                        <th width="180">Action</th>
 
                     </tr>
 
@@ -244,6 +330,30 @@
                         <td>{{ s.class_name }}</td>
 
                         <td>{{ s.passing_marks }}</td>
+                       
+                        <td>
+
+                            <!-- EDIT -->
+
+                            <button class="btn btn-sm btn-warning"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#editSubjectModal{{ s.id }}">
+
+                                Edit
+
+                            </button>
+
+                            <!-- DELETE -->
+
+                            <a href="/delete_subject/{{ s.id }}"
+                            class="btn btn-sm btn-danger"
+                            onclick="return confirm('Delete this subject?')">
+
+                                Delete
+
+                            </a>
+
+                        </td>
 
                     </tr>
 
@@ -252,10 +362,126 @@
                 </tbody>
 
             </table>
+            
+            <!-- SUBJECT EDIT MODALS -->
+
+            {% for s in subjects %}
+
+            <div class="modal fade"
+                id="editSubjectModal{{ s.id }}"
+                tabindex="-1">
+
+                <div class="modal-dialog">
+
+                    <div class="modal-content">
+
+                        <form method="POST"
+                            action="/update_subject/{{ s.id }}">
+
+                            <!-- HEADER -->
+
+                            <div class="modal-header bg-success text-white">
+
+                                <h5 class="modal-title">
+
+                                    Edit Subject
+
+                                </h5>
+
+                                <button type="button"
+                                        class="btn-close btn-close-white"
+                                        data-bs-dismiss="modal"></button>
+
+                            </div>
+
+                            <!-- BODY -->
+
+                            <div class="modal-body">
+
+                                <!-- SUBJECT NAME -->
+
+                                <div class="mb-3">
+
+                                    <label>Subject Name</label>
+
+                                    <input type="text"
+                                        name="subject_name"
+                                        class="form-control"
+                                        value="{{ s.name }}"
+                                        required>
+
+                                </div>
+
+                                <!-- CLASS -->
+
+                                <div class="mb-3">
+
+                                    <label>Class</label>
+
+                                    <select name="class_id"
+                                            class="form-select"
+                                            required>
+
+                                        {% for c in classes %}
+
+                                        <option value="{{ c.id }}"
+                                            {% if c.id == s.class_id %}
+                                                selected
+                                            {% endif %}
+                                        >
+                                            {{ c.class_name }}
+                                        </option>
+
+                                        {% endfor %}
+
+                                    </select>
+
+                                </div>
+
+                                <!-- PASSING MARKS -->
+
+                                <div class="mb-3">
+
+                                    <label>Passing Marks</label>
+
+                                    <input type="number"
+                                        name="passing_marks"
+                                        class="form-control"
+                                        value="{{ s.passing_marks }}"
+                                        required>
+
+                                </div>
+
+                            </div>
+
+                            <!-- FOOTER -->
+
+                            <div class="modal-footer">
+
+                                <button class="btn btn-success">
+
+                                    Update Subject
+
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
 
         </div>
 
     </div>
+
+
+
 
     <!-- ================= EXAMS ================= -->
 
@@ -367,6 +593,7 @@
                         <th>Class</th>
                         <th>Total Marks</th>
                         <th>Exam Date</th>
+                        <th width="180">Action</th>
 
                     </tr>
 
@@ -403,6 +630,31 @@
                         <td>{{ e.total_marks }}</td>
 
                         <td>{{ e.exam_date }}</td>
+                        
+                        <td>
+
+                            <!-- EDIT -->
+
+                            <button class="btn btn-sm btn-warning"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#editExamModal{{ e.id }}">
+
+                                Edit
+
+                            </button>
+
+                            <!-- DELETE -->
+
+                            <a href="/delete_exam/{{ e.id }}"
+                            class="btn btn-sm btn-danger"
+                            onclick="return confirm('Delete this exam?')">
+
+                                Delete
+
+                            </a>
+
+                        </td>
+
 
                     </tr>
 
@@ -411,6 +663,133 @@
                 </tbody>
 
             </table>
+            
+            <!-- EXAM EDIT MODALS -->
+
+            {% for e in exams %}
+
+            <div class="modal fade"
+                id="editExamModal{{ e.id }}"
+                tabindex="-1">
+
+                <div class="modal-dialog">
+
+                    <div class="modal-content">
+
+                        <form method="POST"
+                            action="/update_exam/{{ e.id }}">
+
+                            <!-- HEADER -->
+
+                            <div class="modal-header bg-warning">
+
+                                <h5 class="modal-title">
+
+                                    Edit Exam
+
+                                </h5>
+
+                                <button type="button"
+                                        class="btn-close"
+                                        data-bs-dismiss="modal"></button>
+
+                            </div>
+
+                            <!-- BODY -->
+
+                            <div class="modal-body">
+
+                                <!-- EXAM NAME -->
+
+                                <div class="mb-3">
+
+                                    <label>Exam Name</label>
+
+                                    <input type="text"
+                                        name="exam_name"
+                                        class="form-control"
+                                        value="{{ e.name }}"
+                                        required>
+
+                                </div>
+
+                                <!-- CLASS -->
+
+                                <div class="mb-3">
+
+                                    <label>Class</label>
+
+                                    <select name="class_id"
+                                            class="form-select"
+                                            required>
+
+                                        {% for c in classes %}
+
+                                        <option value="{{ c.id }}"
+                                            {% if c.id == e.class_id %}
+                                                selected
+                                            {% endif %}
+                                        >
+                                            {{ c.class_name }}
+                                        </option>
+
+                                        {% endfor %}
+
+                                    </select>
+
+                                </div>
+
+                                <!-- TOTAL MARKS -->
+
+                                <div class="mb-3">
+
+                                    <label>Total Marks</label>
+
+                                    <input type="number"
+                                        name="total_marks"
+                                        class="form-control"
+                                        value="{{ e.total_marks }}"
+                                        required>
+
+                                </div>
+
+                                <!-- EXAM DATE -->
+
+                                <div class="mb-3">
+
+                                    <label>Exam Date</label>
+
+                                    <input type="date"
+                                        name="exam_date"
+                                        class="form-control"
+                                        value="{{ e.exam_date }}">
+
+                                </div>
+
+                            </div>
+
+                            <!-- FOOTER -->
+
+                            <div class="modal-footer">
+
+                                <button class="btn btn-warning">
+
+                                    Update Exam
+
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
 
         </div>
 

@@ -2867,6 +2867,306 @@ def admin_mng_cls_sub_exm():
 
 
 
+#Edit and delete-
+
+
+# =====================================================
+# UPDATE CLASS
+# =====================================================
+
+@app.route("/update_class/<int:id>", methods=["POST"])
+def update_class(id):
+
+    if "admin_id" not in session:
+        return redirect("/admin_login")
+
+    conn = get_db()
+
+    cursor = conn.cursor()
+
+    class_name = request.form.get("class_name").strip()
+
+    # DUPLICATE CHECK
+
+    cursor.execute("""
+        SELECT *
+        FROM classes
+        WHERE class_name=%s
+        AND id!=%s
+    """, (
+        class_name,
+        id
+    ))
+
+    if cursor.fetchone():
+
+        flash(
+            "Class already exists!",
+            "danger"
+        )
+
+    else:
+
+        cursor.execute("""
+            UPDATE classes
+            SET class_name=%s
+            WHERE id=%s
+        """, (
+            class_name,
+            id
+        ))
+
+        conn.commit()
+
+        flash(
+            "Class updated successfully!",
+            "success"
+        )
+
+    conn.close()
+
+    return redirect("/admin_mng_cls_sub_exm")
+
+
+# =====================================================
+# DELETE CLASS
+# =====================================================
+
+@app.route("/delete_class/<int:id>")
+def delete_class(id):
+
+    if "admin_id" not in session:
+        return redirect("/admin_login")
+
+    conn = get_db()
+
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        DELETE FROM classes
+        WHERE id=%s
+    """, (id,))
+
+    conn.commit()
+
+    conn.close()
+
+    flash(
+        "Class deleted successfully!",
+        "warning"
+    )
+
+    return redirect("/admin_mng_cls_sub_exm")
+
+
+# =====================================================
+# UPDATE SUBJECT
+# =====================================================
+
+@app.route("/update_subject/<int:id>", methods=["POST"])
+def update_subject(id):
+
+    if "admin_id" not in session:
+        return redirect("/admin_login")
+
+    conn = get_db()
+
+    cursor = conn.cursor()
+
+    subject_name = request.form.get("subject_name").strip()
+
+    class_id = request.form.get("class_id")
+
+    passing_marks = request.form.get("passing_marks")
+
+    # DUPLICATE CHECK
+
+    cursor.execute("""
+        SELECT *
+        FROM subjects
+        WHERE name=%s
+        AND class_id=%s
+        AND id!=%s
+    """, (
+        subject_name,
+        class_id,
+        id
+    ))
+
+    if cursor.fetchone():
+
+        flash(
+            "Subject already exists for this class!",
+            "danger"
+        )
+
+    else:
+
+        cursor.execute("""
+            UPDATE subjects
+
+            SET
+                name=%s,
+                class_id=%s,
+                passing_marks=%s
+
+            WHERE id=%s
+        """, (
+            subject_name,
+            class_id,
+            passing_marks,
+            id
+        ))
+
+        conn.commit()
+
+        flash(
+            "Subject updated successfully!",
+            "success"
+        )
+
+    conn.close()
+
+    return redirect("/admin_mng_cls_sub_exm")
+
+
+# =====================================================
+# DELETE SUBJECT
+# =====================================================
+
+@app.route("/delete_subject/<int:id>")
+def delete_subject(id):
+
+    if "admin_id" not in session:
+        return redirect("/admin_login")
+
+    conn = get_db()
+
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        DELETE FROM subjects
+        WHERE id=%s
+    """, (id,))
+
+    conn.commit()
+
+    conn.close()
+
+    flash(
+        "Subject deleted successfully!",
+        "warning"
+    )
+
+    return redirect("/admin_mng_cls_sub_exm")
+
+
+# =====================================================
+# UPDATE EXAM
+# =====================================================
+
+@app.route("/update_exam/<int:id>", methods=["POST"])
+def update_exam(id):
+
+    if "admin_id" not in session:
+        return redirect("/admin_login")
+
+    conn = get_db()
+
+    cursor = conn.cursor()
+
+    exam_name = request.form.get("exam_name").strip()
+
+    class_id = request.form.get("class_id")
+
+    total_marks = request.form.get("total_marks")
+
+    exam_date = request.form.get("exam_date")
+
+    # DUPLICATE CHECK
+
+    cursor.execute("""
+        SELECT *
+        FROM exams
+        WHERE name=%s
+        AND class_id=%s
+        AND id!=%s
+    """, (
+        exam_name,
+        class_id,
+        id
+    ))
+
+    if cursor.fetchone():
+
+        flash(
+            "Exam already exists for this class!",
+            "danger"
+        )
+
+    else:
+
+        cursor.execute("""
+            UPDATE exams
+
+            SET
+                name=%s,
+                class_id=%s,
+                total_marks=%s,
+                exam_date=%s
+
+            WHERE id=%s
+        """, (
+            exam_name,
+            class_id,
+            total_marks,
+            exam_date,
+            id
+        ))
+
+        conn.commit()
+
+        flash(
+            "Exam updated successfully!",
+            "success"
+        )
+
+    conn.close()
+
+    return redirect("/admin_mng_cls_sub_exm")
+
+
+# =====================================================
+# DELETE EXAM
+# =====================================================
+
+@app.route("/delete_exam/<int:id>")
+def delete_exam(id):
+
+    if "admin_id" not in session:
+        return redirect("/admin_login")
+
+    conn = get_db()
+
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        DELETE FROM exams
+        WHERE id=%s
+    """, (id,))
+
+    conn.commit()
+
+    conn.close()
+
+    flash(
+        "Exam deleted successfully!",
+        "warning"
+    )
+
+    return redirect("/admin_mng_cls_sub_exm")
+
+
 # =================End MASTER MANAGEMENT of class, subject, Exam (with CURD)=================
 
 
