@@ -542,38 +542,69 @@ def teacher_dashboard():
 
 #Update Teacher Profile:
 
-@app.route("/teacher_profile", methods=["GET","POST"])
+@app.route("/teacher_profile", methods=["GET", "POST"])
 def teacher_profile():
 
     if "teacher_id" not in session:
         return redirect("/teacher_login")
 
     conn = get_db()
-    cursor = conn.cursor()
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+    message = None
+    msg_type = None
 
     if request.method == "POST":
 
-        email = request.form["email"]
-        phone = request.form["phone"]
+        email = request.form.get("email").strip()
+        phone = request.form.get("phone").strip()
 
-        cursor.execute(
-            "UPDATE teachers SET email=%s, phone=%s WHERE tchr_id=%s",
-            (email, phone, session["teacher_id"])
-        )
+        # Validation
+        if not phone.isdigit() or len(phone) != 10:
 
-        conn.commit()
+            message = "Phone number must be exactly 10 digits."
+            msg_type = "danger"
 
-    cursor.execute(
-        "SELECT * FROM teachers WHERE tchr_id=%s",
-        (session["teacher_id"],)
-    )
+        else:
+
+            cursor.execute("""
+                UPDATE teachers
+
+                SET
+                    email=%s,
+                    phone=%s
+
+                WHERE tchr_id=%s
+            """, (
+                email,
+                phone,
+                session["teacher_id"]
+            ))
+
+            conn.commit()
+
+            message = "Profile updated successfully!"
+            msg_type = "success"
+
+    # FETCH TEACHER
+    cursor.execute("""
+        SELECT *
+        FROM teachers
+        WHERE tchr_id=%s
+    """, (session["teacher_id"],))
 
     teacher = cursor.fetchone()
 
     conn.close()
 
-    return render_template("teacher_profile.html", teacher=teacher)
+    return render_template(
+        "teacher_profile.html",
 
+        teacher=teacher,
+
+        message=message,
+        msg_type=msg_type
+    )
 
 
 
