@@ -2394,60 +2394,176 @@ def adm_teachers_list():
 
 
 #Admin can Edit Registered Teachers details:
-@app.route("/adm_edit_teacher/<int:tchr_id>", methods=["GET","POST"])
+
+# ================= EDIT TEACHER =================
+
+@app.route("/adm_edit_teacher/<int:tchr_id>", methods=["GET", "POST"])
 def adm_edit_teacher(tchr_id):
 
     if "admin_id" not in session:
         return redirect("/admin_login")
 
     conn = get_db()
-    cursor = conn.cursor()
+
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
 
     try:
+
+        # ---------------- FETCH CLASSES ----------------
+
+        cursor.execute("SELECT * FROM classes")
+
+        classes = cursor.fetchall()
+
         if request.method == "POST":
 
-            fname = request.form["fname"]
-            lname = request.form["lname"]
-            email = request.form["email"].strip()
-            phone = request.form["phone"]
+            fname = request.form.get("fname").strip()
 
-            #duplicate check
-            cursor.execute(
-                "SELECT * FROM teachers WHERE email=%s AND tchr_id!=%s",
-                (email, tchr_id)
-            )
-            if cursor.fetchone():
-                # re-render with same data
-                return render_template(
-                    "adm_edit_teacher.html",
-                    teacher={
-                        "tchr_id": tchr_id,
-                        "first_name": fname,
-                        "last_name": lname,
-                        "email": email,
-                        "phone": phone
-                    },
-                    error="Email already exists!"
+            lname = request.form.get("lname").strip()
+
+            email = request.form.get("email").strip()
+
+            phone = request.form.get("phone").strip()
+
+            class_id = request.form.get("class_id")
+
+            class_name = request.form.get("class_name")
+
+            subjects = request.form.getlist("subject")
+
+            subject_string = ",".join(subjects)
+
+            # ---------------- VALIDATION ----------------
+
+            if not phone.isdigit() or len(phone) != 10:
+
+                flash(
+                    "Phone number must be exactly 10 digits.",
+                    "danger"
                 )
 
-            # update
-            cursor.execute(
-                "UPDATE teachers SET first_name=%s, last_name=%s, email=%s, phone=%s WHERE tchr_id=%s",
-                (fname, lname, email, phone, tchr_id)
-            )
+                return redirect(
+                    f"/adm_edit_teacher/{tchr_id}"
+                )
+
+            # ---------------- DUPLICATE EMAIL ----------------
+
+            cursor.execute("""
+                SELECT *
+                FROM teachers
+                WHERE email=%s
+                AND tchr_id!=%s
+            """, (
+                email,
+                tchr_id
+            ))
+
+            if cursor.fetchone():
+
+                flash(
+                    "Email already exists!",
+                    "danger"
+                )
+
+                return redirect(
+                    f"/adm_edit_teacher/{tchr_id}"
+                )
+
+            # ---------------- IMAGE UPDATE ----------------
+
+            cursor.execute("""
+                SELECT tchr_img
+                FROM teachers
+                WHERE tchr_id=%s
+            """, (tchr_id,))
+
+            old_teacher = cursor.fetchone()
+
+            teacher_img = old_teacher["tchr_img"]
+
+            file = request.files.get("tchr_img")
+
+            if file and file.filename != "":
+
+                filename = secure_filename(file.filename)
+
+                os.makedirs(
+                    "static/uploads/teachers",
+                    exist_ok=True
+                )
+
+                file.save(
+                    os.path.join(
+                        "static/uploads/teachers",
+                        filename
+                    )
+                )
+
+                teacher_img = filename
+
+            # ---------------- UPDATE ----------------
+
+            cursor.execute("""
+                UPDATE teachers
+
+                SET
+                    first_name=%s,
+                    last_name=%s,
+                    email=%s,
+                    phone=%s,
+                    class_id=%s,
+                    class=%s,
+                    subject=%s,
+                    tchr_img=%s
+
+                WHERE tchr_id=%s
+            """, (
+                fname,
+                lname,
+                email,
+                phone,
+                class_id,
+                class_name,
+                subject_string,
+                teacher_img,
+                tchr_id
+            ))
+
             conn.commit()
 
-            flash("Teacher updated successfully!", "success")
-            return redirect(f"/adm_edit_teacher/{tchr_id}")
+            flash(
+                "Teacher updated successfully!",
+                "success"
+            )
 
-        # GET request
-        cursor.execute("SELECT * FROM teachers WHERE tchr_id=%s", (tchr_id,))
+            return redirect(
+                f"/adm_edit_teacher/{tchr_id}"
+            )
+
+        # ---------------- FETCH TEACHER ----------------
+
+        cursor.execute("""
+            SELECT *
+            FROM teachers
+            WHERE tchr_id=%s
+        """, (tchr_id,))
+
         teacher = cursor.fetchone()
 
-        return render_template("adm_edit_teacher.html", teacher=teacher)
+        return render_template(
+            "adm_edit_teacher.html",
+
+            teacher=teacher,
+            classes=classes
+        )
 
     finally:
+
         conn.close()
+
+
+
+
 
 
 #Admin can Delete Registered Teachers:
