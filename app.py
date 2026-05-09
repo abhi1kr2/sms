@@ -402,6 +402,56 @@ def student_settings():
 
 #End Stuent Setting Dashboard-
 
+
+#Start Stduent view assignment-
+
+
+@app.route("/student_assignments")
+def student_assignments():
+
+    if "student_id" not in session:
+        return redirect("/student_login")
+
+    conn = get_db()
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+    # ---------------- STUDENT INFO ----------------
+
+    cursor.execute("""
+        SELECT *
+        FROM students_rgd
+        WHERE std_id=%s
+    """, (session["student_id"],))
+
+    student = cursor.fetchone()
+
+    class_id = student["class_id"]
+
+    # ---------------- FETCH ASSIGNMENTS ----------------
+
+    cursor.execute("""
+        SELECT *
+        FROM assignments
+        WHERE class_id=%s
+        ORDER BY id DESC
+    """, (class_id,))
+
+    assignments = cursor.fetchall()
+
+    conn.close()
+
+    return render_template(
+        "student_assignments.html",
+
+        student=student,
+        assignments=assignments
+    )
+
+
+#End Stduent view assignment-
+
+
+
 #Student Forgot Password Route
 
 @app.route("/std_forgot_password", methods=["GET","POST"])
