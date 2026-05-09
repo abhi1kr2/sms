@@ -77,20 +77,67 @@ def student_login():
 
 
 #Code for Student Dashboard Route
+
 @app.route("/stddashboard")
 def stddashboard():
+
     if "student_id" not in session:
         return redirect("/student_login")
 
     conn = get_db()
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM students_rgd WHERE std_id=%s", (session["student_id"],))
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+    # ---------------- STUDENT INFO ----------------
+
+    cursor.execute("""
+        SELECT
+            s.*,
+            c.class_name
+
+        FROM students_rgd s
+
+        LEFT JOIN classes c
+            ON s.class_id = c.id
+
+        WHERE s.std_id=%s
+    """, (session["student_id"],))
+
     student = cursor.fetchone()
+
+    # ---------------- SUBJECTS ----------------
+
+    cursor.execute("""
+        SELECT *
+        FROM subjects
+        WHERE class_id=%s
+    """, (student["class_id"],))
+
+    subjects = cursor.fetchall()
+
+    # ---------------- TEACHERS ----------------
+
+    cursor.execute("""
+        SELECT *
+        FROM teachers
+        WHERE class_id=%s
+    """, (student["class_id"],))
+
+    teachers = cursor.fetchall()
+
     conn.close()
 
-    return render_template("stddashboard.html", student=student)
+    return render_template(
+        "stddashboard.html",
 
-#Code for Student Dashboard Route
+        student=student,
+        subjects=subjects,
+        teachers=teachers
+    )
+
+
+
+
+#Code for Student Dashboard Route-context_processor
 @app.context_processor
 def inject_student():
 
@@ -449,6 +496,75 @@ def student_assignments():
 
 
 #End Stduent view assignment-
+
+
+
+
+
+
+# #start Student view class and assigned teacher-- #commented because rendering it from stddashboard route
+
+
+
+# @app.route("/student_class_details")
+# def student_class_details():
+
+#     if "student_id" not in session:
+#         return redirect("/student_login")
+
+#     conn = get_db()
+#     cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+#     # ---------------- STUDENT INFO ----------------
+
+#     cursor.execute("""
+#         SELECT
+#             s.*,
+#             c.class_name
+
+#         FROM students_rgd s
+
+#         LEFT JOIN classes c
+#             ON s.class_id = c.id
+
+#         WHERE s.std_id=%s
+#     """, (session["student_id"],))
+
+#     student = cursor.fetchone()
+
+#     # ---------------- SUBJECTS OF CLASS ----------------
+
+#     cursor.execute("""
+#         SELECT *
+#         FROM subjects
+#         WHERE class_id=%s
+#     """, (student["class_id"],))
+
+#     subjects = cursor.fetchall()
+
+#     # ---------------- TEACHERS OF CLASS ----------------
+
+#     cursor.execute("""
+#         SELECT *
+#         FROM teachers
+#         WHERE class_id=%s
+#     """, (student["class_id"],))
+
+#     teachers = cursor.fetchall()
+
+#     conn.close()
+
+#     return render_template(
+#         "student_class_details.html",
+#         student=student,
+#         subjects=subjects,
+#         teachers=teachers
+#     )
+
+
+#End Student view class and assigned teacher--
+
+
 
 
 
