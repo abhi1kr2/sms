@@ -2,51 +2,55 @@
 
 {% block content %}
 
-<h3>Student Dashboard</h3>
+<div class="container">
+    <h3>Student Dashboard</h3>
 
-<div class="row mt-4">
+    <div class="row mt-4">
 
-    <div class="col-md-3">
-        <div class="card p-3 text-center shadow">
-            <h5>🖼 Profile</h5>
-            <a href="/stdstudent_profile" class="btn btn-warning mt-2">View</a>
+        <div class="col-md-3">
+            <div class="card p-3 text-center shadow">
+                <h5>🖼 Profile</h5>
+                <a href="/stdstudent_profile" class="btn btn-warning mt-2">View</a>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card p-3 text-center shadow">
+                <h5>📊 Marksheet</h5>
+                <a href="/std_view_marks" class="btn btn-warning mt-2">View</a>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card p-3 text-center shadow">
+                <h5>📚 View Assignments</h5>
+                <a href="/student_assignments" class="btn btn-danger mt-2">View</a>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card p-3 text-center shadow">
+                <h5>📢 Notices</h5>
+                <a href="/notices" class="btn btn-primary mt-2">Open</a>
+            </div>
         </div>
     </div>
 
-    <div class="col-md-3">
-        <div class="card p-3 text-center shadow">
-            <h5>📊 Marksheet</h5>
-            <a href="/std_view_marks" class="btn btn-warning mt-2">View</a>
+    <div class="row mt-2">
+        <div class="col-md-3">
+            <div class="card p-3 text-center shadow">
+                <h5>📢 Notices</h5>
+                <a href="/notices" class="btn btn-warning mt-2">View Notices</a>
+            </div>
         </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card p-3 text-center shadow">
-            <h5>📚 View Assignments</h5>
-            <a href="/student_assignments" class="btn btn-danger mt-2">View</a>
-        </div>
-    </div>
 
-    <div class="col-md-3">
-        <div class="card p-3 text-center shadow">
-            <h5>📢 Notices</h5>
-            <a href="/notices" class="btn btn-primary mt-2">Open</a>
+        <div class="col-md-3">
+            <div class="card p-3 text-center shadow">
+                <h5>⚙️ Settings</h5>
+                <a href="/student_settings" class="btn btn-warning mt-2">Open</a>
+            </div>
         </div>
-    </div>
 
-    <div class="col-md-3">
-        <div class="card p-3 text-center shadow">
-            <h5>🖼 Library Book Status</h5>
-            <a href="/gallery" class="btn btn-warning mt-2">View</a>
-        </div>
     </div>
-
-    <div class="col-md-3">
-        <div class="card p-3 text-center shadow">
-            <h5>🖼 Gallery</h5>
-            <a href="/gallery" class="btn btn-warning mt-2">View</a>
-        </div>
-    </div>
-
 </div>
 
 
