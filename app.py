@@ -554,6 +554,40 @@ def teacher_profile():
 
 
 
+#start teacher view class and subject--
+
+@app.route("/teacher_my_details")
+def teacher_my_details():
+
+    if "teacher_id" not in session:
+        return redirect("/teacher_login")
+
+    conn = get_db()
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+    cursor.execute("""
+        SELECT *
+        FROM teachers
+        WHERE tchr_id=%s
+    """, (session["teacher_id"],))
+
+    teacher = cursor.fetchone()
+
+    conn.close()
+
+    return render_template(
+        "teacher_my_details.html",
+        teacher=teacher
+    )
+
+
+
+#end teacher view class and subject--
+
+
+
+
+
 #Start Insert new marks only for student by teachers
 
 
