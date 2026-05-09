@@ -56,7 +56,7 @@
 
                     <input type="text"
                            name="class_name"
-                           class="form-control"
+                           class="form-control" minlength="3" maxlength="20"
                            placeholder="Enter Class Name"
                            required>
 
@@ -168,7 +168,7 @@
 
                                 <input type="text"
                                     name="class_name"
-                                    class="form-control"
+                                    class="form-control" minlength="3" maxlength="20"
                                     value="{{ c.class_name }}"
                                     required>
 
@@ -232,7 +232,7 @@
 
                     <input type="text"
                            name="subject_name"
-                           class="form-control"
+                           class="form-control" minlength="3" maxlength="20"
                            placeholder="Subject Name"
                            required>
 
@@ -272,8 +272,7 @@
                            name="passing_marks"
                            class="form-control"
                            placeholder="Passing"
-                           value="33"
-                           required>
+                           value="33" min="30" max="33" required>
 
                 </div>
 
@@ -406,7 +405,7 @@
 
                                     <input type="text"
                                         name="subject_name"
-                                        class="form-control"
+                                        class="form-control" minlength="3" maxlength="20"
                                         value="{{ s.name }}"
                                         required>
 
@@ -447,8 +446,7 @@
                                     <input type="number"
                                         name="passing_marks"
                                         class="form-control"
-                                        value="{{ s.passing_marks }}"
-                                        required>
+                                        value="{{ s.passing_marks }}" min="30" max="33" required>
 
                                 </div>
 
@@ -510,7 +508,7 @@
 
                     <input type="text"
                         name="exam_name"
-                        class="form-control"
+                        class="form-control" minlength="3" maxlength="20"
                         placeholder="Exam Name"
                         required>
 
@@ -550,7 +548,7 @@
                         name="total_marks"
                         class="form-control"
                         placeholder="Total Marks"
-                        value="100"
+                        value="100" min="100" max="1200"
                         required>
 
                 </div>
@@ -707,7 +705,7 @@
 
                                     <input type="text"
                                         name="exam_name"
-                                        class="form-control"
+                                        class="form-control" minlength="3" maxlength="20"
                                         value="{{ e.name }}"
                                         required>
 
@@ -748,8 +746,7 @@
                                     <input type="number"
                                         name="total_marks"
                                         class="form-control"
-                                        value="{{ e.total_marks }}"
-                                        required>
+                                        value="{{ e.total_marks }}" min="100" max="1200" required>
 
                                 </div>
 
