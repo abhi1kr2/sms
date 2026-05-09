@@ -505,14 +505,39 @@ def teacher_login():
     
     return render_template("teacher_login.html")
 
-# Teacher dashboard Route... After success login below route will call
+
+
+
+#Code Start for Teacher dashboard Route... After success login below route will call
+
+
 @app.route("/teacher_dashboard")
 def teacher_dashboard():
 
     if "teacher_id" not in session:
         return redirect("/teacher_login")
 
-    return render_template("teacher_dashboard.html")
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT *
+        FROM teachers
+        WHERE tchr_id=%s
+    """, (session["teacher_id"],))
+
+    teacher = cursor.fetchone()
+
+    conn.close()
+
+    return render_template(
+        "teacher_dashboard.html",
+        teacher=teacher
+    )
+
+
+
+#Code End for Teacher dashboard Route... After success login below route will call
 
 
 #Update Teacher Profile:

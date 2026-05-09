@@ -1,27 +1,223 @@
 {% extends 'teacher_base.html' %}
 
 {% block content %}
-<h2>Teacher Dashboard</h2>
 
+<div class="container mt-4">
 
-<li class="nav-item">
-    <a class="nav-link" href="/teacher_my_details">
-        📚 My Classes & Subjects
-    </a>
-</li>
-<li class="nav-item">
-    <a class="nav-link" href="/teacher_analytics">
-        📊 Analytics
-    </a>
-</li>
-<li class="nav-item">
-    <a class="nav-link" href="/teacher_assignments">
-        📚 Assignments
-    </a>
-</li>
-<br><br>
+    <!-- WELCOME CARD -->
 
-<a href="/teacher_add_marks">Add Marks Of Students</a> <br><br>
-<a href="/teacher_profile">View / Edit Profile</a>
+    <div class="card shadow-lg border-0 rounded-4 p-4 mb-4">
+
+        <div class="row align-items-center">
+
+            <!-- IMAGE -->
+
+            <div class="col-md-2 text-center">
+
+                {% if teacher.tchr_img %}
+
+                <img src="{{ url_for('static', filename='uploads/teachers/' + teacher.tchr_img) }}"
+                    class="rounded-circle shadow"
+                    width="120"
+                    height="120"
+                    style="object-fit:cover; border:4px solid #0d6efd;">
+
+                {% else %}
+
+                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+                    class="rounded-circle shadow"
+                    width="120">
+
+                {% endif %}
+
+            </div>
+
+            <!-- DETAILS -->
+
+            <div class="col-md-10">
+
+                <h2>
+                    Welcome,
+                    {{ teacher.first_name }}
+                    {{ teacher.last_name }}
+                </h2>
+
+                <p class="text-muted mb-2">
+
+                    Class:
+                    <strong>{{ teacher.class }}</strong>
+
+                </p>
+
+                <div>
+
+                    {% for sub in teacher.subject.split(',') %}
+
+                    <span class="badge bg-primary p-2 me-2">
+                        {{ sub }}
+                    </span>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- DASHBOARD CARDS -->
+
+    <div class="row g-4">
+
+        <!-- MY DETAILS -->
+
+        <div class="col-md-4">
+
+            <div class="card shadow border-0 rounded-4 h-100 text-center p-4">
+
+                <div class="display-4 mb-3">
+                    📚
+                </div>
+
+                <h4>
+                    My Classes & Subjects
+                </h4>
+
+                <p class="text-muted">
+                    View assigned classes and subjects
+                </p>
+
+                <a href="/teacher_my_details"
+                class="btn btn-primary">
+
+                    Open
+
+                </a>
+
+            </div>
+
+        </div>
+
+        <!-- ANALYTICS -->
+
+        <div class="col-md-4">
+
+            <div class="card shadow border-0 rounded-4 h-100 text-center p-4">
+
+                <div class="display-4 mb-3">
+                    📊
+                </div>
+
+                <h4>
+                    Analytics
+                </h4>
+
+                <p class="text-muted">
+                    View academic insights and reports
+                </p>
+
+                <a href="/teacher_analytics"
+                class="btn btn-success">
+
+                    Open
+
+                </a>
+
+            </div>
+
+        </div>
+
+        <!-- ASSIGNMENTS -->
+
+        <div class="col-md-4">
+
+            <div class="card shadow border-0 rounded-4 h-100 text-center p-4">
+
+                <div class="display-4 mb-3">
+                    📝
+                </div>
+
+                <h4>
+                    Assignments
+                </h4>
+
+                <p class="text-muted">
+                    Upload and manage homework
+                </p>
+
+                <a href="/teacher_assignments"
+                class="btn btn-warning">
+
+                    Open
+
+                </a>
+
+            </div>
+
+        </div>
+
+        <!-- ADD MARKS -->
+
+        <div class="col-md-6">
+
+            <div class="card shadow border-0 rounded-4 h-100 text-center p-4">
+
+                <div class="display-4 mb-3">
+                    ➕
+                </div>
+
+                <h4>
+                    Add Student Marks
+                </h4>
+
+                <p class="text-muted">
+                    Upload marks for assigned students
+                </p>
+
+                <a href="/teacher_add_marks"
+                class="btn btn-danger">
+
+                    Open
+
+                </a>
+
+            </div>
+
+        </div>
+
+        <!-- PROFILE -->
+
+        <div class="col-md-6">
+
+            <div class="card shadow border-0 rounded-4 h-100 text-center p-4">
+
+                <div class="display-4 mb-3">
+                    👤
+                </div>
+
+                <h4>
+                    My Profile
+                </h4>
+
+                <p class="text-muted">
+                    View and update profile information
+                </p>
+
+                <a href="/teacher_profile"
+                class="btn btn-dark">
+
+                    Open
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 
 {% endblock %}
