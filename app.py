@@ -587,6 +587,244 @@ def teacher_my_details():
 
 
 
+# Start code for Teacher Analytics Dashboard
+
+
+@app.route("/teacher_analytics")
+def teacher_analytics():
+
+    if "teacher_id" not in session:
+        return redirect("/teacher_login")
+
+    conn = get_db()
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+    teacher_id = session["teacher_id"]
+
+    # ---------------- TEACHER INFO ----------------
+
+    cursor.execute("""
+        SELECT *
+        FROM teachers
+        WHERE tchr_id=%s
+    """, (teacher_id,))
+
+    teacher = cursor.fetchone()
+
+    class_id = teacher["class_id"]
+
+    # Teacher subjects
+    teacher_subjects = [
+        s.strip()
+        for s in teacher["subject"].split(",")
+    ]
+
+    # Dynamic placeholders
+    placeholders = ",".join(["%s"] * len(teacher_subjects))
+
+    # ---------------- TOTAL STUDENTS ----------------
+
+    cursor.execute("""
+        SELECT COUNT(*) AS total_students
+        FROM students_rgd
+        WHERE class_id=%s
+    """, (class_id,))
+
+    total_students = cursor.fetchone()["total_students"]
+
+    # ---------------- PASS PERCENTAGE ----------------
+
+    query = f"""
+        SELECT
+            COUNT(*) AS total,
+
+            SUM(
+                CASE
+                    WHEN m.marks_obtained >= s.passing_marks
+                    THEN 1
+                    ELSE 0
+                END
+            ) AS passed
+
+        FROM marks m
+
+        JOIN subjects s
+            ON m.subject_id = s.id
+
+        JOIN students_rgd st
+            ON m.std_id = st.std_id
+
+        WHERE st.class_id=%s
+        AND s.name IN ({placeholders})
+    """
+
+    params = [class_id] + teacher_subjects
+
+    cursor.execute(query, params)
+
+    pass_data = cursor.fetchone()
+
+    total = pass_data["total"] or 0
+    passed = pass_data["passed"] or 0
+
+    pass_percent = round((passed / total) * 100, 2) if total else 0
+
+    # ---------------- AVERAGE MARKS ----------------
+
+    query = f"""
+        SELECT AVG(m.marks_obtained) AS avg_marks
+
+        FROM marks m
+
+        JOIN subjects s
+            ON m.subject_id = s.id
+
+        JOIN students_rgd st
+            ON m.std_id = st.std_id
+
+        WHERE st.class_id=%s
+        AND s.name IN ({placeholders})
+    """
+
+    cursor.execute(query, params)
+
+    avg_marks = cursor.fetchone()["avg_marks"] or 0
+
+    avg_marks = round(avg_marks, 2)
+
+    # ---------------- TOP SCORE ----------------
+
+    query = f"""
+        SELECT MAX(m.marks_obtained) AS top_score
+
+        FROM marks m
+
+        JOIN subjects s
+            ON m.subject_id = s.id
+
+        JOIN students_rgd st
+            ON m.std_id = st.std_id
+
+        WHERE st.class_id=%s
+        AND s.name IN ({placeholders})
+    """
+
+    cursor.execute(query, params)
+
+    top_score = cursor.fetchone()["top_score"] or 0
+
+    # ---------------- TOPPER ----------------
+
+    query = f"""
+        SELECT
+            st.first_name,
+            st.last_name,
+
+            SUM(m.marks_obtained) AS total_marks
+
+        FROM marks m
+
+        JOIN subjects s
+            ON m.subject_id = s.id
+
+        JOIN students_rgd st
+            ON m.std_id = st.std_id
+
+        WHERE st.class_id=%s
+        AND s.name IN ({placeholders})
+
+        GROUP BY st.std_id
+
+        ORDER BY total_marks DESC
+
+        LIMIT 1
+    """
+
+    cursor.execute(query, params)
+
+    topper = cursor.fetchone()
+
+    # ---------------- WEAK STUDENTS ----------------
+
+    query = f"""
+        SELECT COUNT(DISTINCT st.std_id) AS weak_students
+
+        FROM marks m
+
+        JOIN subjects s
+            ON m.subject_id = s.id
+
+        JOIN students_rgd st
+            ON m.std_id = st.std_id
+
+        WHERE st.class_id=%s
+        AND s.name IN ({placeholders})
+        AND m.marks_obtained < s.passing_marks
+    """
+
+    cursor.execute(query, params)
+
+    weak_students = cursor.fetchone()["weak_students"]
+
+    # ---------------- SUBJECT AVG CHART ----------------
+
+    query = f"""
+        SELECT
+            s.name,
+
+            AVG(m.marks_obtained) AS avg_marks
+
+        FROM marks m
+
+        JOIN subjects s
+            ON m.subject_id = s.id
+
+        JOIN students_rgd st
+            ON m.std_id = st.std_id
+
+        WHERE st.class_id=%s
+        AND s.name IN ({placeholders})
+
+        GROUP BY s.id
+    """
+
+    cursor.execute(query, params)
+
+    chart_data = cursor.fetchall()
+
+    subject_labels = [
+        row["name"]
+        for row in chart_data
+    ]
+
+    subject_averages = [
+        round(row["avg_marks"], 2)
+        for row in chart_data
+    ]
+
+    conn.close()
+
+    return render_template(
+        "teacher_analytics.html",
+
+        total_students=total_students,
+        pass_percent=pass_percent,
+        avg_marks=avg_marks,
+        top_score=top_score,
+        topper=topper,
+        weak_students=weak_students,
+
+        subject_labels=subject_labels,
+        subject_averages=subject_averages
+    )
+
+
+
+# End code for Teacher Analytics Dashboard
+
+
+
+
 
 #Start Insert new marks only for student by teachers
 
