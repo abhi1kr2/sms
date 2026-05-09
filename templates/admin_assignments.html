@@ -1,0 +1,173 @@
+{% extends 'admin_base.html' %}
+
+{% block content %}
+
+<div class="container-fluid mt-4">
+
+    <!-- HEADER -->
+
+    <div class="card shadow-lg border-0 rounded-4 mb-4">
+
+        <div class="card-body text-center">
+
+            <h2>
+                📚 Assignment Monitoring
+            </h2>
+
+            <p class="text-muted mb-0">
+                View all teacher uploaded assignments
+            </p>
+
+        </div>
+
+    </div>
+
+    <!-- TABLE -->
+
+    <div class="card shadow-lg border-0 rounded-4">
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table class="table table-bordered table-hover align-middle">
+
+                    <thead class="table-dark text-center">
+
+                        <tr>
+
+                            <th>ID</th>
+
+                            <th>Teacher</th>
+
+                            <th>Class</th>
+
+                            <th>Subject</th>
+
+                            <th>Title</th>
+
+                            <th>Due Date</th>
+
+                            <th>File</th>
+
+                            <th>Created</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for a in assignments %}
+
+                        <tr>
+
+                            <!-- ID -->
+
+                            <td class="text-center">
+
+                                {{ a.id }}
+
+                            </td>
+
+                            <!-- TEACHER -->
+
+                            <td>
+
+                                {{ a.first_name }}
+                                {{ a.last_name }}
+
+                            </td>
+
+                            <!-- CLASS -->
+
+                            <td>
+
+                                <span class="badge bg-primary">
+
+                                    {{ a.class_name }}
+
+                                </span>
+
+                            </td>
+
+                            <!-- SUBJECT -->
+
+                            <td>
+
+                                <span class="badge bg-success">
+
+                                    {{ a.subject_name }}
+
+                                </span>
+
+                            </td>
+
+                            <!-- TITLE -->
+
+                            <td>
+
+                                {{ a.title }}
+
+                            </td>
+
+                            <!-- DUE DATE -->
+
+                            <td>
+
+                                {{ a.due_date }}
+
+                            </td>
+
+                            <!-- FILE -->
+
+                            <td class="text-center">
+
+                                {% if a.file_name %}
+
+                                <a href="{{ url_for('static', filename='uploads/assignments/' + a.file_name) }}"
+                                   target="_blank"
+                                   class="btn btn-sm btn-primary">
+
+                                    View File
+
+                                </a>
+
+                                {% else %}
+
+                                <span class="text-muted">
+
+                                    No File
+
+                                </span>
+
+                                {% endif %}
+
+                            </td>
+
+                            <!-- CREATED -->
+
+                            <td>
+
+                                {{ a.created_at }}
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+

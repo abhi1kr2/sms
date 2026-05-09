@@ -2583,6 +2583,64 @@ def delete_teacher(tchr_id):
 
     return redirect("/adm_teachers_list")
 
+
+
+
+
+
+
+#Start Code for view assignment by admin
+
+
+@app.route("/admin_assignments")
+def admin_assignments():
+
+    if "admin_id" not in session:
+        return redirect("/admin_login")
+
+    conn = get_db()
+
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+    # ---------------- FETCH ASSIGNMENTS ----------------
+
+    cursor.execute("""
+
+        SELECT
+
+            a.*,
+
+            t.first_name,
+            t.last_name,
+
+            c.class_name
+
+        FROM assignments a
+
+        LEFT JOIN teachers t
+            ON a.teacher_id = t.tchr_id
+
+        LEFT JOIN classes c
+            ON a.class_id = c.id
+
+        ORDER BY a.id DESC
+
+    """)
+
+    assignments = cursor.fetchall()
+
+    conn.close()
+
+    return render_template(
+        "admin_assignments.html",
+        assignments=assignments
+    )
+
+
+
+#End Code for view assignment by admin
+
+
 #====Start Gallery====
 
 #====End Gallery====
