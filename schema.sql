@@ -181,6 +181,18 @@ CREATE TABLE IF NOT EXISTS notices (
 ) ENGINE=InnoDB;
 
 
+-- assignments - Table
+CREATE TABLE IF NOT EXISTS assignments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    teacher_id INT,
+    class_id INT,
+    subject_name VARCHAR(100),
+    title VARCHAR(255),
+    description TEXT,
+    due_date DATE,
+    file_name VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
 -- Gallery - Table
 CREATE TABLE IF NOT EXISTS gallery (

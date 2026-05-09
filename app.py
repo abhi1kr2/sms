@@ -825,6 +825,205 @@ def teacher_analytics():
 
 
 
+#Start code for teacher assignment
+
+
+
+import os
+from werkzeug.utils import secure_filename
+
+
+@app.route("/teacher_assignments", methods=["GET", "POST"])
+def teacher_assignments():
+
+    if "teacher_id" not in session:
+        return redirect("/teacher_login")
+
+    conn = get_db()
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+    teacher_id = session["teacher_id"]
+
+    # ---------------- TEACHER INFO ----------------
+
+    cursor.execute("""
+        SELECT *
+        FROM teachers
+        WHERE tchr_id=%s
+    """, (teacher_id,))
+
+    teacher = cursor.fetchone()
+
+    message = None
+    msg_type = None
+
+    if request.method == "POST":
+
+        title = request.form.get("title")
+        description = request.form.get("description")
+        due_date = request.form.get("due_date")
+
+        subject_name = request.form.get("subject_name")
+
+        class_id = teacher["class_id"]
+
+        # ---------------- FILE UPLOAD ----------------
+
+        file = request.files.get("assignment_file")
+
+        filename = ""
+
+        if file and file.filename != "":
+
+            filename = secure_filename(file.filename)
+
+            os.makedirs(
+                "static/uploads/assignments",
+                exist_ok=True
+            )
+
+            file.save(
+                os.path.join(
+                    "static/uploads/assignments",
+                    filename
+                )
+            )
+
+        # ---------------- INSERT ----------------
+
+        cursor.execute("""
+            INSERT INTO assignments
+            (
+                teacher_id,
+                class_id,
+                subject_name,
+                title,
+                description,
+                due_date,
+                file_name
+            )
+            VALUES (%s,%s,%s,%s,%s,%s,%s)
+        """, (
+            teacher_id,
+            class_id,
+            subject_name,
+            title,
+            description,
+            due_date,
+            filename
+        ))
+
+        conn.commit()
+
+        message = "Assignment uploaded successfully!"
+        msg_type = "success"
+
+    # Teacher subjects
+    subjects = [
+        s.strip()
+        for s in teacher["subject"].split(",")
+    ]
+
+    # ---------------- RECENT ASSIGNMENTS ----------------
+
+    cursor.execute("""
+        SELECT *
+        FROM assignments
+        WHERE teacher_id=%s
+        ORDER BY id DESC
+    """, (teacher_id,))
+
+    assignments = cursor.fetchall()
+
+    conn.close()
+
+    return render_template(
+        "teacher_assignments.html",
+
+        teacher=teacher,
+        subjects=subjects,
+
+        assignments=assignments,
+
+        message=message,
+        msg_type=msg_type
+    )
+
+
+
+
+
+
+
+# ================= UPDATE ASSIGNMENT =================
+
+@app.route("/teacher_update_assignment/<int:id>", methods=["POST"])
+def teacher_update_assignment(id):
+
+    if "teacher_id" not in session:
+        return redirect("/teacher_login")
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    title = request.form.get("title")
+    description = request.form.get("description")
+    due_date = request.form.get("due_date")
+    subject_name = request.form.get("subject_name")
+
+    cursor.execute("""
+        UPDATE assignments
+
+        SET
+            title=%s,
+            description=%s,
+            due_date=%s,
+            subject_name=%s
+
+        WHERE id=%s
+    """, (
+        title,
+        description,
+        due_date,
+        subject_name,
+        id
+    ))
+
+    conn.commit()
+    conn.close()
+
+    return redirect("/teacher_assignments")
+
+
+# ================= DELETE ASSIGNMENT =================
+
+@app.route("/teacher_delete_assignment/<int:id>")
+def teacher_delete_assignment(id):
+
+    if "teacher_id" not in session:
+        return redirect("/teacher_login")
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        DELETE FROM assignments
+        WHERE id=%s
+    """, (id,))
+
+    conn.commit()
+    conn.close()
+
+    return redirect("/teacher_assignments")
+
+
+
+
+
+
+
+#End Code for teacher assignment
+
 
 #Start Insert new marks only for student by teachers
 

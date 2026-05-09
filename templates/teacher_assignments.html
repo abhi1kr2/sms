@@ -1,0 +1,305 @@
+{% extends 'teacher_base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2 class="mb-4">
+        📚 Assignment / Homework Upload
+    </h2>
+
+    {% if message %}
+    <div class="alert alert-{{ msg_type }}">
+        {{ message }}
+    </div>
+    {% endif %}
+
+    <!-- UPLOAD FORM -->
+
+    <div class="card shadow border-0 rounded-4 p-4 mb-4">
+
+        <form method="POST"
+            enctype="multipart/form-data">
+
+            <div class="row g-3">
+
+                <!-- TITLE -->
+
+                <div class="col-md-6">
+
+                    <label>Assignment Title</label>
+
+                    <input type="text"
+                        name="title"
+                        class="form-control"
+                        required>
+
+                </div>
+
+                <!-- SUBJECT -->
+
+                <div class="col-md-6">
+
+                    <label>Subject</label>
+
+                    <select name="subject_name"
+                            class="form-select"
+                            required>
+
+                        {% for sub in subjects %}
+                        <option value="{{ sub }}">
+                            {{ sub }}
+                        </option>
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+                <!-- DESCRIPTION -->
+
+                <div class="col-12">
+
+                    <label>Description</label>
+
+                    <textarea name="description"
+                            class="form-control"
+                            rows="4"
+                            required></textarea>
+
+                </div>
+
+                <!-- DUE DATE -->
+
+                <div class="col-md-6">
+
+                    <label>Due Date</label>
+
+                    <input type="date"
+                        name="due_date"
+                        class="form-control"
+                        required>
+
+                </div>
+
+                <!-- FILE -->
+
+                <div class="col-md-6">
+
+                    <label>Upload File</label>
+
+                    <input type="file"
+                        name="assignment_file"
+                        class="form-control">
+
+                </div>
+
+            </div>
+
+            <div class="mt-4 text-end">
+
+                <button class="btn btn-primary px-4">
+                    Upload Assignment
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+</div>
+    
+    <!-- RECENT ASSIGNMENTS -->
+
+    <div class="card shadow border-0 rounded-4 p-4 mb-4">
+
+        <h4 class="mb-4">📝 Recent Assignments </h4>
+
+        <div class="table-responsive">
+            <table class="table table-bordered align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Title</th>
+                        <th>Subject</th>
+                        <th>Due Date</th>
+                        <th>File</th>
+                        <th width="180">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for a in assignments %}
+
+                    <tr>
+                        <td> {{ a.title }} </td>
+                        <td> {{ a.subject_name }} </td>
+
+                        <td> {{ a.due_date }} </td>
+
+                        <td>
+                            {% if a.file_name %}
+
+                            <a href="{{ url_for('static', filename='uploads/assignments/' + a.file_name) }}"
+                            target="_blank"
+                            class="btn btn-sm btn-success">
+
+                                View File
+
+                            </a>
+
+                            {% else %}
+
+                            <span class="text-muted">
+                                No File
+                            </span>
+
+                            {% endif %}
+
+                        </td>
+                        <td>
+                            <!-- EDIT BUTTON -->
+
+                            <button class="btn btn-sm btn-primary"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#editModal{{ a.id }}">
+
+                                Edit
+
+                            </button>
+
+                            <!-- DELETE BUTTON -->
+
+                            <a href="/teacher_delete_assignment/{{ a.id }}"
+                            class="btn btn-sm btn-danger"
+                            onclick="return confirm('Delete this assignment?')">
+
+                                Delete
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+                {% endfor %}
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+
+
+
+<!-- EDIT MODAL -->
+{% for a in assignments %}
+    <div class="modal fade"
+        id="editModal{{ a.id }}"
+        tabindex="-1">
+
+        <div class="modal-dialog modal-lg">
+
+            <div class="modal-content">
+
+                <form method="POST"
+                    action="/teacher_update_assignment/{{ a.id }}">
+
+                    <!-- HEADER -->
+
+                    <div class="modal-header">
+
+                        <h5 class="modal-title">
+                            Edit Assignment
+                        </h5>
+
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"></button>
+
+                    </div>
+
+                    <!-- BODY -->
+
+                    <div class="modal-body">
+                        <div class="row g-3">
+
+                            <!-- TITLE -->
+                            <div class="col-md-6">
+                                <label>Title</label>
+                                <input type="text" name="title" class="form-control" value="{{ a.title }}" required> 
+                            </div>
+
+                            <!-- SUBJECT -->
+
+                            <div class="col-md-6">
+                                <label>Subject</label>
+
+                                <select name="subject_name"
+                                        class="form-select"
+                                        required>
+
+                                    {% for sub in subjects %}
+
+                                    <option value="{{ sub }}"
+                                        {% if sub == a.subject_name %}
+                                            selected
+                                        {% endif %}
+                                    >
+                                        {{ sub }}
+                                    </option>
+
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <!-- DESCRIPTION -->
+
+                            <div class="col-12">
+                                <label>Description</label>
+                                <textarea name="description"
+                                        class="form-control"
+                                        rows="4"
+                                        required>{{ a.description }}</textarea>
+                            </div>
+
+                            <!-- DUE DATE -->
+
+                            <div class="col-md-6">
+                                <label>Due Date</label>
+                                <input type="date"
+                                    name="due_date"
+                                    class="form-control"
+                                    value="{{ a.due_date }}"
+                                    required>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FOOTER -->
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Close </button>
+                        <button class="btn btn-primary">  Update Assignment </button>
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+                        
+    </div>
+
+{% endfor %}
+
+
+
+
+
+                    
+{% endblock %}
