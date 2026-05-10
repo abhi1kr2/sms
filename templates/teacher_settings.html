@@ -1,0 +1,113 @@
+{% extends 'teacher_base.html' %}
+
+{% block content %}
+
+    <div class="container mt-5 mb-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+
+                    <!-- HEADER -->
+                    <div class="bg-dark text-white p-4">
+                        <h3 class="mb-0">⚙ Teacher Settings </h3>
+                    </div>
+
+                    <!-- BODY -->
+                    <div class="card-body p-4">
+
+                        <!-- FLASH MESSAGES -->
+                        {% with messages = get_flashed_messages(with_categories=true) %}
+
+                            {% for category, message in messages %}
+
+                            <div class="alert alert-{{ category }} alert-dismissible fade show">
+
+                                {{ message }}
+
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+
+                            </div>
+
+                            {% endfor %}
+
+                        {% endwith %}
+
+                        <!-- FORM -->
+
+                        <form method="POST">
+
+                            <!-- CURRENT PASSWORD -->
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">
+                                    Current Password
+                                </label>
+                                <input type="password" name="current_password" class="form-control" minlength="6" maxlength="50" required>
+                            </div>
+
+                            <!-- NEW PASSWORD -->
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">
+                                    New Password
+                                </label>
+                                <input type="password" name="new_password" class="form-control" minlength="6" maxlength="50" required>
+                            </div>
+
+                            <!-- CONFIRM PASSWORD -->
+
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">
+                                    Confirm Password
+                                </label>
+                                <input type="password" name="confirm_password" class="form-control" minlength="6" maxlength="50" required>
+                            </div>
+
+                            <!-- BUTTONS -->
+
+                            <div class="d-flex justify-content-between">
+
+                                <a href="/teacher_dashboard" class="btn btn-secondary">
+
+                                    ← Back
+
+                                </a>
+
+                                <button class="btn btn-dark">
+
+                                    Update Password
+
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- AUTO LOGOUT -->
+
+    {% if session.get('teacher_pwd_changed') %}
+
+        <script>
+
+        setTimeout(function() {
+
+            window.location.href = "/teacher_logout_after_password";
+
+        }, 10000);
+
+        </script>
+
+    {% endif %}
+
+
+{% endblock %}

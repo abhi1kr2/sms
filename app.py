@@ -1051,9 +1051,6 @@ def teacher_analytics():
 
 
 
-import os
-from werkzeug.utils import secure_filename
-
 
 @app.route("/teacher_assignments", methods=["GET", "POST"])
 def teacher_assignments():
@@ -1404,6 +1401,145 @@ def teacher_add_marks():
 
 
 #End Insert new marks only for student by teachers
+
+#Start Code of password reset for teacher--
+
+
+# ================= TEACHER SETTINGS PAGE =================
+
+@app.route("/teacher_settings", methods=["GET", "POST"])
+def teacher_settings():
+
+    if "teacher_id" not in session:
+        return redirect("/teacher_login")
+
+    conn = get_db()
+
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+    teacher_id = session["teacher_id"]
+
+    if request.method == "POST":
+
+        current_pwd = request.form.get("current_password")
+
+        new_pwd = request.form.get("new_password")
+
+        confirm_pwd = request.form.get("confirm_password")
+
+        # ---------------- FETCH PASSWORD ----------------
+
+        cursor.execute("""
+            SELECT teacher_password
+            FROM teachers
+            WHERE tchr_id=%s
+        """, (teacher_id,))
+
+        teacher = cursor.fetchone()
+
+        if not teacher:
+
+            flash(
+                "Teacher not found!",
+                "danger"
+            )
+
+            conn.close()
+
+            return redirect("/teacher_settings")
+
+        db_password = teacher["teacher_password"]
+
+        # ---------------- VALIDATION ----------------
+
+        if current_pwd != db_password:
+
+            flash(
+                "Current password is incorrect!",
+                "danger"
+            )
+
+            conn.close()
+
+            return redirect("/teacher_settings")
+
+        elif new_pwd != confirm_pwd:
+
+            flash(
+                "New password and confirm password do not match!",
+                "warning"
+            )
+
+            conn.close()
+
+            return redirect("/teacher_settings")
+
+        elif len(new_pwd) < 6:
+
+            flash(
+                "Password must be at least 6 characters!",
+                "warning"
+            )
+
+            conn.close()
+
+            return redirect("/teacher_settings")
+
+        elif current_pwd == new_pwd:
+
+            flash(
+                "New password cannot be same as current password!",
+                "warning"
+            )
+
+            conn.close()
+
+            return redirect("/teacher_settings")
+
+        # ---------------- UPDATE PASSWORD ----------------
+
+        cursor.execute("""
+            UPDATE teachers
+            SET teacher_password=%s
+            WHERE tchr_id=%s
+        """, (
+            new_pwd,
+            teacher_id
+        ))
+
+        conn.commit()
+
+        conn.close()
+
+        # ---------------- SUCCESS FLAG ----------------
+
+        session["teacher_pwd_changed"] = True
+
+        flash(
+            "Password updated successfully! Redirecting to login in 10 seconds...",
+            "success"
+        )
+
+        return redirect("/teacher_settings")
+
+    conn.close()
+
+    return render_template("teacher_settings.html")
+
+
+# ================= AUTO LOGOUT =================
+
+@app.route("/teacher_logout_after_password")
+def teacher_logout_after_password():
+
+    session.clear()
+
+    return redirect("/teacher_login")
+
+
+
+
+#End Code for password reset for teacher
 
 
 @app.route("/logout")
