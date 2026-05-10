@@ -23,6 +23,10 @@ def about():
 def admission():
     return render_template("admission.html")
 
+@app.route("/contact")
+def contact():
+    return render_template("contact.html")
+
 @app.route("/programs")
 def programs():
     return render_template("programs.html")
