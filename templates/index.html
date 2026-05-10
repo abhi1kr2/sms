@@ -4,39 +4,62 @@
 <!-- FULL WIDTH CAROUSEL -->
 <div class="container-fluid p-0">
 
-  <div id="featureCarousel" class="carousel slide" data-bs-ride="carousel">
+  <div id="featureCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000">
 
+    <!-- Indicators -->
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#featureCarousel" data-bs-slide-to="0" class="active"></button>
+        <button type="button" data-bs-target="#featureCarousel" data-bs-slide-to="1"></button>
+        <button type="button" data-bs-target="#featureCarousel" data-bs-slide-to="2"></button>
+        <button type="button" data-bs-target="#featureCarousel" data-bs-slide-to="3"></button>
+        <button type="button" data-bs-target="#featureCarousel" data-bs-slide-to="4"></button>
+        <button type="button" data-bs-target="#featureCarousel" data-bs-slide-to="5"></button>
+    </div>
+
+    <!-- Slides -->
     <div class="carousel-inner">
 
-      <div class="carousel-item active">
-        <img src="{{ url_for('static', filename='images/c1.jpg') }}" class="d-block w-100" alt="Efficient Administration">
-      </div>
+        <div class="carousel-item active">
+            <img src="{{ url_for('static', filename='images/a1.jpg') }}" class="d-block w-100" alt="Image 1">
+        </div>
 
-      <div class="carousel-item">
-        <img src="{{ url_for('static', filename='images/c2.jpg') }}" class="d-block w-100" alt="Smart Learning Tools">
-      </div>
+        <div class="carousel-item">
+            <img src="{{ url_for('static', filename='images/a2.jpg') }}" class="d-block w-100" alt="Image 2">
+        </div>
 
-      <div class="carousel-item">
-        <img src="{{ url_for('static', filename='images/c3.jpg') }}" class="d-block w-100" alt="Parent-Teacher Communication">
-      </div>
+        <div class="carousel-item">
+            <img src="{{ url_for('static', filename='images/a3.jpg') }}" class="d-block w-100" alt="Image 3">
+        </div>
 
-      <div class="carousel-item">
-        <img src="{{ url_for('static', filename='images/c4.jpg') }}" class="d-block w-100" alt="School System">
-      </div>
+        <div class="carousel-item">
+            <img src="{{ url_for('static', filename='images/a4.jpg') }}" class="d-block w-100" alt="Image 4">
+        </div>
+
+        <div class="carousel-item">
+            <img src="{{ url_for('static', filename='images/a5.jpg') }}" class="d-block w-100" alt="Image 5">
+        </div>
+
+        <div class="carousel-item">
+            <img src="{{ url_for('static', filename='images/a6.jpg') }}" class="d-block w-100" alt="Image 6">
+        </div>
 
     </div>
 
-    <!-- CONTROLS -->
+    <!-- Previous Button -->
     <button class="carousel-control-prev" type="button" data-bs-target="#featureCarousel" data-bs-slide="prev">
-      <span class="carousel-control-prev-icon"></span>
+        <span class="carousel-control-prev-icon"></span>
     </button>
 
+    <!-- Next Button -->
     <button class="carousel-control-next" type="button" data-bs-target="#featureCarousel" data-bs-slide="next">
-      <span class="carousel-control-next-icon"></span>
+        <span class="carousel-control-next-icon"></span>
     </button>
+
+
+
 
     <!-- PREMIUM OVERLAY -->
-    <div class="carousel-caption hero-overlay d-flex align-items-center">
+    <!-- <div class="carousel-caption hero-overlay d-flex align-items-center">
       <div class="hero-box">
         <h1>Connecting Education, Inspiring Success!</h1>
         <p>Advanced School Management System for Students, Teachers & Administrators</p>
@@ -46,7 +69,7 @@
         </a>
         <a href="#features" class="btn btn-outline-light">Learn More</a>
       </div>
-    </div>
+    </div> -->
 
   </div>
 
