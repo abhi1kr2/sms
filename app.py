@@ -19,6 +19,10 @@ def home():
 def about():
     return render_template("about.html")
 
+@app.route("/admission")
+def admission():
+    return render_template("admission.html")
+
 @app.route("/programs")
 def programs():
     return render_template("programs.html")
