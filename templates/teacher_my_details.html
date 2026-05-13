@@ -1,0 +1,126 @@
+{% extends 'teacher_base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <!-- PAGE TITLE -->
+    <div class="mb-4">
+        <h2>👨‍🏫 My Classes & Subjects</h2>
+    </div>
+
+    <div class="row">
+
+        <!-- TEACHER PROFILE CARD -->
+        <div class="col-md-4">
+
+            <div class="card shadow-lg border-0 rounded-4 text-center p-4">
+
+                {% if teacher.tchr_img %}
+
+                <img src="{{ url_for('static', filename='uploads/teachers/' + teacher.tchr_img) }}"
+                    class="rounded-circle mx-auto mb-3"
+                    width="140"
+                    height="140"
+                    style="object-fit:cover; border:4px solid #0d6efd;">
+
+                {% else %}
+
+                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+                    class="rounded-circle mx-auto mb-3"
+                    width="140">
+
+                {% endif %}
+
+                <h4>
+                    {{ teacher.first_name }} {{ teacher.last_name }}
+                </h4>
+
+                <p class="text-muted">
+                    Teacher ID: {{ teacher.tchr_id }}
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- DETAILS SECTION -->
+        <div class="col-md-8">
+
+            <div class="card shadow-lg border-0 rounded-4 p-4">
+
+                <h4 class="mb-4">📚 Assigned Details</h4>
+
+                <!-- CLASS -->
+                <div class="mb-4">
+
+                    <label class="fw-bold">
+                        Assigned Class
+                    </label>
+
+                    <div class="mt-2">
+
+                        <span class="badge bg-primary p-3 fs-6">
+                            {{ teacher.class }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <!-- SUBJECTS -->
+                <div class="mb-4">
+
+                    <label class="fw-bold">
+                        Assigned Subjects
+                    </label>
+
+                    <div class="mt-2">
+
+                        {% for sub in teacher.subject.split(',') %}
+
+                        <span class="badge bg-success p-3 fs-6 me-2 mb-2">
+                            {{ sub }}
+                        </span>
+
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+                <!-- CONTACT -->
+                <div class="mb-3">
+
+                    <label class="fw-bold">
+                        Email
+                    </label>
+
+                    <p class="text-muted">
+                        {{ teacher.email }}
+                    </p>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label class="fw-bold">
+                        Phone
+                    </label>
+
+                    <p class="text-muted">
+                        {{ teacher.phone }}
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+{% endblock %}

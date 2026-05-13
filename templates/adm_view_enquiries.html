@@ -1,0 +1,117 @@
+{% extends 'admin_base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2 class="mb-4">Enquiry Management</h2>
+
+    <!-- SEARCH -->
+    <input type="text" id="searchInput" class="form-control mb-3" placeholder="Search by name or phone">
+
+    <!-- FILTER -->
+    <form method="GET" class="mb-3 d-flex gap-2">
+        <select name="course" class="form-select w-25">
+
+            <option value="">All Programs</option>
+
+            <option value="Pre-Nursery to Primary"
+                {% if request.args.get('course')=='Pre-Nursery to Primary' %}selected{% endif %}>
+                Pre-Nursery to Primary
+            </option>
+
+            <option value="Middle Classes"
+                {% if request.args.get('course')=='Middle Classes' %}selected{% endif %}>
+                Middle Classes
+            </option>
+
+            <option value="High Classes"
+                {% if request.args.get('course')=='High Classes' %}selected{% endif %}>
+                High Classes
+            </option>
+
+            <option value="Special Education"
+                {% if request.args.get('course')=='Special Education' %}selected{% endif %}>
+                Special Education
+            </option>
+
+        </select>
+
+        <button class="btn btn-primary">Filter</button>
+    </form>
+
+    <!-- TABLE -->
+    <div class="table-responsive shadow-sm rounded">
+        <table class="table table-hover align-middle text-center">
+
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Course</th>
+                    <th>Email</th>
+                    <th>Message</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% if enquiries %}
+                    {% for e in enquiries %}
+                    <tr>
+                        <td>{{ e['id'] }}</td>
+                        <td>{{ e['name'] }}</td>
+                        <td>{{ e['phone'] }}</td>
+                        <td>{{ e['course'] }}</td>
+                        <td>{{ e['email'] }}</td>
+
+                        <!-- MESSAGE (trimmed) -->
+                        <td>
+                            {{ e['message'][:30] }}...
+                        </td>
+
+                        <!-- TIMESTAMP -->
+                        <td>{{ e['created_at'] }}</td>
+
+                        <td>
+                            {% if e['status'] == 'Contacted' %}
+                                <span class="badge bg-success">Contacted</span>
+                            {% else %}
+                                <span class="badge bg-warning text-dark">Pending</span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            <a href="{{ url_for('update_status', id=e['id']) }}" class="btn btn-success btn-sm">✔</a>
+
+                            <a href="{{ url_for('delete_enquiry', id=e['id']) }}" class="btn btn-danger btn-sm"
+                            onclick="return confirm('Delete this enquiry?')">🗑</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="6" class="text-danger">No enquiries found</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+
+        </table>
+    </div>
+
+</div>
+
+<!-- SEARCH SCRIPT -->
+<script>
+document.getElementById("searchInput").addEventListener("keyup", function() {
+    let value = this.value.toLowerCase();
+    document.querySelectorAll("tbody tr").forEach(row => {
+        row.style.display = row.innerText.toLowerCase().includes(value) ? "" : "none";
+    });
+});
+</script>
+
+{% endblock %}

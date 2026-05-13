@@ -1,31 +1,275 @@
-<h2>Edit Teacher</h2>
+{% extends 'admin_base.html' %}
 
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% for category, message in messages %}
-    <div class="alert alert-{{ category }}">{{ message }}</div>
-  {% endfor %}
-{% endwith %}
+{% block content %}
 
-{% if error %}
-<div class="alert alert-danger">{{ error }}</div>
-{% endif %}
+  <div class="container mt-4">
 
-<form method="POST">
+      <div class="row justify-content-center">
 
-First Name:
-<input type="text" name="fname" value="{{ teacher['first_name'] }}"><br><br>
+          <div class="col-lg-10">
 
-Last Name:
-<input type="text" name="lname" value="{{ teacher['last_name'] }}"><br><br>
+              <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
 
-Email:
-<input type="email" name="email" value="{{ teacher['email'] }}"><br><br>
+                  <!-- HEADER -->
 
-Phone:
-<input type="text" name="phone" value="{{ teacher['phone'] }}"><br><br>
+                  <div class="bg-warning p-4">
 
-<button type="submit">Update Teacher</button>
+                      <h2 class="mb-0">
+                          ✏ Edit Teacher
+                      </h2>
 
-</form>
+                  </div>
 
-     <a href="/adm_teachers_list">See Updated List</a>
+                  <!-- BODY -->
+
+                  <div class="card-body p-5">
+
+                      <!-- FLASH -->
+
+                      {% with messages = get_flashed_messages(with_categories=true) %}
+
+                          {% for category, message in messages %}
+
+                          <div class="alert alert-{{ category }}">
+
+                              {{ message }}
+
+                          </div>
+
+                          {% endfor %}
+
+                      {% endwith %}
+
+                      <form method="POST"
+                            enctype="multipart/form-data">
+
+                          <div class="row g-4">
+
+                              <!-- IMAGE -->
+
+                              <div class="col-12 text-center">
+
+                                  {% if teacher.tchr_img %}
+
+                                  <img src="{{ url_for('static', filename='uploads/teachers/' + teacher.tchr_img) }}"
+                                      width="140"
+                                      height="140"
+                                      class="rounded-circle shadow"
+                                      style="object-fit:cover; border:4px solid #0d6efd;">
+
+                                  {% else %}
+
+                                  <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+                                      width="140"
+                                      class="rounded-circle shadow">
+
+                                  {% endif %}
+
+                              </div>
+
+                              <!-- FIRST NAME -->
+
+                              <div class="col-md-6">
+
+                                  <label class="form-label fw-bold">
+
+                                      First Name
+
+                                  </label>
+
+                                  <input type="text"
+                                        name="fname"
+                                        class="form-control"
+                                        value="{{ teacher.first_name }}"
+                                        required>
+
+                              </div>
+
+                              <!-- LAST NAME -->
+
+                              <div class="col-md-6">
+
+                                  <label class="form-label fw-bold">
+
+                                      Last Name
+
+                                  </label>
+
+                                  <input type="text"
+                                        name="lname"
+                                        class="form-control"
+                                        value="{{ teacher.last_name }}"
+                                        required>
+
+                              </div>
+
+                              <!-- EMAIL -->
+
+                              <div class="col-md-6">
+
+                                  <label class="form-label fw-bold">
+
+                                      Email
+
+                                  </label>
+
+                                  <input type="email"
+                                        name="email"
+                                        class="form-control"
+                                        value="{{ teacher.email }}"
+                                        required>
+
+                              </div>
+
+                              <!-- PHONE -->
+
+                              <div class="col-md-6">
+
+                                  <label class="form-label fw-bold">
+
+                                      Phone
+
+                                  </label>
+
+                                  <input type="text"
+                                        name="phone"
+                                        class="form-control"
+                                        value="{{ teacher.phone }}"
+                                        minlength="10"
+                                        maxlength="10"
+                                        required>
+
+                              </div>
+
+                              <!-- CLASS -->
+
+                              <div class="col-md-6">
+
+                                  <label class="form-label fw-bold">
+
+                                      Assigned Class
+
+                                  </label>
+
+                                  <select name="class_id"
+                                          class="form-select"
+                                          required>
+
+                                      {% for c in classes %}
+
+                                      <option value="{{ c.id }}"
+                                          {% if c.id == teacher.class_id %}
+                                              selected
+                                          {% endif %}
+                                      >
+                                          {{ c.class_name }}
+                                      </option>
+
+                                      {% endfor %}
+
+                                  </select>
+
+                                  <!-- hidden class name -->
+
+                                  <input type="hidden"
+                                        name="class_name"
+                                        value="{{ teacher.class }}">
+
+                              </div>
+
+                              <!-- IMAGE -->
+
+                              <div class="col-md-6">
+
+                                  <label class="form-label fw-bold">
+
+                                      Update Teacher Photo
+
+                                  </label>
+
+                                  <input type="file"
+                                        name="tchr_img"
+                                        class="form-control">
+
+                              </div>
+
+                              <!-- SUBJECTS -->
+
+                              <div class="col-12">
+
+                                  <label class="form-label fw-bold">
+
+                                      Assigned Subjects
+
+                                  </label>
+
+                                  <div class="row">
+
+                                      {% set teacher_subjects = teacher.subject.split(',') %}
+
+                                      {% for sub in ['Maths','Science','English','Hindi','Computer','Social Science'] %}
+
+                                      <div class="col-md-4">
+
+                                          <div class="form-check">
+
+                                              <input class="form-check-input"
+                                                    type="checkbox"
+                                                    name="subject"
+                                                    value="{{ sub }}"
+
+                                                    {% if sub in teacher_subjects %}
+                                                        checked
+                                                    {% endif %}
+                                              >
+
+                                              <label class="form-check-label">
+
+                                                  {{ sub }}
+
+                                              </label>
+
+                                          </div>
+
+                                      </div>
+
+                                      {% endfor %}
+
+                                  </div>
+
+                              </div>
+
+                          </div>
+
+                          <!-- BUTTONS -->
+
+                          <div class="mt-5 d-flex justify-content-between">
+
+                              <a href="/adm_teachers_list"
+                                class="btn btn-dark">
+
+                                  ← Back
+
+                              </a>
+
+                              <button class="btn btn-warning px-4">
+
+                                  Update Teacher
+
+                              </button>
+
+                          </div>
+
+                      </form>
+
+                  </div>
+
+              </div>
+
+          </div>
+
+      </div>
+
+  </div>
+
+  {% endblock %}

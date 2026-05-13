@@ -1,36 +1,194 @@
-{% extends "base.html" %}
+{% extends 'student_base.html' %}
 
-{% block student_dashboard %}
+{% block content %}
 
-        
-<div class="container border border-primary">
-    <div class="card border border-primary">
-        <div class="card-header row border border-danger">
-            <div class="col-md-4">Welcome {{ student["first_name"] }}</div>
-            <div class="col-md-7 "><h1>DASHBOARD</h1></div>
-            <div class="col-md-1"><a class="light"href="/logout">Logout</a></div>
+<div class="container">
+    <h3>Student Dashboard</h3>
 
-            
+    <div class="row mt-4">
+
+        <div class="col-md-3">
+            <div class="card p-3 text-center shadow">
+                <h5>🖼 Profile</h5>
+                <a href="/stdstudent_profile" class="btn btn-warning mt-2">View</a>
+            </div>
         </div>
-        <div class="card-body">
-            <a class="btn btn-danger" href="/stdstudent_profile" role="button">Update Profile</a>
-            <a class="btn btn-warning" href="#" role="button">Check Admit Card</a>
-            <a class="btn btn-success" href="#" role="button">Check Result</a>
-            <a class="btn btn-primary" href="#" role="button">Library Book Status</a>
-            <a class="btn btn-danger" href="#" role="button">Password Reset</a>
-            <a class="btn btn-secondary" href="#" role="button">Suggestion Box</a>
+
+        <div class="col-md-3">
+            <div class="card p-3 text-center shadow">
+                <h5>📊 Marksheet</h5>
+                <a href="/std_view_marks" class="btn btn-warning mt-2">View</a>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card p-3 text-center shadow">
+                <h5>📚 View Assignments</h5>
+                <a href="/student_assignments" class="btn btn-danger mt-2">View</a>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card p-3 text-center shadow">
+                <h5>📢 Notices</h5>
+                <a href="/notices" class="btn btn-primary mt-2">Open</a>
+            </div>
         </div>
     </div>
 
-<br><br><br><br><br><br><br>
+    <div class="row mt-2">
+        <div class="col-md-3">
+            <div class="card p-3 text-center shadow">
+                <h5 class="mt-2">🎓 My Class & Teachers</h5>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#classModal">
 
-<p><strong>Name:</strong> {{ student["first_name"] }}</p>
-<p><strong>Last Name:</strong> {{ student["last_name"] }}</p>
-<p><strong>Email:</strong> {{ student["email"] }}</p>
-<p><strong>Phone:</strong> {{ student["phone"] }}</p>
+                    Open
+
+                </button>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card p-3 text-center shadow">
+                <h5>⚙️ Settings</h5>
+                <a href="/student_settings" class="btn btn-warning mt-2">Open</a>
+            </div>
+        </div>
+
+    </div>
+</div>
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- CLASS DETAILS MODAL -->
+
+<div class="modal fade"
+     id="classModal"
+     tabindex="-1">
+
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+
+        <div class="modal-content border-0 rounded-4">
+
+            <!-- HEADER -->
+
+            <div class="modal-header bg-primary text-white">
+
+                <h5 class="modal-title">
+                    🎓 My Class Details
+                </h5>
+
+                <button type="button"
+                        class="btn-close btn-close-white"
+                        data-bs-dismiss="modal"></button>
+
+            </div>
+
+            <!-- BODY -->
+
+            <div class="modal-body">
+
+                <!-- CLASS -->
+
+                <div class="mb-4">
+
+                    <h4>
+                        Class:
+                        <span class="badge bg-success">
+                            {{ student.class_name }}
+                        </span>
+                    </h4>
+
+                </div>
+
+                <!-- SUBJECTS -->
+
+                <div class="mb-4">
+
+                    <h5 class="mb-3">
+                        📚 Subjects
+                    </h5>
+
+                    {% for sub in subjects %}
+
+                    <span class="badge bg-primary p-2 me-2 mb-2">
+                        {{ sub.name }}
+                    </span>
+
+                    {% endfor %}
+
+                </div>
+
+                <!-- TEACHERS -->
+
+                <div>
+
+                    <h5 class="mb-3">
+                        👨‍🏫 Assigned Teachers
+                    </h5>
+
+                    <div class="row g-3">
+
+                        {% for t in teachers %}
+
+                        <div class="col-md-6">
+
+                            <div class="card shadow-sm border-0 rounded-4 h-100">
+
+                                <div class="card-body text-center">
+
+                                    {% if t.tchr_img %}
+
+                                    <img src="{{ url_for('static', filename='uploads/teachers/' + t.tchr_img) }}"
+                                         class="rounded-circle mb-3"
+                                         width="90"
+                                         height="90"
+                                         style="object-fit:cover; border:3px solid #0d6efd;">
+
+                                    {% else %}
+
+                                    <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+                                         class="rounded-circle mb-3"
+                                         width="90">
+
+                                    {% endif %}
+
+                                    <h5>
+                                        {{ t.first_name }} {{ t.last_name }}
+                                    </h5>
+
+                                    <p class="text-muted mb-2">
+                                        {{ t.subject }}
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
 
@@ -42,4 +200,4 @@
 
 
 
-{% endblock%}
+{% endblock %}

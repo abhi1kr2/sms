@@ -1,23 +1,137 @@
-<h2>Admin Register New Student</h2>
+{% extends 'admin_base.html' %}
+{% block content %}
 
-{% if error %}
-<div class="alert alert-danger">{{ error }}</div>
-{% endif %}
+<div class="container mt-4">
 
-{% if success %}
-<div class="alert alert-success">{{ success }}</div>
-{% endif %}
+    <div class="card shadow-sm p-4">
+        <h2 class="mb-4">🎓 Student Registration</h2>
 
+        {% if error %}
+        <div class="alert alert-danger alert-dismissible fade show">
+            {{ error }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endif %}
 
-<form method="POST">
-    First Name: <input type="text" name="fname"><br><br>
-    Last Name: <input type="text" name="lname"><br><br>
-    Father Name: <input type="text" name="ftname"><br><br>
-    Mother Name: <input type="text" name="mtname"><br><br>
-    Email: <input type="email" name="email"><br><br>
-    Phone No: <input type="number" name="sphno"><br><br>
-    Class: <input type="text" name="stdclass"><br><br>
-    Class Section: <input type="text" name="classsec"><br><br>
-    Password: <input type="password" name="password"><br><br>
-    <button type="submit">Register</button>
-</form>
+        {% if success %}
+        <div class="alert alert-success alert-dismissible fade show">
+            {{ success }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data">
+
+            <!-- Basic Info -->
+            <div class="bg-light p-3 rounded mb-4">
+                <h5>👤 Basic Info</h5>
+
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <input type="text" name="fname" class="form-control" placeholder="First Name*" required>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text" name="lname" class="form-control" placeholder="Last Name*" required>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="date" name="dob" class="form-control" min="1990-01-01" max="2024-01-01" required>
+                    </div>
+
+                    <div class="col-md-4">
+                        <input type="email" name="email" class="form-control" placeholder="Email*" required>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="tel" name="sphno" pattern="[0-9]{10}" maxlength="10" minlength="10" class="form-control" placeholder="Enter 10 digit Student Phone* " required>
+                    </div>
+                    <div class="col-md-4">
+                        <select name="class_id" class="form-select" required>
+                            <option value="">Select Class</option>
+
+                            {% for c in classes %}
+                                <option value="{{ c.id }}">
+                                    {{ c.class_name }}
+                                </option>
+                            {% endfor %}
+                            
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <input type="password" name="password" class="form-control" placeholder="Create Password">
+                    </div>
+                    <div class="col-md-6">
+                        <input type="file" name="std_img" class="form-control">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Parent Info -->
+            <div class="bg-light p-3 rounded mb-4">
+                <h5>👨‍👩‍👧 Parent Info</h5>
+
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <input type="text" name="ftname" class="form-control" placeholder="Father Name*" required>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text" name="mtname" class="form-control" placeholder="Mother Name">
+                    </div>
+                    <div class="col-md-4">
+                        <input type="tel" name="pphno" pattern="[0-9]{10}" maxlength="10" minlength="10" class="form-control" placeholder="Enter 10 digit Parent Phone* " required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Address -->
+            <div class="bg-light p-3 rounded mb-4">
+                <h5>📍 Address</h5>
+
+                <div class="row g-3">
+                    <div class="col-12">
+                        <input type="text" name="address" class="form-control" placeholder="Address*" required>
+                    </div>
+                    <div class="col-md-6">
+                        <input type="text" name="state" class="form-control" placeholder="State*" required>
+                    </div>
+                    <div class="col-md-6">                    
+                        <input type="tel" name="pincode" pattern="[0-9]{6}" maxlength="6" minlength="6" class="form-control" placeholder="Enter 6 digit Pincode*"required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Previous School -->
+            <div class="bg-light p-3 rounded mb-4">
+                <h5>🏫 Previous School</h5>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <input name="prev_school" class="form-control" placeholder="School Name">
+                    </div>
+                    <div class="col-md-6">
+                        <input name="prev_address" class="form-control" placeholder="School Address">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admission -->
+            <div class="bg-light p-3 rounded mb-4">
+                <h5>📅 Admission</h5>
+                <input type="date" name="admission_date" class="form-control" min="1990-01-01" max="2026-07-01" required>
+            </div>
+
+            <!-- Submit -->
+            <div class="row">
+
+                <div class="col-md-6">
+                    <button class="btn btn-success btn-lg w-100">Register Student</button>
+                </div>
+                <div class="col-md-6">
+                   <input type="reset" class="btn btn-warning btn-lg w-100" value="Reset">
+                </div>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+{% endblock %}

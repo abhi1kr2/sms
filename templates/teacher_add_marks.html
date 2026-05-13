@@ -1,0 +1,188 @@
+{% extends 'teacher_base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow-lg p-4 rounded-4">
+
+        <h3 class="mb-4">📝 Upload Student Marks</h3>
+
+        {% if message %}
+        <div class="alert alert-{{ msg_type }}">
+            {{ message }}
+        </div>
+        {% endif %}
+
+        <!-- ================= GET FORM ================= -->
+
+        <form method="GET">
+
+            <div class="row g-3">
+
+                <!-- CLASS -->
+                <div class="col-md-4">
+
+                    <label>Class</label>
+
+                    <select name="class_id"
+                            class="form-select"
+                            onchange="this.form.submit()"
+                            required>
+
+                        <option value="">Select Class</option>
+
+                        {% for c in classes %}
+                        <option value="{{ c.id }}"
+                            {% if selected_class == c.id|string %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ c.class_name }}
+                        </option>
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+                <!-- STUDENT -->
+                <div class="col-md-4">
+
+                    <label>Student</label>
+
+                    <select name="std_id"
+                            class="form-select"
+                            onchange="this.form.submit()"
+                            required>
+
+                        <option value="">Select Student</option>
+
+                        {% for s in students %}
+                        <option value="{{ s.std_id }}"
+                            {% if selected_student == s.std_id|string %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ s.first_name }} {{ s.last_name }}
+                        </option>
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+                <!-- EXAM -->
+                <div class="col-md-4">
+
+                    <label>Exam</label>
+
+                    <select name="exam_id"
+                            class="form-select"
+                            onchange="this.form.submit()"
+                            required>
+
+                        <option value="">Select Exam</option>
+
+                        {% for e in exams %}
+                        <option value="{{ e.id }}"
+                            {% if selected_exam == e.id|string %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ e.name }}
+                        </option>
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+            </div>
+
+        </form>
+
+        <!-- ================= MARKS FORM ================= -->
+
+        {% if subjects %}
+
+        <hr>
+
+        <form method="POST">
+
+            <input type="hidden"
+                name="std_id"
+                value="{{ selected_student }}">
+
+            <input type="hidden"
+                name="exam_id"
+                value="{{ selected_exam }}">
+
+            <table class="table table-bordered">
+
+                <thead class="table-dark">
+                    <tr>
+                        <th>Subject</th>
+                        <th>Marks</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for sub in subjects %}
+
+                    <tr>
+
+                        <td>
+                            {{ sub.name }}
+
+                            <input type="hidden"
+                                name="subject_id"
+                                value="{{ sub.id }}">
+                        </td>
+
+                        <td>
+
+                            <input type="number"
+                                name="marks"
+                                class="form-control"
+
+                                min="0"
+                                max="100"
+
+                                value="{{ existing_marks.get(sub.id, '') }}"
+
+                                {% if sub.id in existing_marks %}
+                                    readonly
+                                {% endif %}
+
+                                required>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+            <div class="text-end">
+
+                <button class="btn btn-success">
+                    Upload Marks
+                </button>
+
+            </div>
+
+        </form>
+
+        {% endif %}
+
+    </div>
+<br>
+</div>
+
+{% endblock %}
+

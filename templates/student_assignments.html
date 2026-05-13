@@ -1,0 +1,132 @@
+{% extends 'student_base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <!-- PAGE HEADER -->
+
+    <div class="card shadow-lg border-0 rounded-4 p-4 mb-4">
+
+        <div class="d-flex justify-content-between align-items-center">
+
+            <div>
+
+                <h2>
+                    📚 My Assignments
+                </h2>
+
+                <p class="text-muted mb-0">
+
+                    Class:
+                    <strong>{{ student.class }}</strong>
+
+                </p>
+
+            </div>
+
+            <div>
+
+                <span class="badge bg-primary p-3 fs-6">
+
+                    Total:
+                    {{ assignments|length }}
+
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ASSIGNMENT LIST -->
+
+    <div class="row g-4">
+
+        {% for a in assignments %}
+
+        <div class="col-md-6">
+
+            <div class="card shadow border-0 rounded-4 h-100">
+
+                <div class="card-body">
+
+                    <!-- SUBJECT -->
+
+                    <div class="mb-3">
+
+                        <span class="badge bg-success p-2">
+                            {{ a.subject_name }}
+                        </span>
+
+                    </div>
+
+                    <!-- TITLE -->
+
+                    <h4>
+                        {{ a.title }}
+                    </h4>
+
+                    <!-- DESCRIPTION -->
+
+                    <p class="text-muted">
+
+                        {{ a.description }}
+
+                    </p>
+
+                    <!-- DUE DATE -->
+
+                    <p>
+
+                        <strong>Due Date:</strong>
+                        {{ a.due_date }}
+
+                    </p>
+
+                    <!-- FILE -->
+
+                    {% if a.file_name %}
+
+                    <a href="{{ url_for('static', filename='uploads/assignments/' + a.file_name) }}"
+                    target="_blank"
+                    class="btn btn-primary">
+
+                        📥 Download File
+
+                    </a>
+
+                    {% else %}
+
+                    <span class="text-muted">
+                        No file attached
+                    </span>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    <!-- NO ASSIGNMENTS -->
+
+    {% if not assignments %}
+
+    <div class="alert alert-warning mt-4">
+
+        No assignments available for your class.
+
+    </div>
+
+    {% endif %}
+
+
+</div>
+
+{% endblock %}

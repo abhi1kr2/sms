@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- HERO -->
+<section class="program-hero text-white text-center py-5">
+  <div class="container">
+    <h1 class="fw-bold">Our Academic Programs</h1>
+    <p class="lead mb-0">Building strong foundations for a bright future</p>
+  </div>
+</section>
+
+<!-- PROGRAMS -->
+<section class="py-5">
+  <div class="container">
+
+    <div class="row g-4">
+
+      <!-- 1. Pre-Nursery to Primary -->
+      <div class="col-md-6 col-lg-3">
+        <div class="card program-card h-100">
+          <div class="card-header text-center fw-bold">
+            Pre-Nursery to Primary
+          </div>
+
+          <div class="card-body p-0">
+            <img src="{{ url_for('static', filename='images/p_pre.jpg') }}"
+                 alt="Pre-Nursery to Primary"
+                 class="img-fluid program-img">
+          </div>
+
+          <div class="card-footer text-center">
+            <p class="mb-1">Fun-based learning with strong foundation.</p>
+            <p class="fee mb-0">From ₹1500/month*</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Middle Classes -->
+      <div class="col-md-6 col-lg-3">
+        <div class="card program-card h-100">
+          <div class="card-header text-center fw-bold">
+            Middle Classes
+          </div>
+
+          <div class="card-body p-0">
+            <img src="{{ url_for('static', filename='images/p_pre2.jpg') }}"
+                 alt="Middle Classes"
+                 class="img-fluid program-img">
+          </div>
+
+          <div class="card-footer text-center">
+            <p class="mb-1">Concept-based academic development.</p>
+            <p class="fee mb-0">Contact for fee*</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. High Classes -->
+      <div class="col-md-6 col-lg-3">
+        <div class="card program-card h-100">
+          <div class="card-header text-center fw-bold">
+            High Classes
+          </div>
+
+          <div class="card-body p-0">
+            <img src="{{ url_for('static', filename='images/p_high.jpg') }}"
+                 alt="High Classes"
+                 class="img-fluid program-img">
+          </div>
+
+          <div class="card-footer text-center">
+            <p class="mb-1">Advanced studies & exam preparation.</p>
+            <p class="fee mb-0">Contact for fee*</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Special Education -->
+      <div class="col-md-6 col-lg-3">
+        <div class="card program-card h-100 highlight">
+          <div class="card-header text-center fw-bold">
+            Special Education
+          </div>
+
+          <div class="card-body p-0">
+            <img src="{{ url_for('static', filename='images/p_spec2.jpg') }}"
+                 alt="Special Education"
+                 class="img-fluid program-img">
+          </div>
+
+          <div class="card-footer text-center">
+            <p class="mb-1">
+              Computer • Spoken English • Judo • Music • Dance
+            </p>
+            <p class="extra-fee mb-0">+ ₹1000/month</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- NOTE -->
+    <p class="text-center mt-4 text-muted">
+      *Fees may vary based on class and facilities. Please contact the school office for details.
+    </p>
+    <div class="text-center mt-3">
+        <a href="#" class="btn btn-primary px-4 btn-pulse" data-bs-toggle="modal" data-bs-target="#enquiryModal">
+            <i class="bi bi-chat-dots me-2"></i> Enquire for Fee Details
+        </a>
+    </div>
+
+
+
+  </div>
+</section>
+
+
+
+
+{% endblock %}

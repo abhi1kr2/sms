@@ -1,0 +1,247 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<!-- HERO SECTION -->
+
+    <section class="py-5 text-white"
+            style="
+                background:
+                linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
+                url('{{ url_for('static', filename='images/contact_banner.jpg') }}');
+                background-position:center;
+                background-size:cover;
+                background-repeat:no-repeat;
+                min-height:50vh;
+                display:flex;
+                align-items:center;
+            ">
+
+        <div class="container text-center">
+
+            <h1 class="display-4 fw-bold mb-3">
+
+                📞 Contact Us
+
+            </h1>
+
+            <p class="lead">
+
+                We'd love to hear from you.
+                Reach out for admissions, enquiries, or support.
+
+            </p>
+
+        </div>
+
+    </section>
+
+    <!-- CONTACT SECTION -->
+
+    <section class="py-5 bg-light">
+
+        <div class="container">
+
+            <div class="row g-5">
+
+                <!-- CONTACT INFO -->
+
+                <div class="col-lg-5">
+
+                    <div class="card border-0 shadow-lg rounded-4 h-100">
+
+                        <div class="card-body p-4">
+
+                            <h3 class="fw-bold mb-4 text-primary">
+
+                                Get In Touch
+
+                            </h3>
+
+                            <!-- ADDRESS -->
+
+                            <div class="mb-4">
+
+                                <h5>
+
+                                    📍 Address
+
+                                </h5>
+
+                                <p class="text-muted mb-0">
+                                    LearnOrbit, Harmu, Ranchi - 834002<br>
+                                    Jharkhand, India
+                                </p>
+
+                            </div>
+
+                            <!-- PHONE -->
+                            <div class="mb-4">
+                                <h5>
+                                    📞 Phone
+                                </h5>
+                                <p class="text-muted mb-0">+91 6200117821, +91 6200117821</p>
+                            </div>
+
+                            <!-- EMAIL -->
+
+                            <div class="mb-4">
+                                <h5>
+                                    📧 Email
+                                </h5>
+                                <p class="text-muted mb-0">info@learnorbit.com</p>
+                            </div>
+
+                            <!-- TIMING -->
+                            <div class="mb-4">
+                                <h5>
+                                    🕒 Office Hours
+                                </h5>
+                                <p class="text-muted mb-0">
+                                    Monday - Saturday<br>
+                                    8:00 AM - 5:00 PM
+                                </p>
+                            </div>
+
+                            <!-- BUTTON -->
+
+                            <a href="#"
+                            class="btn btn-danger px-4 rounded-pill"
+                            data-bs-toggle="modal"
+                            data-bs-target="#enquiryModal">
+
+                                <i class="bi bi-chat-dots me-2"></i>
+
+                                Send Enquiry
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GOOGLE MAP -->
+
+                <div class="col-lg-7">
+
+                    <div class="card border-0 shadow-lg rounded-4 overflow-hidden h-100">
+
+                        <iframe
+                            src="https://maps.google.com/maps?q=Harmu%20Ranchi%20834002&t=&z=13&ie=UTF8&iwloc=&output=embed"
+                            width="100%"
+                            height="100%"
+                            style="border:0; min-height:500px;"
+                            allowfullscreen=""
+                            loading="lazy">
+                        </iframe>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- QUICK CONTACT CARDS -->
+
+    <section class="py-5">
+
+        <div class="container">
+
+            <div class="row g-4 text-center">
+
+                <!-- CARD -->
+
+                <div class="col-md-4">
+
+                    <div class="card border-0 shadow rounded-4 p-4 h-100">
+
+                        <div class="display-5 text-primary mb-3">
+
+                            🎓
+
+                        </div>
+
+                        <h4 class="fw-bold">
+
+                            Admission Support
+
+                        </h4>
+
+                        <p class="text-muted">
+
+                            Get help regarding admissions,
+                            eligibility, and counselling.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <!-- CARD -->
+
+                <div class="col-md-4">
+
+                    <div class="card border-0 shadow rounded-4 p-4 h-100">
+
+                        <div class="display-5 text-success mb-3">
+
+                            💻
+
+                        </div>
+
+                        <h4 class="fw-bold">
+
+                            ERP Assistance
+
+                        </h4>
+
+                        <p class="text-muted">
+
+                            Support related to portal,
+                            assignments, and reports.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <!-- CARD -->
+
+                <div class="col-md-4">
+
+                    <div class="card border-0 shadow rounded-4 p-4 h-100">
+
+                        <div class="display-5 text-danger mb-3">
+
+                            📞
+
+                        </div>
+
+                        <h4 class="fw-bold">
+
+                            Quick Response
+
+                        </h4>
+
+                        <p class="text-muted">
+
+                            Our support team responds
+                            to enquiries quickly.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+{% endblock %}

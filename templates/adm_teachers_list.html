@@ -1,67 +1,175 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Adminstration Dashboard</title>
+{% extends 'admin_base.html' %}
 
-    <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+{% block content %}
 
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
+<div class="container-fluid mt-4">
 
-<body>
-    <!-- Navebar -->
-    <div class="navbar bg-dark text-white p-3">
-        <h3>Welcome Mr./Ms. {{ session['admin_name'] }}</h3>
+    <!-- PAGE HEADER -->
 
-        <h3><a href="/logout" class="text-white">Logout</a></h3>
+    <div class="card shadow-lg border-0 rounded-4 mb-4">
+
+        <div class="card-body text-center">
+
+            <marquee behavior="alternate">
+
+                <h2 class="mb-0">
+                    👨‍🏫 Registered Teachers
+                </h2>
+
+            </marquee>
+
+        </div>
+
     </div>
 
+    <!-- TEACHERS TABLE -->
 
-<div class="d-flex">
-    <!-- Main Content -->
-    <div class="main-content p-4">
+    <div class="card shadow-lg border-0 rounded-4">
 
-       <marquee behavior="alternate"><h2 class="mb-3">Registered Teachers</h2></marquee>
+        <div class="card-body">
 
-        <table border="1" class="table table-bordered table-hover"> 
-            <thead class="table-dark">
-            <tr>
-                <th>ID</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Email</th>
-                <th>Phone</th> 
-                <th>Action</th>
-            </tr>
-        </thead>
+            <div class="table-responsive">
 
-        <tbody>
-        {% for s in adm_view_teacher %}
-            <tr>
-                <td>{{ s["tchr_id"] }}</td>
-                <td>{{ s["first_name"] }}</td>
-                <td>{{ s["last_name"] }}</td>
-                <td>{{ s["email"] }}</td>
-                <td>{{ s["phone"] }}</td>
+                <table class="table table-bordered table-hover align-middle">
 
-                <td>
-                    <a href="/adm_edit_teacher/{{ s['tchr_id'] }}" class="btn btn-warning btn-sm">Edit</a>
+                    <thead class="table-dark text-center">
 
-                    <a href="/delete_teacher/{{ s['tchr_id'] }}"
-                    class="btn btn-danger btn-sm"
-                    onclick="return confirm('Are you sure you want to delete this student?');">
-                    Delete
-                    </a>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+                        <tr>
+
+                            <th>ID</th>
+                            <th>Photo</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Class</th>
+                            <th>Subject</th>
+                            <th width="180">Action</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for s in adm_view_teacher %}
+
+                        <tr>
+
+                            <!-- ID -->
+
+                            <td class="text-center">
+                                {{ s.tchr_id }}
+                            </td>
+
+                            <!-- PHOTO -->
+
+                            <td class="text-center">
+
+                                {% if s.tchr_img %}
+
+                                <img src="{{ url_for('static', filename='uploads/teachers/' + s.tchr_img) }}"
+                                     width="70"
+                                     height="70"
+                                     class="rounded-circle shadow"
+                                     style="object-fit:cover; border:3px solid #0d6efd;">
+
+                                {% else %}
+
+                                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+                                     width="70"
+                                     class="rounded-circle shadow">
+
+                                {% endif %}
+
+                            </td>
+
+                            <!-- NAME -->
+
+                            <td>{{ s.first_name }}</td>
+
+                            <td>{{ s.last_name }}</td>
+
+                            <!-- EMAIL -->
+
+                            <td>{{ s.email }}</td>
+
+                            <!-- PHONE -->
+
+                            <td>{{ s.phone }}</td>
+
+                            <!-- CLASS -->
+
+                            <td>
+
+                                <span class="badge bg-primary p-2">
+                                    {{ s.class }}
+                                </span>
+
+                            </td>
+
+                            <!-- SUBJECT -->
+
+                            <td>
+
+                                {% for sub in s.subject.split(',') %}
+
+                                <span class="badge bg-success me-1 mb-1">
+                                    {{ sub }}
+                                </span>
+
+                                {% endfor %}
+
+                            </td>
+
+                            <!-- ACTION -->
+
+                            <td class="text-center">
+
+                                <a href="/adm_edit_teacher/{{ s.tchr_id }}"
+                                   class="btn btn-warning btn-sm">
+
+                                    Edit
+
+                                </a>
+
+                                <a href="/delete_teacher/{{ s.tchr_id }}"
+                                   class="btn btn-danger btn-sm"
+                                   onclick="return confirm('Are you sure you want to delete this teacher?');">
+
+                                    Delete
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
     </div>
-     <a href="/admin_dashboard">Back to Dashboard</a>
-    </div>
-    </body>
-</html>
 
+    <!-- BACK BUTTON -->
+
+    <div class="mt-4 text-end">
+
+        <a href="/admin_dashboard"
+           class="btn btn-dark">
+
+            ← Back to Dashboard
+
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}
