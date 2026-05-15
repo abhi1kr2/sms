@@ -22,6 +22,8 @@ CREATE TABLE IF NOT EXISTS admins (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
+INSERT INTO admins (adm_fname, adm_email, phone, adm_password)
+VALUES ('Admin', 'admin@gmail.com', 620011781, 'admin123');
 
 
 -- classes Tables
