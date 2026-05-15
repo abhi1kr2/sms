@@ -176,6 +176,7 @@ CREATE TABLE IF NOT EXISTS notices (
     description TEXT NOT NULL,
     notice_date DATE,                     -- display date
     expiry_date DATE,                     -- optional
+    priority  VARCHAR(150),
     status VARCHAR(20) DEFAULT 'Active',  -- Active / Expired
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
