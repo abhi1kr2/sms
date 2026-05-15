@@ -33,6 +33,12 @@ CREATE TABLE classes (
     status VARCHAR(20) DEFAULT 'Active'
 ) ENGINE=InnoDB;
 
+--Default Value:
+INSERT INTO classes (class_name) VALUES
+('Pre-Nursery to Primary'),
+('Middle Classes'),
+('High Classes'),
+('Special Education');
 
 
 -- Students Table
@@ -125,6 +131,12 @@ CREATE TABLE exams (
         ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
+--Default Value for exams:
+INSERT EXAMS VALES:
+INSERT INTO exams (name, class_id, total_marks, exam_date)
+VALUES
+('Midterm', 3, 100, '2026-09-10'),
+('Final', 3, 100, '2026-12-15');
 
 -- MARKS (core table)
 CREATE TABLE IF NOT EXISTS marks (
