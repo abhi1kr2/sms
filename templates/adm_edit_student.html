@@ -8,16 +8,16 @@
 <form method="POST">
 
 First Name:
-<input type="text" name="fname" value="{{ student[1] }}"><br><br>
+<input type="text" name="fname" value="{{ student.first_name }}"><br><br>
 
 Last Name:
-<input type="text" name="lname" value="{{ student[2] }}"><br><br>
+<input type="text" name="lname" value="{{ student.last_name }}"><br><br>
 
 Email:
-<input type="email" name="email" value="{{ student[3] }}"><br><br>
+<input type="email" name="email" value="{{ student.email }}"><br><br>
 
 Phone:
-<input type="text" name="phone" value="{{ student[4] }}"><br><br>
+<input type="text" name="phone" value="{{ student.phone }}"><br><br>
 
 <button type="submit">Update Student</button>
 
