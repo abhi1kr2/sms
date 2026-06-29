@@ -4,11 +4,14 @@ FROM python:3.12-slim
 # Set Container working directory
 WORKDIR /app
 
-# Copy project files
-COPY . /app
+# Copy dependency files
+COPY requirements .
 
 # Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements
+
+# Copy project files
+COPY . /app
 
 # Expose port for Flask
 EXPOSE 5000
