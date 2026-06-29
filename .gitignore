@@ -1,0 +1,15 @@
+# Terraform
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.*
+terraform/crash.log
+
+# Python
+__pycache__/
+*.pyc
+
+# Environment
+.env
+
+# VS Code
+.vscode/
