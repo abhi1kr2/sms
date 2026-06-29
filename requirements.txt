@@ -1,5 +1,0 @@
-flask
-pymysql
-gunicorn
-cryptography
-mysql-connector-python
