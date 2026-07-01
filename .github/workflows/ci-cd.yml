@@ -45,7 +45,8 @@ jobs:
           - name: Deploy to EC2
 
           #START FULL DEPLOY STAGE CODE
-        
+          
+        - name: Deploy to EC2
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
