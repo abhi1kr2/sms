@@ -42,11 +42,8 @@ jobs:
           docker push \
           ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/$ECR_REPOSITORY:${{ github.sha }}
 
-          - name: Deploy to EC2
+      - name: Deploy to EC2
 
-          #START FULL DEPLOY STAGE CODE
-          
-        - name: Deploy to EC2
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
