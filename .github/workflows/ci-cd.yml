@@ -66,3 +66,8 @@ jobs:
             
             echo "Starting new deployment..."
             SMS_IMAGE=$IMAGE docker-compose up -d
+
+      - name: Deployment successful
+        run: |
+          echo "Deployment completed successfully!"
+          echo "Website: http://${{ secrets.EC2_HOST }}:5000"
