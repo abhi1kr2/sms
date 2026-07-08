@@ -50,7 +50,10 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_KEY }}
           script: |
-          
+
+            echo "PWD - Deploye"
+            pwd
+            
             echo "Logging into AWS ECR..."
             aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com
 
@@ -60,5 +63,7 @@ jobs:
             echo "Stopping old containers..."
             docker-compose down || true
 
+            echo "PWD - Deploye After Old Containers"
+            pwd
             echo "Starting new deployment..."
             docker-compose up -d
