@@ -50,7 +50,7 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_KEY }}
           script: |
-
+          
             echo "Logging into AWS ECR..."
             aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com
 
@@ -58,7 +58,7 @@ jobs:
             docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/learnorbit_sms:${{ github.sha }}
 
             echo "Stopping old containers..."
-            docker compose down || true
+            docker-compose down || true
 
             echo "Starting new deployment..."
-            docker compose up -d
+            docker-compose up -d
