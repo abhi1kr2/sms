@@ -5,6 +5,7 @@ services:
   web:
     image: ${SMS_IMAGE}
     container_name: flask_app
+    restart: unless-stopped
     ports:
       - "5000:5000"
     depends_on:
