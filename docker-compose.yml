@@ -3,8 +3,9 @@ version: "3.8"
 services:
 
   web:
-    image: 811620046984.dkr.ecr.ap-south-1.amazonaws.com/learnorbit_sms:latest
+    image: ${SMS_IMAGE}
     container_name: flask_app
+    restart: unless-stopped
     ports:
       - "5000:5000"
     depends_on:

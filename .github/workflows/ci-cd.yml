@@ -50,15 +50,24 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_KEY }}
           script: |
-
+            cd sms
+            
+            IMAGE=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/learnorbit_sms:${{ github.sha }}
+            echo "Using image: $IMAGE"
+            
             echo "Logging into AWS ECR..."
             aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com
 
             echo "Pulling image..."
-            docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/learnorbit_sms:${{ github.sha }}
+            docker pull $IMAGE
 
             echo "Stopping old containers..."
-            docker compose down || true
-
+            docker-compose down || true
+            
             echo "Starting new deployment..."
-            docker compose up -d
+            SMS_IMAGE=$IMAGE docker-compose up -d
+
+      - name: Deployment successful
+        run: |
+          echo "Deployment completed successfully!"
+          echo "Website: http://${{ secrets.EC2_HOST }}:5000"
