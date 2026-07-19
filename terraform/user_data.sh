@@ -1,18 +1,29 @@
 #!/bin/bash
 
+set -e
+
 apt update -y
 
-# Install Docker
-apt install -y docker.io
+apt install -y \
+  docker.io \
+  docker-compose \
+  awscli \
+  git
 
-# Install Docker Compose V2 plugin (IMPORTANT)
-apt install -y docker-compose-plugin
-
-# Start and enable Docker
 systemctl start docker
 systemctl enable docker
 
-# Add ubuntu user to docker group
 usermod -aG docker ubuntu
 
-echo "Docker + Compose installed successfully" > /home/ubuntu/setup.log
+mkdir -p /home/ubuntu/sms
+chown -R ubuntu:ubuntu /home/ubuntu/sms
+
+{
+  echo "===== Setup Completed ====="
+  docker --version
+  docker-compose --version
+  aws --version
+  git --version
+} > /home/ubuntu/setup.log
+
+chown ubuntu:ubuntu /home/ubuntu/setup.log
